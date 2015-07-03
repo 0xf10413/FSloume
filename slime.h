@@ -14,7 +14,8 @@ private:
 public:
 	float x, y;
 	float vx, vy;
-	bool onGround;
+	bool onGround, lost;
+	int victories;
 	Slime (bool isLeft);
 	void setX (float nx) { sprite.SetX(x = nx); eyeSprite.SetX ( sprite.GetPosition().x + 3*slimeWidth/4 - pupilRadius );}
 	void setY (float ny) { sprite.SetY (y = ny);eyeSprite.SetY ( sprite.GetPosition().y+slimeHeight/2-pupilRadius );}

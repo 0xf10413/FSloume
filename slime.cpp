@@ -3,6 +3,7 @@
 Slime::Slime ( bool isLeft ) : left ( isLeft ), onGround ( true )
 {
   x = y = vx = vy = 0;
+	victories = lost = false;
   image.Create ( slimeWidth, slimeHeight, isLeft ? sf::Color::Blue : sf::Color::Red );
   // Dessin de la forme hémi-circulaire caractéristique
   // Calcul : tout pixel distant du point au milieu (horizontalement)

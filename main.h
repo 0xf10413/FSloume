@@ -74,7 +74,7 @@ const int height = 500;
 const int slimeWidth = width/8;
 const int slimeHeight = slimeWidth/2;
 const int netWidth = width/100;
-const int netHeight = slimeHeight*3;
+const int netHeight = slimeHeight*2;
 const int ballRadius = 10;
 /* Maximise la taille de l'œil avec les coordonnées choisies */
 const int eyeRadiusSquared = slimeWidth*slimeWidth* ( 3.-2.*sqrt ( 2. ) ) /8;
