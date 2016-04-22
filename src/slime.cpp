@@ -4,7 +4,7 @@ Slime::Slime ( bool isLeft ) : left ( isLeft ), onGround ( true )
 {
   x = y = vx = vy = 0;
 	victories = lost = false;
-  image.Create ( slimeWidth, slimeHeight, isLeft ? sf::Color::Blue : sf::Color::Red );
+  image.create ( slimeWidth, slimeHeight, isLeft ? sf::Color::Blue : sf::Color::Red );
   // Dessin de la forme hémi-circulaire caractéristique
   // Calcul : tout pixel distant du point au milieu (horizontalement)
   // en bas (verticalement) de plus de width/2 est transparent.
@@ -13,7 +13,7 @@ Slime::Slime ( bool isLeft ) : left ( isLeft ), onGround ( true )
       if ( ( i - slimeWidth/2 ) * ( i - slimeWidth/2 ) +
            ( j - slimeHeight ) * ( j-slimeHeight ) >=
            ( slimeWidth*slimeWidth/4 ) )
-        image.SetPixel ( i, j, sf::Color ( 0, 0, 0, 0 ) );
+        image.setPixel ( i, j, sf::Color ( 0, 0, 0, 0 ) );
 
   if ( isLeft )
     {
@@ -23,7 +23,7 @@ Slime::Slime ( bool isLeft ) : left ( isLeft ), onGround ( true )
           if ( ( i - 3*slimeWidth/4 ) * ( i - 3*slimeWidth/4 ) +
                ( j - slimeHeight/2 ) * ( j-slimeHeight/2 ) <=
                eyeRadiusSquared )
-            image.SetPixel ( i, j, sf::Color::White );
+            image.setPixel ( i, j, sf::Color::White );
     }
   else
     // Dessin du globe oculaire (coordonnées locales du centre : (w/4, h/2))
@@ -32,20 +32,22 @@ Slime::Slime ( bool isLeft ) : left ( isLeft ), onGround ( true )
         if ( ( i - slimeWidth/4 ) * ( i - slimeWidth/4 ) +
              ( j - slimeHeight/2 ) * ( j-slimeHeight/2 ) <=
              eyeRadiusSquared )
-          image.SetPixel ( i, j, sf::Color::White );
+          image.setPixel ( i, j, sf::Color::White );
 
-  eyeImage.Create ( pupilRadius*2,pupilRadius*2, isLeft ? sf::Color::Cyan : sf::Color::Magenta );
+  eyeImage.create ( pupilRadius*2,pupilRadius*2, isLeft ? sf::Color::Cyan : sf::Color::Magenta );
   makeADisk ( eyeImage );
-  sprite.SetImage ( image );
-  eyeSprite.SetImage ( eyeImage );
+  eyeTexture.loadFromImage(eyeImage);
+  texture.loadFromImage(image);
+  sprite.setTexture ( texture );
+  eyeSprite.setTexture ( eyeTexture );
 }
 
 // Renvoie le point d'intérêt du Slime
 sf::Vector2f Slime::getCenter()
 {
   sf::Vector2f center;
-  center.x = sprite.GetPosition().x + slimeWidth/2;
-  center.y = sprite.GetPosition().y + slimeHeight;
+  center.x = sprite.getPosition().x + slimeWidth/2;
+  center.y = sprite.getPosition().y + slimeHeight;
   return center;
 }
 
@@ -63,7 +65,7 @@ void Slime::updateEye ( const sf::Vector2f& b )
              + ( sqrt ( eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
              /sqrt ( abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
              - sf::Vector2f ( pupilRadius,pupilRadius );
-  eyeSprite.SetPosition ( newPos );
+  eyeSprite.setPosition ( newPos );
 }
 
 

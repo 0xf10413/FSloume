@@ -1,15 +1,16 @@
 #ifndef F_MAIN_H
 #define F_MAIN_H
 
+#include <cmath>
 #include <SFML/Graphics.hpp>
 
 inline void makeADisk ( sf::Image &img )
 {
-  int r = img.GetWidth() /2; // Rayon
+  int r = img.getSize().x /2; // Rayon
   for ( int i=0; i < 2*r; i++ )
     for ( int j = 0; j < 2*r; j++ )
       if ( ( i-r ) * ( i-r ) + ( j-r ) * ( j-r ) > r*r )
-        img.SetPixel ( i,j,sf::Color ( 0,0,0,0 ) );
+        img.setPixel ( i,j,sf::Color ( 0,0,0,0 ) );
 }
 
 inline sf::Vector2f operator- (const sf::Vector2f &l, const sf::Vector2f &r)

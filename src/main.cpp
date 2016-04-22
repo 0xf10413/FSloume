@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
+#include <string>
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include "main.h"
@@ -30,9 +31,12 @@ using std::cerr;
 int main ()
 {
 	sf::RenderWindow app ( sf::VideoMode ( width, height ), "sfml" );
-	app.SetFramerateLimit ( 60 );
+	app.setFramerateLimit ( 60 );
 	sf::Event event;
 	sf::Clock clock;
+    sf::Font font;
+    font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+    class { public: bool IsKeyDown (sf::Keyboard::Key ) { return false; } } input;
 
 	Slime bSlime ( true );
 	bSlime.setX ( width/4-slimeWidth/2 );
@@ -42,21 +46,22 @@ int main ()
 	rSlime.setX ( 3*width/4-slimeWidth/2 );
 	rSlime.setY ( height-slimeHeight );
 
-	sf::Image netImage ( netWidth, netHeight, sf::Color::Yellow );
-	sf::Sprite net ( netImage );
-	net.SetX ( ( width-netWidth ) /2 );
-	net.SetY ( height-netHeight );
+	sf::Image netImage;
+    netImage.create ( netWidth, netHeight, sf::Color::Yellow );
+    sf::Texture netTexture;
+    netTexture.loadFromImage(netImage);
+	sf::Sprite net ( netTexture );
+	net.setPosition ( ( width-netWidth ) /2,  height-netHeight );
 
 	Ball ball;
 	ball.setX ( bSlime.x+slimeWidth/2-ballRadius );
 	ball.setY ( height/2 );
 
-	const sf::Input &input = app.GetInput();
 	bool reinit = false; // Faut-il tout replacer ?
 	// Boucle principale
-	while ( app.IsOpened() )
+	while ( app.isOpen() )
 	{
-		float eps = app.GetFrameTime();
+		float eps = clock.getElapsedTime().asSeconds();
 
 		// Réinitialisation de la partie
 		if (reinit)
@@ -83,30 +88,30 @@ int main ()
 
 		if (bSlime.lost || rSlime.lost) // Quelqu'un a perdu ?
 		{
-			sf::String text (sf::Unicode::Text ("Perdu !"));
+			sf::Text text ("Perdu !", font);
 			if (bSlime.lost)
-				text.SetColor (sf::Color::Blue);
+				text.setColor (sf::Color::Blue);
 			else
-				text.SetColor (sf::Color::Red);
+				text.setColor (sf::Color::Red);
 
-			app.Draw (text);
-			app.Display ();
-			if (clock.GetElapsedTime() < 1.)
+			app.draw (text);
+			app.display ();
+			if (clock.getElapsedTime().asSeconds() < 1.)
 			  continue;
 
 			reinit = true;
 			continue;
 		}
 
-		while ( app.GetEvent ( event ) )
+		while ( app.pollEvent ( event ) )
 		{
-			if ( event.Type == sf::Event::Closed )
-				app.Close();
-			if ( event.Type == sf::Event::KeyPressed )
+			if ( event.type == sf::Event::Closed )
+				app.close();
+			if ( event.type == sf::Event::KeyPressed )
 			{
-				if ( event.Key.Code == sf::Key::Escape )
-					app.Close();
-				if ( event.Key.Code == sf::Key::Up )
+				if ( event.key.code == sf::Keyboard::Escape )
+					app.close();
+				if ( event.key.code == sf::Keyboard::Up )
 				{
 					if ( bSlime.onGround )
 					{
@@ -114,7 +119,7 @@ int main ()
 						bSlime.onGround = false;
 					}
 				}
-				if (event.Key.Code == sf::Key::Space)
+				if (event.key.code == sf::Keyboard::Space)
 				{
 					if (rSlime.onGround)
 					{
@@ -127,16 +132,16 @@ int main ()
 			}
 		}
 
-		if ( input.IsKeyDown ( sf::Key::Left ) && !input.IsKeyDown ( sf::Key::Right ) )
+		if ( input.IsKeyDown ( sf::Keyboard::Left ) && !input.IsKeyDown ( sf::Keyboard::Right ) )
 			bSlime.vx = -slimeHorizontalSpeed;
-		else if ( input.IsKeyDown ( sf::Key::Right ) && !input.IsKeyDown(sf::Key::Left))
+		else if ( input.IsKeyDown ( sf::Keyboard::Right ) && !input.IsKeyDown(sf::Keyboard::Left))
 			bSlime.vx = slimeHorizontalSpeed;
 		else
 			bSlime.vx = 0;
 
-		if ( input.IsKeyDown ( sf::Key::Q ) && !input.IsKeyDown ( sf::Key::D ) )
+		if ( input.IsKeyDown ( sf::Keyboard::Q ) && !input.IsKeyDown ( sf::Keyboard::D ) )
 			rSlime.vx = -slimeHorizontalSpeed;
-		else if ( input.IsKeyDown ( sf::Key::D ) && !input.IsKeyDown(sf::Key::Q) )
+		else if ( input.IsKeyDown ( sf::Keyboard::D ) && !input.IsKeyDown(sf::Keyboard::Q) )
 			rSlime.vx = slimeHorizontalSpeed;
 		else
 			rSlime.vx = 0;
@@ -194,10 +199,10 @@ int main ()
 			bSlime.setX(0);
 		}
 		// bSlime-filet
-		if (bSlime.getCenter().x+slimeWidth/2 > net.GetPosition().x)
+		if (bSlime.getCenter().x+slimeWidth/2 > net.getPosition().x)
 		{
 			bSlime.vx = 0;
-			bSlime.setX(net.GetPosition().x-slimeWidth);
+			bSlime.setX(net.getPosition().x-slimeWidth);
 		}
 
 		//rSlime-balle
@@ -225,10 +230,10 @@ int main ()
 			rSlime.setX(width-slimeWidth);
 		}
 		// rSlime-filet
-		if (rSlime.x < net.GetPosition().x+netWidth)
+		if (rSlime.x < net.getPosition().x+netWidth)
 		{
 			rSlime.vx = 0;
-			rSlime.setX(net.GetPosition().x+netWidth);
+			rSlime.setX(net.getPosition().x+netWidth);
 		}
 
 
@@ -247,11 +252,11 @@ int main ()
 		{
 			ball.setY(height-2*ballRadius);
 			ball.vy = -ball.vy;
-			if (ball.x < net.GetPosition().x-netWidth/2) // Qui a perdu ?
+			if (ball.x < net.getPosition().x-netWidth/2) // Qui a perdu ?
 				bSlime.lost = true;
 			else
 				rSlime.lost = true;
-			clock.Reset ();
+			clock.restart ();
 		}
 		if (ball.y < 0)
 		{
@@ -260,37 +265,37 @@ int main ()
 		}
 
 		// Balle-filet
-		if (ball.getSprite().GetPosition().y+ballRadius >= net.GetPosition().y) // Collision horizontale ?
+		if (ball.getSprite().getPosition().y+ballRadius >= net.getPosition().y) // Collision horizontale ?
 		{
-			if (abs(ball.getCenter().x - (net.GetPosition().x + netWidth/2)) <= netWidth/2)
+			if (abs(ball.getCenter().x - (net.getPosition().x + netWidth/2)) <= netWidth/2)
 			{
 				if (ball.vx >= 0)
-					ball.setX(net.GetPosition().x-ballRadius*2);
+					ball.setX(net.getPosition().x-ballRadius*2);
 				else
-					ball.setX(net.GetPosition().x+netWidth);
+					ball.setX(net.getPosition().x+netWidth);
 				ball.vx = -ball.vx;
 			}
 		}
-		else if (abs(ball.getCenter().x - (net.GetPosition().x + netWidth/2)) <= netWidth/2)
+		else if (abs(ball.getCenter().x - (net.getPosition().x + netWidth/2)) <= netWidth/2)
 		{
-			if (ball.getCenter().y >= net.GetPosition().y -ballRadius)
+			if (ball.getCenter().y >= net.getPosition().y -ballRadius)
 			{
 				ball.vy = -abs(ball.vy);
-				ball.setY(net.GetPosition().y-2*ballRadius);
+				ball.setY(net.getPosition().y-2*ballRadius);
 			}
 		}
 
 		// Affichage
 		bSlime.updateEye(ball.getCenter());
 		rSlime.updateEye(ball.getCenter());
-		app.Clear();
-		app.Draw ( rSlime.getSprite() );
-		app.Draw(rSlime.getEye());
-		app.Draw ( bSlime.getSprite() );
-		app.Draw ( bSlime.getEye() );
-		app.Draw ( net );
-		app.Draw ( ball.getSprite() );
-		app.Display();
+		app.clear();
+		app.draw ( rSlime.getSprite() );
+		app.draw(rSlime.getEye());
+		app.draw ( bSlime.getSprite() );
+		app.draw ( bSlime.getEye() );
+		app.draw ( net );
+		app.draw ( ball.getSprite() );
+		app.display();
 	}
 	return EXIT_SUCCESS;
 }

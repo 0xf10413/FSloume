@@ -6,14 +6,15 @@
 
 class Ball {
 private:
+    sf::Texture texture;
 	sf::Image image;
 	sf::Sprite sprite;
 public:
 	float x, y;
 	float vx, vy;
 	Ball ();
-	void setX (float nx) { sprite.SetX(x = nx); }
-	void setY (float ny) { sprite.SetY (y = ny);}
+	void setX (float nx) { sprite.setPosition(x = nx, sprite.getPosition().y); }
+	void setY (float ny) { sprite.setPosition (sprite.getPosition().x, y = ny);}
 	const sf::Sprite &getSprite () {return sprite;}
 	sf::Vector2f getCenter ();
 };
