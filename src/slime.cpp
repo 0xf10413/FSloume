@@ -1,75 +1,124 @@
 #include "slime.h"
 
-Slime::Slime ( bool isLeft ) : texture(), image(), sprite(),
-  eyeTexture(), eyeImage(), eyeSprite(),
-  left ( isLeft ),
-  x(0.f), y(0.f), vx(0.f), vy(0.f),
-  onGround ( true ), lost(false), victories(0)
+Slime::Slime (bool alignLeft) :
+  MovingEntity(),
+  m_eye(alignLeft),
+  m_alignLeft (alignLeft),
+  m_onGround (true), m_lost(false), m_victories(0),
+  m_clamp()
 {
-  x = y = vx = vy = 0;
-	victories = lost = false;
-  image.create ( slimeWidth, slimeHeight, isLeft ? sf::Color::Blue : sf::Color::Red );
   // Dessin de la forme hémi-circulaire caractéristique
   // Calcul : tout pixel distant du point au milieu (horizontalement)
   // en bas (verticalement) de plus de width/2 est transparent.
-  for ( int i = 0; i < slimeWidth; i++ )
-    for ( int j=0; j<slimeHeight; j++ )
-      if ( ( i - slimeWidth/2 ) * ( i - slimeWidth/2 ) +
-           ( j - slimeHeight ) * ( j-slimeHeight ) >=
-           ( slimeWidth*slimeWidth/4 ) )
-        image.setPixel ( i, j, sf::Color ( 0, 0, 0, 0 ) );
+  m_image.create (SLIME_WIDTH, SLIME_HEIGHT, m_alignLeft ? sf::Color::Blue : sf::Color::Red);
+  for (int i = 0; i < SLIME_WIDTH; i++)
+    for (int j=0; j<SLIME_HEIGHT; j++)
+      if ((i - SLIME_WIDTH/2) * (i - SLIME_WIDTH/2) +
+          (j - SLIME_HEIGHT) * (j-SLIME_HEIGHT) >=
+          (SLIME_WIDTH*SLIME_WIDTH/4))
+        m_image.setPixel (i, j, sf::Color (0, 0, 0, 0));
 
-  if ( isLeft )
-    {
-      // Dessin du globe oculaire (coordonnées locales du centre : (3*w/4, h/2))
-      for ( int i = 0; i < slimeWidth; i++ )
-        for ( int j=0; j < slimeHeight; j++ )
-          if ( ( i - 3*slimeWidth/4 ) * ( i - 3*slimeWidth/4 ) +
-               ( j - slimeHeight/2 ) * ( j-slimeHeight/2 ) <=
-               eyeRadiusSquared )
-            image.setPixel ( i, j, sf::Color::White );
-    }
+  if (m_alignLeft)
+  {
+    // Dessin du globe oculaire (coordonnées locales du centre : (3*w/4, h/2))
+    for (int i = 0; i < SLIME_WIDTH; i++)
+      for (int j=0; j < SLIME_HEIGHT; j++)
+        if ((i - 3*SLIME_WIDTH/4) * (i - 3*SLIME_WIDTH/4) +
+            (j - SLIME_HEIGHT/2) * (j-SLIME_HEIGHT/2) <=
+            EYE_RADIUS_SQUARED)
+          m_image.setPixel (i, j, sf::Color::White);
+  }
   else
     // Dessin du globe oculaire (coordonnées locales du centre : (w/4, h/2))
-    for ( int i = 0; i < slimeWidth; i++ )
-      for ( int j=0; j < slimeHeight; j++ )
-        if ( ( i - slimeWidth/4 ) * ( i - slimeWidth/4 ) +
-             ( j - slimeHeight/2 ) * ( j-slimeHeight/2 ) <=
-             eyeRadiusSquared )
-          image.setPixel ( i, j, sf::Color::White );
+    for (int i = 0; i < SLIME_WIDTH; i++)
+      for (int j=0; j < SLIME_HEIGHT; j++)
+        if ((i - SLIME_WIDTH/4) * (i - SLIME_WIDTH/4) +
+            (j - SLIME_HEIGHT/2) * (j-SLIME_HEIGHT/2) <=
+            EYE_RADIUS_SQUARED)
+          m_image.setPixel (i, j, sf::Color::White);
 
-  eyeImage.create ( pupilRadius*2,pupilRadius*2, isLeft ? sf::Color::Cyan : sf::Color::Magenta );
-  makeADisk ( eyeImage );
-  eyeTexture.loadFromImage(eyeImage);
-  texture.loadFromImage(image);
-  sprite.setTexture ( texture );
-  eyeSprite.setTexture ( eyeTexture );
+  m_texture.loadFromImage(m_image);
+  m_sprite.setTexture (m_texture);
 }
 
-// Renvoie le point d'intérêt du Slime
-sf::Vector2f Slime::getCenter()
+void Slime::jump()
 {
-  sf::Vector2f center;
-  center.x = sprite.getPosition().x + slimeWidth/2;
-  center.y = sprite.getPosition().y + slimeHeight;
-  return center;
+  if (!m_onGround)
+    return;
+  m_onGround = false;
+  m_vy -= SLIME_JUMP_SPEED;
 }
 
-void Slime::updateEye ( const sf::Vector2f& b )
+void Slime::move(const Input &input, float dt)
 {
-  sf::Vector2f newPos;
-  // Globe oculaire, de coordonnées locales (3*w/4, h/2)
-  if ( left )
-      newPos = getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 )
-               + ( (float)sqrt (eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
-               /(float)sqrt (abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
-               - sf::Vector2f ( pupilRadius,pupilRadius );
+  /* Mise à jour des vitesses en fonction de l'input */
+  if (input.isKeyDown(sf::Keyboard::Space))
+    jump();
+  if (input.isKeyDown(sf::Keyboard::Left) && !input.isKeyDown(sf::Keyboard::Right))
+    m_vx = -SLIME_HORIZONTAL_SPEED;
+  else if (input.isKeyDown(sf::Keyboard::Right) && !input.isKeyDown(sf::Keyboard::Left))
+    m_vx = +SLIME_HORIZONTAL_SPEED;
   else
-    newPos = getCenter()+sf::Vector2f ( -slimeWidth/4,-slimeHeight/2 )
-             + ((float)sqrt ( eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
-             /(float)sqrt (abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
-             - sf::Vector2f ( pupilRadius,pupilRadius );
-  eyeSprite.setPosition ( newPos );
+    m_vx = 0;
+
+  /* Déplacement avec la vitesse */
+  m_x += dt*m_vx;
+  m_y += dt*m_vy;
+
+  /* Perte de vitesse avec la gravité */
+  if (!m_onGround)
+    m_vy += GRAVITY*dt;
+
+  /* Clamping */
+  if (m_x + SLIME_WIDTH/2 > m_clamp.top + m_clamp.width)
+    m_x = m_clamp.top + m_clamp.width - SLIME_WIDTH/2;
+
+  /* Mise à jour finale du sprite */
+  updateSprite();
 }
 
+void Slime::clampTo(const sf::Rect<float> &rect)
+{
+  m_clamp = rect;
+}
 
+//void Slime::updateEye (const sf::Vector2f& b)
+//{
+//  sf::Vector2f newPos;
+//  // Globe oculaire, de coordonnées locales (3*w/4, h/2)
+//  if (left)
+//      newPos = getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2)
+//               + ((float)sqrt (eyeRadiusSquared)-pupilRadius) * (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2)))
+//               /(float)sqrt (abs2 (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2))))
+//               - sf::Vector2f (pupilRadius,pupilRadius);
+//  else
+//    newPos = getCenter()+sf::Vector2f (-SLIME_WIDTH/4,-SLIME_HEIGHT/2)
+//             + ((float)sqrt (eyeRadiusSquared)-pupilRadius) * (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2)))
+//             /(float)sqrt (abs2 (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2))))
+//             - sf::Vector2f (pupilRadius,pupilRadius);
+//  eyeSprite.setPosition (newPos);
+//}
+
+void Slime::setX (float x)
+{
+  m_x = x;
+  updateSprite();
+}
+
+void Slime::setY (float y)
+{
+  m_y = y;
+  updateSprite();
+}
+
+void Slime::updateSprite()
+{
+  m_sprite.setPosition (
+      m_x - SLIME_WIDTH/2,
+      m_y - SLIME_HEIGHT/2
+      );
+  m_eye.setPosition (
+      m_x + 3*SLIME_WIDTH/4 - PUPIL_RADIUS,
+      m_y + SLIME_HEIGHT/2 - PUPIL_RADIUS
+      );
+}

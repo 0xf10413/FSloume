@@ -70,17 +70,18 @@ inline sf::Vector2f symetric (const sf::Vector2f &v, const sf::Vector2f &axis)
   return v - 2*dotProduct(v,norm)/abs2(norm)*norm;
 }
 
-const int width = 800;
-const int height = 500;
-const int slimeWidth = width/8;
-const int slimeHeight = slimeWidth/2;
-const int netWidth = width/100;
-const int netHeight = slimeHeight*2;
-const int ballRadius = 10;
+const int WIDTH = 800;
+const int HEIGHT = 500;
+const int SLIME_WIDTH = WIDTH/8;
+const int SLIME_HEIGHT = SLIME_WIDTH/2;
+const int NET_WIDTH = WIDTH/100;
+const int NET_HEIGHT = SLIME_HEIGHT*2;
+const int BALL_RADIUS = 10;
 /* Maximise la taille de l'œil avec les coordonnées choisies */
-const int eyeRadiusSquared = static_cast<int>(slimeWidth*slimeWidth* ( 3.-2.*sqrt ( 2. ) ) /8);
-const int pupilRadius = 5;
-const int gravity = 1; // Intensité de pesanteur
-const int slimeHorizontalSpeed = 140;
+const int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* ( 3.-2.*sqrt ( 2. ) ) /8);
+const int PUPIL_RADIUS = 5;
+const int GRAVITY = 40; // Intensité de pesanteur
+const int SLIME_HORIZONTAL_SPEED = 240;
+const int SLIME_JUMP_SPEED = 100;
 
 #endif

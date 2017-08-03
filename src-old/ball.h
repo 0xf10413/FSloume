@@ -2,16 +2,15 @@
 #define F_BALL_H
 
 #include <SFML/Graphics.hpp>
+#include "unique_drawable.h"
 #include "main.h"
 
-class Ball {
+class Ball : public UniqueDrawable
+{
 private:
-  sf::Texture texture;
-	sf::Image image;
-	sf::Sprite sprite;
-public:
 	float x, y;
 	float vx, vy;
+public:
 	Ball ();
 	void setX (float nx) { sprite.setPosition(x = nx, sprite.getPosition().y); }
 	void setY (float ny) { sprite.setPosition (sprite.getPosition().x, y = ny);}
