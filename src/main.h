@@ -15,59 +15,59 @@ inline void makeADisk ( sf::Image &img )
 
 inline sf::Vector2f operator- (const sf::Vector2f &l, const sf::Vector2f &r)
 {
-	sf::Vector2f t;
-	t.x = l.x - r.x;
-	t.y = l.y - r.y;
-	return t;
+  sf::Vector2f t;
+  t.x = l.x - r.x;
+  t.y = l.y - r.y;
+  return t;
 }
 
 inline sf::Vector2f operator+ (const sf::Vector2f &l, const sf::Vector2f &r)
 {
-	sf::Vector2f t;
-	t.x = l.x + r.x;
-	t.y = l.y + r.y;
-	return t;
+  sf::Vector2f t;
+  t.x = l.x + r.x;
+  t.y = l.y + r.y;
+  return t;
 }
 
 inline sf::Vector2f operator/ (const sf::Vector2f &l, float r)
 {
-	sf::Vector2f t;
-	t.x = l.x/r;
-	t.y = l.y/r;
-	return t;
+  sf::Vector2f t;
+  t.x = l.x/r;
+  t.y = l.y/r;
+  return t;
 }
 
 inline sf::Vector2f operator* (float r, const sf::Vector2f &l)
 {
-	sf::Vector2f t;
-	t.x = l.x*r;
-	t.y = l.y*r;
-	return t;
+  sf::Vector2f t;
+  t.x = l.x*r;
+  t.y = l.y*r;
+  return t;
 }
 
 // Renvoie la norme2 au carré de v
 inline float abs2 (const sf::Vector2f &v)
 {
-	return v.x*v.x + v.y*v.y;
+  return v.x*v.x + v.y*v.y;
 }
 
 inline float pow2 (float a)
 {
-	return a*a;
+  return a*a;
 }
 
 inline float dotProduct (const sf::Vector2f &l, const sf::Vector2f &r)
 {
-	return l.x*r.x + l.y*r.y;	
+  return l.x*r.x + l.y*r.y;
 }
 
 // Calcule le symétrique de v par rapport à axis
 inline sf::Vector2f symetric (const sf::Vector2f &v, const sf::Vector2f &axis)
 {
-	sf::Vector2f norm; // Vecteur normal à axis
-	norm.x = axis.y;
-	norm.y = -axis.x;
-	return v - 2*dotProduct(v,norm)/abs2(norm)*norm;
+  sf::Vector2f norm; // Vecteur normal à axis
+  norm.x = axis.y;
+  norm.y = -axis.x;
+  return v - 2*dotProduct(v,norm)/abs2(norm)*norm;
 }
 
 const int width = 800;
@@ -78,9 +78,9 @@ const int netWidth = width/100;
 const int netHeight = slimeHeight*2;
 const int ballRadius = 10;
 /* Maximise la taille de l'œil avec les coordonnées choisies */
-const int eyeRadiusSquared = slimeWidth*slimeWidth* ( 3.-2.*sqrt ( 2. ) ) /8;
+const int eyeRadiusSquared = static_cast<int>(slimeWidth*slimeWidth* ( 3.-2.*sqrt ( 2. ) ) /8);
 const int pupilRadius = 5;
-const int gravity = 400; // Intensité de pesanteur
+const int gravity = 1; // Intensité de pesanteur
 const int slimeHorizontalSpeed = 140;
 
 #endif

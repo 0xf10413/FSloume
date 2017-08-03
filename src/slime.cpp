@@ -1,6 +1,10 @@
 #include "slime.h"
 
-Slime::Slime ( bool isLeft ) : left ( isLeft ), onGround ( true )
+Slime::Slime ( bool isLeft ) : texture(), image(), sprite(),
+  eyeTexture(), eyeImage(), eyeSprite(),
+  left ( isLeft ),
+  x(0.f), y(0.f), vx(0.f), vy(0.f),
+  onGround ( true ), lost(false), victories(0)
 {
   x = y = vx = vy = 0;
 	victories = lost = false;
@@ -57,13 +61,13 @@ void Slime::updateEye ( const sf::Vector2f& b )
   // Globe oculaire, de coordonnées locales (3*w/4, h/2)
   if ( left )
       newPos = getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 )
-               + ( sqrt ( eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
-               /sqrt ( abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
+               + ( (float)sqrt (eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
+               /(float)sqrt (abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
                - sf::Vector2f ( pupilRadius,pupilRadius );
   else
     newPos = getCenter()+sf::Vector2f ( -slimeWidth/4,-slimeHeight/2 )
-             + ( sqrt ( eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
-             /sqrt ( abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
+             + ((float)sqrt ( eyeRadiusSquared )-pupilRadius ) * ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) )
+             /(float)sqrt (abs2 ( b- ( getCenter() +sf::Vector2f ( slimeWidth/4,-slimeHeight/2 ) ) ) )
              - sf::Vector2f ( pupilRadius,pupilRadius );
   eyeSprite.setPosition ( newPos );
 }

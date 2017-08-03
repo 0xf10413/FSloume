@@ -13,10 +13,10 @@ using std::endl;
 using std::cerr;
 
 /*** BUG ***/
-/* 
+/*
  * Collision par dessous : un slime entre en collision
  * de façon circulaire avec la balle par en-dessous.
- * Balle fantôme : la balle peut passer à travers le filet 
+ * Balle fantôme : la balle peut passer à travers le filet
  * si elle va assez vite. Solutions : examiner x+vx*dt, majorer vx.
  * */
 /*** TODO ***/
@@ -90,9 +90,9 @@ int main ()
 		{
 			sf::Text text ("Perdu !", font);
 			if (bSlime.lost)
-				text.setColor (sf::Color::Blue);
+				text.setFillColor (sf::Color::Blue);
 			else
-				text.setColor (sf::Color::Red);
+				text.setFillColor (sf::Color::Red);
 
 			app.draw (text);
 			app.display ();
@@ -115,7 +115,7 @@ int main ()
 				{
 					if ( bSlime.onGround )
 					{
-						bSlime.vy += -200;
+						bSlime.vy += -20;
 						bSlime.onGround = false;
 					}
 				}
@@ -123,7 +123,7 @@ int main ()
 				{
 					if (rSlime.onGround)
 					{
-						rSlime.vy += -200;
+						rSlime.vy += -20;
 						rSlime.onGround = false;
 					}
 				}
@@ -179,7 +179,7 @@ int main ()
 			sf::Vector2f newV = symetric(sf::Vector2f(ball.vx, ball.vy), ball.getCenter()-bSlime.getCenter());
 			ball.vx = -newV.x+bSlime.vx;
 			ball.vy = -newV.y+bSlime.vy;
-			sf::Vector2f newPos = (slimeHeight+ballRadius)/sqrt(abs2(ball.getCenter() - bSlime.getCenter()))
+			sf::Vector2f newPos = (slimeHeight+ballRadius)/(float)sqrt(abs2(ball.getCenter() - bSlime.getCenter()))
 				*(ball.getCenter() - bSlime.getCenter()) + bSlime.getCenter()-sf::Vector2f(ballRadius,ballRadius);
 			ball.setX(newPos.x);
 			ball.setY(newPos.y);
@@ -207,11 +207,11 @@ int main ()
 
 		//rSlime-balle
 		if ( abs2 ( rSlime.getCenter()-ball.getCenter() ) <= pow2 ( ballRadius+slimeWidth/2 ) )
-		{  
+		{
 			sf::Vector2f newV = symetric(sf::Vector2f(ball.vx, ball.vy), ball.getCenter()-rSlime.getCenter());
 			ball.vx = -newV.x+rSlime.vx;
 			ball.vy = -newV.y+rSlime.vy;
-			sf::Vector2f newPos = (slimeHeight+ballRadius)/sqrt(abs2(ball.getCenter() - rSlime.getCenter()))
+			sf::Vector2f newPos = (slimeHeight+ballRadius)/(float)sqrt(abs2(ball.getCenter() - rSlime.getCenter()))
 				*(ball.getCenter() - rSlime.getCenter()) + rSlime.getCenter()-sf::Vector2f(ballRadius,ballRadius);
 			ball.setX(newPos.x);
 			ball.setY(newPos.y);
@@ -267,7 +267,7 @@ int main ()
 		// Balle-filet
 		if (ball.getSprite().getPosition().y+ballRadius >= net.getPosition().y) // Collision horizontale ?
 		{
-			if (abs(ball.getCenter().x - (net.getPosition().x + netWidth/2)) <= netWidth/2)
+			if (std::abs(ball.getCenter().x -(float)(net.getPosition().x + netWidth/2)) <= netWidth/2)
 			{
 				if (ball.vx >= 0)
 					ball.setX(net.getPosition().x-ballRadius*2);
@@ -276,11 +276,11 @@ int main ()
 				ball.vx = -ball.vx;
 			}
 		}
-		else if (abs(ball.getCenter().x - (net.getPosition().x + netWidth/2)) <= netWidth/2)
+		else if (std::abs(ball.getCenter().x - (net.getPosition().x + netWidth/2)) <= netWidth/2)
 		{
 			if (ball.getCenter().y >= net.getPosition().y -ballRadius)
 			{
-				ball.vy = -abs(ball.vy);
+				ball.vy = -std::abs(ball.vy);
 				ball.setY(net.getPosition().y-2*ballRadius);
 			}
 		}

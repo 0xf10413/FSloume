@@ -6,7 +6,7 @@
 
 class Ball {
 private:
-    sf::Texture texture;
+  sf::Texture texture;
 	sf::Image image;
 	sf::Sprite sprite;
 public:

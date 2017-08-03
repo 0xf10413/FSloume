@@ -6,11 +6,11 @@
 
 class Slime {
 private:
-    sf::Texture texture;
+  sf::Texture texture;
 	sf::Image image;
 	sf::Sprite sprite;
 
-    sf::Texture eyeTexture;
+  sf::Texture eyeTexture;
 	sf::Image eyeImage;
 	sf::Sprite eyeSprite;
 	bool left;

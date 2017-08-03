@@ -1,8 +1,8 @@
 #include "ball.h"
 
-Ball::Ball()
+Ball::Ball() : texture(), image(), sprite(),
+  x(0.f), y(0.f), vx(0.f), vy(0.f)
 {
-	x = y = vx = vy = 0;
 	image.create(ballRadius*2, ballRadius*2, sf::Color::Yellow);
 	makeADisk(image);
     texture.loadFromImage(image);
