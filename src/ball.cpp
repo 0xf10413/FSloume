@@ -4,10 +4,10 @@ Ball::Ball() :
   MovingEntity(),
   m_clamp()
 {
-	m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Yellow);
-	makeADisk(m_image);
+  m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Yellow);
+  makeADisk(m_image);
   m_texture.loadFromImage(m_image);
-	m_sprite.setTexture(m_texture);
+  m_sprite.setTexture(m_texture);
 }
 
 void Ball::setX (float x)
@@ -68,4 +68,9 @@ void Ball::updateSprite()
 sf::Vector2f Ball::getPosition() const
 {
   return {m_x, m_y};
+}
+
+sf::Vector2f Ball::getSpeed() const
+{
+  return {m_vx, m_vy};
 }

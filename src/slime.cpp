@@ -150,6 +150,15 @@ void Slime::setY (float y)
   updateSprite();
 }
 
+sf::Vector2f Slime::getPosition()
+{
+  return {m_x, m_y};
+}
+sf::Vector2f Slime::getSpeed()
+{
+  return {m_vx, m_vy};
+}
+
 void Slime::updateSprite()
 {
   m_sprite.setPosition (

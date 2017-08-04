@@ -4,6 +4,8 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 
+// Rend invisible les pixels à l'extérieur d'un disque aussi gros
+// que possible dans l'image rectangulaire
 inline void makeADisk ( sf::Image &img )
 {
   int r = img.getSize().x /2; // Rayon

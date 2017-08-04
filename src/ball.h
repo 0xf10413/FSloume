@@ -18,6 +18,7 @@ public:
   void move (float dt);
 
   sf::Vector2f getPosition() const;
+  sf::Vector2f getSpeed() const;
 };
 
 #endif
