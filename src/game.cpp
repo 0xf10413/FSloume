@@ -4,17 +4,18 @@
 FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   event(), clock(), font(), input(),
   reinit(false),
-  bSlime(true)//, rSlime(false), net(), ball()
+  bSlime(true), rSlime(false)//, net(), ball()
 {
   setFramerateLimit (60);
   font.loadFromFile ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
 
-  bSlime.setX ( WIDTH/4-SLIME_WIDTH/2 );
-  bSlime.setY ( HEIGHT - SLIME_HEIGHT/2);
-  bSlime.clampTo(sf::Rect<float>(0, 0, WIDTH/2, HEIGHT/2));
+  bSlime.setX (WIDTH/4 - SLIME_WIDTH/2);
+  bSlime.setY (HEIGHT - SLIME_HEIGHT/2);
+  bSlime.clampTo(sf::FloatRect(0, 0, WIDTH/2, HEIGHT));
 
-  //rSlime.setX ( 3*width/4-slimeWidth/2 );
-  //rSlime.setY ( height-slimeHeight );
+  rSlime.setX (3*WIDTH/4 - SLIME_WIDTH/2);
+  rSlime.setY (HEIGHT - SLIME_HEIGHT/2);
+  rSlime.clampTo(sf::FloatRect(WIDTH/2, 0, WIDTH/2, HEIGHT));
 
   //net.setPosition ( ( width-netWidth ) /2,  height-netHeight );
 
@@ -101,6 +102,7 @@ int FGame::mainLoop ()
     }
 
     bSlime.move(input, eps);
+    rSlime.move(input, eps);
     //if ( input.IsKeyDown ( sf::Keyboard::Left ) && !input.IsKeyDown ( sf::Keyboard::Right ) )
     //  bSlime.vx = -slimeHorizontalSpeed;
     //else if ( input.IsKeyDown ( sf::Keyboard::Right ) && !input.IsKeyDown(sf::Keyboard::Left))
@@ -144,6 +146,7 @@ int FGame::mainLoop ()
     //draw (rSlime.getSprite() );
     //draw (rSlime.getEye());
     bSlime.draw(*this);
+    rSlime.draw(*this);
     //draw (net.getSprite() );
     //draw (ball.getSprite() );
     display();

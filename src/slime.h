@@ -28,7 +28,7 @@ public:
 	void setY (float ny);
 
   /* Contraintes */
-  void clampTo (const sf::Rect<float> &rect);
+  void clampTo (const sf::FloatRect &rect);
 
 	//void updateEye (const sf::Vector2f &); // Reçoit le centre de la balle
 };

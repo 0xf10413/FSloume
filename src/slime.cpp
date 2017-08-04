@@ -52,14 +52,28 @@ void Slime::jump()
 void Slime::move(const Input &input, float dt)
 {
   /* Mise à jour des vitesses en fonction de l'input */
-  if (input.isKeyDown(sf::Keyboard::Space))
-    jump();
-  if (input.isKeyDown(sf::Keyboard::Left) && !input.isKeyDown(sf::Keyboard::Right))
-    m_vx = -SLIME_HORIZONTAL_SPEED;
-  else if (input.isKeyDown(sf::Keyboard::Right) && !input.isKeyDown(sf::Keyboard::Left))
-    m_vx = +SLIME_HORIZONTAL_SPEED;
+  if (m_alignLeft)
+  {
+    if (input.isKeyDown(sf::Keyboard::Up))
+      jump();
+    if (input.isKeyDown(sf::Keyboard::Left) && !input.isKeyDown(sf::Keyboard::Right))
+      m_vx = -SLIME_HORIZONTAL_SPEED;
+    else if (input.isKeyDown(sf::Keyboard::Right) && !input.isKeyDown(sf::Keyboard::Left))
+      m_vx = +SLIME_HORIZONTAL_SPEED;
+    else
+      m_vx = 0;
+  }
   else
-    m_vx = 0;
+  {
+    if (input.isKeyDown(sf::Keyboard::Z))
+      jump();
+    if (input.isKeyDown(sf::Keyboard::Q) && !input.isKeyDown(sf::Keyboard::D))
+      m_vx = -SLIME_HORIZONTAL_SPEED;
+    else if (input.isKeyDown(sf::Keyboard::D) && !input.isKeyDown(sf::Keyboard::Q))
+      m_vx = +SLIME_HORIZONTAL_SPEED;
+    else
+      m_vx = 0;
+  }
 
   /* Déplacement avec la vitesse */
   m_x += dt*m_vx;
@@ -70,14 +84,25 @@ void Slime::move(const Input &input, float dt)
     m_vy += GRAVITY*dt;
 
   /* Clamping */
-  if (m_x + SLIME_WIDTH/2 > m_clamp.top + m_clamp.width)
-    m_x = m_clamp.top + m_clamp.width - SLIME_WIDTH/2;
+  if (m_x + SLIME_WIDTH/2 > m_clamp.left + m_clamp.width)
+    m_x = m_clamp.left + m_clamp.width - SLIME_WIDTH/2;
+
+  if (m_x - SLIME_WIDTH/2 < m_clamp.left)
+    m_x = m_clamp.left + SLIME_WIDTH/2;
+
+  if (m_y + SLIME_HEIGHT/2 > m_clamp.top + m_clamp.height) // plus collision avec le sol
+  {
+    m_y = m_clamp.top + m_clamp.height - SLIME_HEIGHT/2;
+    m_vy = 0;
+    m_onGround = true;
+  }
+
 
   /* Mise à jour finale du sprite */
   updateSprite();
 }
 
-void Slime::clampTo(const sf::Rect<float> &rect)
+void Slime::clampTo(const sf::FloatRect &rect)
 {
   m_clamp = rect;
 }

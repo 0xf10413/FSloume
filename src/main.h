@@ -70,18 +70,30 @@ inline sf::Vector2f symetric (const sf::Vector2f &v, const sf::Vector2f &axis)
   return v - 2*dotProduct(v,norm)/abs2(norm)*norm;
 }
 
-const int WIDTH = 800;
-const int HEIGHT = 500;
-const int SLIME_WIDTH = WIDTH/8;
-const int SLIME_HEIGHT = SLIME_WIDTH/2;
-const int NET_WIDTH = WIDTH/100;
-const int NET_HEIGHT = SLIME_HEIGHT*2;
-const int BALL_RADIUS = 10;
-/* Maximise la taille de l'œil avec les coordonnées choisies */
-const int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* ( 3.-2.*sqrt ( 2. ) ) /8);
-const int PUPIL_RADIUS = 5;
-const int GRAVITY = 40; // Intensité de pesanteur
-const int SLIME_HORIZONTAL_SPEED = 240;
-const int SLIME_JUMP_SPEED = 100;
+/* Taille du plateau en px */
+constexpr int WIDTH = 800;
+constexpr int HEIGHT = 500;
+
+/* Taille d'un slime en px */
+constexpr int SLIME_WIDTH = WIDTH/8;
+constexpr int SLIME_HEIGHT = SLIME_WIDTH/2;
+constexpr int PUPIL_RADIUS = 5;
+// Maximise la taille de l'œil avec les coordonnées choisies
+constexpr int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 2. ) ) /8);
+
+/* Taille du filet */
+constexpr int NET_WIDTH = WIDTH/100;
+constexpr int NET_HEIGHT = SLIME_HEIGHT*2;
+
+/* Taille de la balle */
+constexpr int BALL_RADIUS = 10;
+
+/* Paramètres physiques */
+constexpr float JUMP_DURATION = 1; // Durée du saut en s
+constexpr int JUMP_MAX_HEIGHT = HEIGHT/8;
+constexpr int SLIME_HORIZONTAL_SPEED = 240;
+// Calculés automatiquement
+constexpr int GRAVITY = 8*JUMP_MAX_HEIGHT/JUMP_DURATION/JUMP_DURATION;
+constexpr int SLIME_JUMP_SPEED = 4*JUMP_MAX_HEIGHT/JUMP_DURATION;
 
 #endif

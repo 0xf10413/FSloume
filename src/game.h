@@ -17,7 +17,7 @@ private:
   Input input;
   bool reinit; // Faut-il tout replacer ?
 
-  Slime bSlime;//, rSlime;
+  Slime bSlime, rSlime;
   //Net net;
   //Ball ball;
 
