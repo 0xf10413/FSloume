@@ -51,6 +51,12 @@ inline float abs2 (const sf::Vector2f &v)
   return v.x*v.x + v.y*v.y;
 }
 
+// Renvoie la norme2 de v
+inline float norm2 (const sf::Vector2f &v)
+{
+  return std::sqrt(v.x*v.x + v.y*v.y);
+}
+
 inline float pow2 (float a)
 {
   return a*a;
@@ -80,6 +86,7 @@ constexpr int SLIME_HEIGHT = SLIME_WIDTH/2;
 constexpr int PUPIL_RADIUS = 5;
 // Maximise la taille de l'œil avec les coordonnées choisies
 constexpr int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 2. ) ) /8);
+constexpr int EYE_RADIUS = (int)sqrt(EYE_RADIUS_SQUARED);
 
 /* Taille du filet */
 constexpr int NET_WIDTH = WIDTH/100;
@@ -92,6 +99,7 @@ constexpr int BALL_RADIUS = 10;
 constexpr float JUMP_DURATION = 1; // Durée du saut en s
 constexpr int JUMP_MAX_HEIGHT = HEIGHT/8;
 constexpr int SLIME_HORIZONTAL_SPEED = 240;
+constexpr float BALL_ELASTICITY = .9f; // Elasticité de la balle, entre 0 et 1
 // Calculés automatiquement
 constexpr int GRAVITY = 8*JUMP_MAX_HEIGHT/JUMP_DURATION/JUMP_DURATION;
 constexpr int SLIME_JUMP_SPEED = 4*JUMP_MAX_HEIGHT/JUMP_DURATION;

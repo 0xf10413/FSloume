@@ -6,6 +6,7 @@
 #include "unique_drawable.h"
 #include "eye.h"
 #include "input.h"
+#include "ball.h"
 
 class Slime : public MovingEntity
 {
@@ -15,13 +16,14 @@ private:
 	bool m_onGround;
   bool m_lost;
 	int m_victories;
-  sf::Rect<float> m_clamp;
+  sf::FloatRect m_clamp;
 
-  void updateSprite(); // Met à jour le sprite après changement du centre d'inertie
+  virtual void updateSprite() override;
   void jump();
 public:
 	Slime (bool isLeft);
-  void move(const Input &input, float dt);
+  void prepareMove(const Input &input); // Enregistre les vitesses demandées
+  void move(float dt, const Ball &b);
 
   /* Positionnement du centre d'inertie */
 	void setX (float nx);
@@ -30,7 +32,7 @@ public:
   /* Contraintes */
   void clampTo (const sf::FloatRect &rect);
 
-	//void updateEye (const sf::Vector2f &); // Reçoit le centre de la balle
+  virtual void draw (sf::RenderWindow &);
 };
 
 #endif

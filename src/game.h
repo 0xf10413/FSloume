@@ -4,25 +4,25 @@
 #include <SFML/Graphics.hpp>
 
 #include "slime.h"
-//#include "ball.h"
+#include "ball.h"
 //#include "net.h"
 #include "input.h"
 
 class FGame : public sf::RenderWindow
 {
 private:
-  sf::Event event;
-  sf::Clock clock;
-  sf::Font font;
-  Input input;
-  bool reinit; // Faut-il tout replacer ?
+  sf::Event m_event;
+  sf::Clock m_clock;
+  sf::Font m_font;
+  Input m_input;
+  bool m_reinit; // Faut-il tout replacer ?
 
-  Slime bSlime, rSlime;
+  Slime m_bSlime, m_rSlime;
+  Ball m_ball;
   //Net net;
-  //Ball ball;
 
   void collide (float); // Calcul des collisions et des vitesses
-  void moveAndUpdate ();  // Déplacements effectifs
+  //void moveAndUpdate ();  // Déplacements effectifs
 public:
   FGame ();
 

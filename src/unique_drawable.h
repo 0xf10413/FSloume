@@ -16,12 +16,6 @@ protected:
 public:
   UniqueDrawable();
   virtual ~UniqueDrawable() = default;
-  inline void setPosition(float x, float y)
-  { m_sprite.setPosition(x, y); }
-
-  inline sf::Vector2f getPosition()
-  { return m_sprite.getPosition(); }
-
   virtual void draw(sf::RenderWindow &);
 };
 
@@ -31,6 +25,7 @@ protected:
   /* Positions et vitesses du centre d'inertie */
   float m_x, m_y;
   float m_vx, m_vy;
+  virtual void updateSprite() = 0; // Mise à jour du sprite post déplacement
 public:
   MovingEntity();
   virtual ~MovingEntity()= default;

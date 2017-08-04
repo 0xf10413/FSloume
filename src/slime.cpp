@@ -39,6 +39,11 @@ Slime::Slime (bool alignLeft) :
 
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture (m_texture);
+
+  if (m_alignLeft)
+    m_eye.setPosition (m_x + SLIME_WIDTH/4, m_y);
+  else
+    m_eye.setPosition (m_x - SLIME_WIDTH/4, m_y);
 }
 
 void Slime::jump()
@@ -49,7 +54,7 @@ void Slime::jump()
   m_vy -= SLIME_JUMP_SPEED;
 }
 
-void Slime::move(const Input &input, float dt)
+void Slime::prepareMove(const Input &input)
 {
   /* Mise à jour des vitesses en fonction de l'input */
   if (m_alignLeft)
@@ -74,7 +79,10 @@ void Slime::move(const Input &input, float dt)
     else
       m_vx = 0;
   }
+}
 
+void Slime::move(float dt, const Ball &b)
+{
   /* Déplacement avec la vitesse */
   m_x += dt*m_vx;
   m_y += dt*m_vy;
@@ -97,6 +105,12 @@ void Slime::move(const Input &input, float dt)
     m_onGround = true;
   }
 
+  /* Déplacement de la pupille vers la balle */
+  if (m_alignLeft)
+    m_eye.setPosition (m_x + SLIME_WIDTH/4, m_y);
+  else
+    m_eye.setPosition (m_x - SLIME_WIDTH/4, m_y);
+  m_eye.lookAt (b.getPosition());
 
   /* Mise à jour finale du sprite */
   updateSprite();
@@ -142,8 +156,10 @@ void Slime::updateSprite()
       m_x - SLIME_WIDTH/2,
       m_y - SLIME_HEIGHT/2
       );
-  m_eye.setPosition (
-      m_x + 3*SLIME_WIDTH/4 - PUPIL_RADIUS,
-      m_y + SLIME_HEIGHT/2 - PUPIL_RADIUS
-      );
+}
+
+void Slime::draw (sf::RenderWindow &w)
+{
+  w.draw(m_sprite);
+  m_eye.draw(w);
 }
