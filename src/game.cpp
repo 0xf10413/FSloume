@@ -11,11 +11,11 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_font.loadFromFile ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
 
   m_bSlime.setX (WIDTH/4);
-  m_bSlime.setY (HEIGHT - SLIME_HEIGHT/2);
+  m_bSlime.setY (HEIGHT);
   m_bSlime.clampTo(sf::FloatRect(0, 0, WIDTH/2, HEIGHT));
 
   m_rSlime.setX (3*WIDTH/4);
-  m_rSlime.setY (HEIGHT - SLIME_HEIGHT/2);
+  m_rSlime.setY (HEIGHT);
   m_rSlime.clampTo(sf::FloatRect(WIDTH/2, 0, WIDTH/2, HEIGHT));
 
   m_ball.setX (WIDTH/4);
@@ -154,13 +154,22 @@ void FGame::collide (float dt)
   /* On suppose qu'entre t et t+dt, les objets ont un mouvement rectiligne uniforme */
   /* (décrit par leurs vitesses à l'instant t) */
   float t = collideTwoCircles(
-      m_bSlime.getPosition(), SLIME_WIDTH/2, m_bSlime.getSpeed(),
+      m_bSlime.getPosition(), SLIME_HEIGHT, m_bSlime.getSpeed(),
       m_ball.getPosition(), BALL_RADIUS, m_ball.getSpeed(), dt);
   if (t >= 0.) // Intersection !
   {
-    // cf. https://en.wikipedia.org/wiki/Elastic_collision
-    sf::Vector2f M = m_bSlime.getPosition() + t*m_bSlime.getSpeed();
-    sf::Vector2f Mp = m_ball.getPosition() + t*m_ball.getSpeed();
+    /* cf. https://en.wikipedia.org/wiki/Elastic_collision */
+    /* La masse du sloume est très élevée */
+    sf::Vector2f v1 = m_bSlime.getSpeed();
+    sf::Vector2f x1 = m_bSlime.getPosition() + t*v1;
+    sf::Vector2f v2 = m_ball.getSpeed();
+    sf::Vector2f x2 = m_ball.getPosition() + t*v2;
+
+    sf::Vector2f deltaX = x2 - x1;
+    sf::Vector2f v2p = v2 - 2*dotProduct(v2 - v1, deltaX)
+      *deltaX/abs2(deltaX);
+    v2p *= BALL_ELASTICITY*SLIME_ELASTICITY;
+    m_ball.setSpeed(v2p);
   }
 
   /* m_bSlime-balle */

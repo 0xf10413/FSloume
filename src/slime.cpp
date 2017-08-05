@@ -98,18 +98,18 @@ void Slime::move(float dt, const Ball &b)
   if (m_x - SLIME_WIDTH/2 < m_clamp.left)
     m_x = m_clamp.left + SLIME_WIDTH/2;
 
-  if (m_y + SLIME_HEIGHT/2 > m_clamp.top + m_clamp.height) // plus collision avec le sol
+  if (m_y > m_clamp.top + m_clamp.height) // plus collision avec le sol
   {
-    m_y = m_clamp.top + m_clamp.height - SLIME_HEIGHT/2;
+    m_y = m_clamp.top + m_clamp.height;
     m_vy = 0;
     m_onGround = true;
   }
 
   /* Déplacement de la pupille vers la balle */
   if (m_alignLeft)
-    m_eye.setPosition (m_x + SLIME_WIDTH/4, m_y);
+    m_eye.setPosition (m_x + SLIME_WIDTH/4, m_y - SLIME_HEIGHT/2);
   else
-    m_eye.setPosition (m_x - SLIME_WIDTH/4, m_y);
+    m_eye.setPosition (m_x - SLIME_WIDTH/4, m_y - SLIME_HEIGHT/2);
   m_eye.lookAt (b.getPosition());
 
   /* Mise à jour finale du sprite */
@@ -120,23 +120,6 @@ void Slime::clampTo(const sf::FloatRect &rect)
 {
   m_clamp = rect;
 }
-
-//void Slime::updateEye (const sf::Vector2f& b)
-//{
-//  sf::Vector2f newPos;
-//  // Globe oculaire, de coordonnées locales (3*w/4, h/2)
-//  if (left)
-//      newPos = getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2)
-//               + ((float)sqrt (eyeRadiusSquared)-pupilRadius) * (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2)))
-//               /(float)sqrt (abs2 (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2))))
-//               - sf::Vector2f (pupilRadius,pupilRadius);
-//  else
-//    newPos = getCenter()+sf::Vector2f (-SLIME_WIDTH/4,-SLIME_HEIGHT/2)
-//             + ((float)sqrt (eyeRadiusSquared)-pupilRadius) * (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2)))
-//             /(float)sqrt (abs2 (b- (getCenter() +sf::Vector2f (SLIME_WIDTH/4,-SLIME_HEIGHT/2))))
-//             - sf::Vector2f (pupilRadius,pupilRadius);
-//  eyeSprite.setPosition (newPos);
-//}
 
 void Slime::setX (float x)
 {
@@ -163,7 +146,7 @@ void Slime::updateSprite()
 {
   m_sprite.setPosition (
       m_x - SLIME_WIDTH/2,
-      m_y - SLIME_HEIGHT/2
+      m_y - SLIME_HEIGHT
       );
 }
 

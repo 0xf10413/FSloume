@@ -19,6 +19,7 @@ public:
 
   sf::Vector2f getPosition() const;
   sf::Vector2f getSpeed() const;
+  void setSpeed(const sf::Vector2f &);
 };
 
 #endif

@@ -102,6 +102,7 @@ constexpr float JUMP_DURATION = 1; // Durée du saut en s
 constexpr int JUMP_MAX_HEIGHT = HEIGHT/8;
 constexpr int SLIME_HORIZONTAL_SPEED = 240;
 constexpr float BALL_ELASTICITY = .9f; // Elasticité de la balle, entre 0 et 1
+constexpr float SLIME_ELASTICITY = .9f; // Elasticité du sloume, entre 0 et 1
 // Calculés automatiquement
 constexpr int GRAVITY = 8*JUMP_MAX_HEIGHT/JUMP_DURATION/JUMP_DURATION;
 constexpr int SLIME_JUMP_SPEED = 4*JUMP_MAX_HEIGHT/JUMP_DURATION;

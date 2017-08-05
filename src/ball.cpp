@@ -74,3 +74,9 @@ sf::Vector2f Ball::getSpeed() const
 {
   return {m_vx, m_vy};
 }
+
+void Ball::setSpeed(const sf::Vector2f &v)
+{
+  m_vx = v.x;
+  m_vy = v.y;
+}
