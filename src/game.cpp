@@ -153,6 +153,8 @@ void FGame::collide (float dt)
   /* On observe juste les collisions qui se produiraient si les objets se déplacaient */
   /* On suppose qu'entre t et t+dt, les objets ont un mouvement rectiligne uniforme */
   /* (décrit par leurs vitesses à l'instant t) */
+
+  /* bSlime et balle */
   float t = collideTwoCircles(
       m_bSlime.getPosition(), SLIME_HEIGHT, m_bSlime.getSpeed(),
       m_ball.getPosition(), BALL_RADIUS, m_ball.getSpeed(), dt);
@@ -172,31 +174,25 @@ void FGame::collide (float dt)
     m_ball.setSpeed(v2p);
   }
 
-  /* m_bSlime-balle */
-  //if ( abs2 ( m_bSlime.getCenter()-ball.getCenter() ) <= pow2 ( ballRadius+slimeWidth/2 ) )
-  //{
-  //  sf::Vector2f newV = symetric(sf::Vector2f(ball.vx, ball.vy), ball.getCenter()-m_bSlime.getCenter());
-  //  ball.vx = -newV.x+m_bSlime.vx;
-  //  ball.vy = -newV.y+m_bSlime.vy;
-  //  sf::Vector2f newPos = (slimeHeight+ballRadius)/(float)sqrt(abs2(ball.getCenter() - m_bSlime.getCenter()))
-  //    *(ball.getCenter() - m_bSlime.getCenter()) + bSlime.getCenter()-sf::Vector2f(ballRadius,ballRadius);
-  //  ball.setX(newPos.x);
-  //  ball.setY(newPos.y);
-  //}
+  /* rSlime et balle */
+  t = collideTwoCircles(
+      m_rSlime.getPosition(), SLIME_HEIGHT, m_rSlime.getSpeed(),
+      m_ball.getPosition(), BALL_RADIUS, m_ball.getSpeed(), dt);
+  if (t >= 0.) // Intersection !
+  {
+    sf::Vector2f v1 = m_rSlime.getSpeed();
+    sf::Vector2f x1 = m_rSlime.getPosition() + t*v1;
+    sf::Vector2f v2 = m_ball.getSpeed();
+    sf::Vector2f x2 = m_ball.getPosition() + t*v2;
 
-  //// m_bSlime-sol
-  //if ( m_bSlime.y  > height- slimeHeight )
-  //{
-  //  m_bSlime.onGround = true;
-  //  m_bSlime.vy = 0;
-  //  m_bSlime.setY ( height-slimeHeight );
-  //}
-  //// m_bSlime-mur gauche
-  //if ( m_bSlime.x < 0)
-  //{
-  //  m_bSlime.vx = 0;
-  //  m_bSlime.setX(0);
-  //}
+    sf::Vector2f deltaX = x2 - x1;
+    sf::Vector2f v2p = v2 - 2*dotProduct(v2 - v1, deltaX)
+      *deltaX/abs2(deltaX);
+    v2p *= BALL_ELASTICITY*SLIME_ELASTICITY;
+    m_ball.setSpeed(v2p);
+  }
+
+
   //// m_bSlime-filet
   //if (m_bSlime.getCenter().x+slimeWidth/2 > net.getPosition().x)
   //{
@@ -204,65 +200,7 @@ void FGame::collide (float dt)
   //  m_bSlime.setX(net.getPosition().x-slimeWidth);
   //}
 
-  ////m_rSlime-balle
-  //if ( abs2 ( m_rSlime.getCenter()-ball.getCenter() ) <= pow2 ( ballRadius+slimeWidth/2 ) )
-  //{
-  //  sf::Vector2f newV = symetric(sf::Vector2f(ball.vx, ball.vy), ball.getCenter()-m_rSlime.getCenter());
-  //  ball.vx = -newV.x+m_rSlime.vx;
-  //  ball.vy = -newV.y+m_rSlime.vy;
-  //  sf::Vector2f newPos = (slimeHeight+ballRadius)/(float)sqrt(abs2(ball.getCenter() - m_rSlime.getCenter()))
-  //    *(ball.getCenter() - m_rSlime.getCenter()) + rSlime.getCenter()-sf::Vector2f(ballRadius,ballRadius);
-  //  ball.setX(newPos.x);
-  //  ball.setY(newPos.y);
-  //}
-  //// m_rSlime-sol
-  //if ( m_rSlime.y  > height- slimeHeight )
-  //{
-  //  m_rSlime.onGround = true;
-  //  m_rSlime.vy = 0;
-  //  m_rSlime.setY ( height-slimeHeight );
-  //}
-  //// m_rSlime-mur droit
-  //if ( m_rSlime.x > width-slimeWidth)
-  //{
-  //  m_rSlime.vx = 0;
-  //  m_rSlime.setX(width-slimeWidth);
-  //}
-  //// m_rSlime-filet
-  //if (m_rSlime.x < net.getPosition().x+netWidth)
-  //{
-  //  m_rSlime.vx = 0;
-  //  m_rSlime.setX(net.getPosition().x+netWidth);
-  //}
 
-
-  // Balle-salle
-  //m_ball.collideRoom(sf::FloatRect(0, 0, WIDTH, HEIGHT));
-  //if (ball.x < 0)
-  //{
-  //  ball.setX(0);
-  //  ball.vx = -ball.vx;
-  //}
-  //else if (ball.x > width-2*ballRadius)
-  //{
-  //  ball.setX(width-2*ballRadius);
-  //  ball.vx = -ball.vx;
-  //}
-  //if (ball.y > height-2*ballRadius)
-  //{
-  //  ball.setY(height-2*ballRadius);
-  //  ball.vy = -ball.vy;
-  //  if (ball.x < net.getPosition().x-netWidth/2) // Qui a perdu ?
-  //    m_bSlime.lost = true;
-  //  else
-  //    m_rSlime.lost = true;
-  //  m_clock.restart ();
-  //}
-  //if (ball.y < 0)
-  //{
-  //  ball.setY(0);
-  //  ball.vy = -ball.vy;
-  //}
 
   //// Balle-filet
   //if (ball.getSprite().getPosition().y+ballRadius >= net.getPosition().y) // Collision horizontale ?
@@ -285,11 +223,5 @@ void FGame::collide (float dt)
   //  }
   //}
 
-  ///*** Gravité ***/
-  //ball.vy += gravity*eps;
-  //if ( !m_bSlime.onGround )
-  //  m_bSlime.vy += gravity*eps;
-  //if ( !m_rSlime.onGround )
-  //  m_rSlime.vy += gravity*eps;
 }
 
