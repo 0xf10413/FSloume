@@ -5,7 +5,7 @@
 
 #include "slime.h"
 #include "ball.h"
-//#include "net.h"
+#include "net.h"
 #include "input.h"
 
 class FGame : public sf::RenderWindow
@@ -19,7 +19,7 @@ private:
 
   Slime m_bSlime, m_rSlime;
   Ball m_ball;
-  //Net net;
+  Net m_net;
 
   void collide (float); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs

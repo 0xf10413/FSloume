@@ -4,7 +4,7 @@ Ball::Ball() :
   MovingEntity(),
   m_clamp()
 {
-  m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Yellow);
+  m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Red);
   makeADisk(m_image);
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture(m_texture);
@@ -36,21 +36,21 @@ void Ball::move (float dt)
   /* Perte de vitesse avec la gravité */
   m_vy += GRAVITY*dt;
 
-  if (m_x < m_clamp.left + BALL_RADIUS/2)
+  if (m_x < m_clamp.left + BALL_RADIUS)
   {
-    m_x = m_clamp.left + BALL_RADIUS/2;
+    m_x = m_clamp.left + BALL_RADIUS;
     m_vx = -m_vx*BALL_ELASTICITY;
   }
 
-  if (m_x > m_clamp.left + m_clamp.width - BALL_RADIUS/2)
+  if (m_x > m_clamp.left + m_clamp.width - BALL_RADIUS)
   {
-    m_x = m_clamp.left + m_clamp.width - BALL_RADIUS/2;
+    m_x = m_clamp.left + m_clamp.width - BALL_RADIUS;
     m_vx = -m_vx*BALL_ELASTICITY;
   }
 
-  if (m_y > m_clamp.top + m_clamp.height - BALL_RADIUS/2)
+  if (m_y > m_clamp.top + m_clamp.height - BALL_RADIUS)
   {
-    m_y = m_clamp.top + m_clamp.height - BALL_RADIUS/2;
+    m_y = m_clamp.top + m_clamp.height - BALL_RADIUS;
     m_vy = -m_vy*BALL_ELASTICITY;
   }
 

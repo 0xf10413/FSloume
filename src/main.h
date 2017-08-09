@@ -47,6 +47,11 @@ inline sf::Vector2f operator* (float r, const sf::Vector2f &l)
   return t;
 }
 
+inline float det(sf::Vector2f l, sf::Vector2f r)
+{
+  return l.x*r.y - l.y*r.x;
+}
+
 // Renvoie la norme2 au carré de v
 inline float abs2 (const sf::Vector2f &v)
 {
@@ -91,11 +96,11 @@ constexpr int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 
 constexpr int EYE_RADIUS = (int)sqrt(EYE_RADIUS_SQUARED);
 
 /* Taille du filet */
-constexpr int NET_WIDTH = WIDTH/100;
+constexpr int NET_WIDTH = WIDTH/4;
 constexpr int NET_HEIGHT = SLIME_HEIGHT*2;
 
 /* Taille de la balle */
-constexpr int BALL_RADIUS = 10;
+constexpr int BALL_RADIUS = 20;
 
 /* Paramètres physiques */
 constexpr float JUMP_DURATION = 1; // Durée du saut en s
