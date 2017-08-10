@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 // Rend invisible les pixels à l'extérieur d'un disque aussi gros
 // que possible dans l'image rectangulaire

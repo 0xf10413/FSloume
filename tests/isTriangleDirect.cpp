@@ -2,72 +2,123 @@
 #include "../game/utils.h"
 #include <limits>
 
+typedef sf::Vector2f Pt;
+typedef sf::Vector2f Triangle[3];
+
 TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
 {
-  sf::Vector2f A, B, C;
+  Pt A, B, C;
   SECTION( "Triangles ordinaires")
   {
-    SECTION( "Triangle rectangle simple" )
+    SECTION( "Triangles rectangles simples" )
     {
-      A = sf::Vector2f(0, 0);
-      B = sf::Vector2f(1, 0);
-      C = sf::Vector2f(1, 1);
+      Triangle triangles[] = {
+        {{0,0}, {1,0}, {1,1}},
+        {{0,0}, {1,1}, {0,1}},
+        {{0,-1}, {0,0}, {-1,0}},
+      };
 
-      CHECK( isTriangleDirect(A, B, C) );
-      CHECK( isTriangleDirect(B, C, A) );
-      CHECK( isTriangleDirect(C, A, B) );
+      for (const Triangle &t : triangles)
+      {
+        A = t[0];
+        B = t[1];
+        C = t[2];
+        INFO("A : " << A.x << ", " << A.y);
+        INFO("B : " << B.x << ", " << B.y);
+        INFO("C : " << C.x << ", " << C.y);
 
-      CHECK_FALSE( isTriangleDirect(A, C, B) );
-      CHECK_FALSE( isTriangleDirect(C, B, A) );
-      CHECK_FALSE( isTriangleDirect(B, A, C) );
+        CHECK( isTriangleDirect(A, B, C) );
+        CHECK( isTriangleDirect(B, C, A) );
+        CHECK( isTriangleDirect(C, A, B) );
+
+        CHECK_FALSE( isTriangleDirect(A, C, B) );
+        CHECK_FALSE( isTriangleDirect(C, B, A) );
+        CHECK_FALSE( isTriangleDirect(B, A, C) );
+      }
     }
 
-    SECTION( "Triangle allongé" )
+    SECTION( "Triangles allongés" )
     {
-      A = sf::Vector2f(0, 0);
-      B = sf::Vector2f(1, 0);
-      C = sf::Vector2f(2, 1);
+      Triangle triangles[] = {
+        {{0,0}, {1,0}, {2,1}},
+        {{0,0}, {5,-1}, {10,5}},
+        {{-1,-1}, {2,-3}, {0,0}},
+      };
 
-      CHECK( isTriangleDirect(A, B, C) );
-      CHECK( isTriangleDirect(B, C, A) );
-      CHECK( isTriangleDirect(C, A, B) );
+      for (const Triangle &t : triangles)
+      {
+        A = t[0];
+        B = t[1];
+        C = t[2];
+        INFO("A : " << A.x << ", " << A.y);
+        INFO("B : " << B.x << ", " << B.y);
+        INFO("C : " << C.x << ", " << C.y);
 
-      CHECK_FALSE( isTriangleDirect(A, C, B) );
-      CHECK_FALSE( isTriangleDirect(C, B, A) );
-      CHECK_FALSE( isTriangleDirect(B, A, C) );
+        CHECK( isTriangleDirect(A, B, C) );
+        CHECK( isTriangleDirect(B, C, A) );
+        CHECK( isTriangleDirect(C, A, B) );
+
+        CHECK_FALSE( isTriangleDirect(A, C, B) );
+        CHECK_FALSE( isTriangleDirect(C, B, A) );
+        CHECK_FALSE( isTriangleDirect(B, A, C) );
+      }
     }
 
-    SECTION( "Triangle isocèle" )
+    SECTION( "Triangles isocèles" )
     {
-      A = sf::Vector2f(0, 0);
-      B = sf::Vector2f(1, 0);
-      C = sf::Vector2f(.5, .5);
+      Triangle triangles[] = {
+        {{0,0}, {1,0}, {.5,.5}},
+        {{-10,0}, {10,0}, {0,5}},
+        {{-1,-5}, {1,-4}, {-1,-3}},
+      };
 
-      CHECK( isTriangleDirect(A, B, C) );
-      CHECK( isTriangleDirect(B, C, A) );
-      CHECK( isTriangleDirect(C, A, B) );
+      for (const Triangle &t : triangles)
+      {
+        A = t[0];
+        B = t[1];
+        C = t[2];
+        INFO("A : " << A.x << ", " << A.y);
+        INFO("B : " << B.x << ", " << B.y);
+        INFO("C : " << C.x << ", " << C.y);
 
-      CHECK_FALSE( isTriangleDirect(A, C, B) );
-      CHECK_FALSE( isTriangleDirect(C, B, A) );
-      CHECK_FALSE( isTriangleDirect(B, A, C) );
+        CHECK( isTriangleDirect(A, B, C) );
+        CHECK( isTriangleDirect(B, C, A) );
+        CHECK( isTriangleDirect(C, A, B) );
+
+        CHECK_FALSE( isTriangleDirect(A, C, B) );
+        CHECK_FALSE( isTriangleDirect(C, B, A) );
+        CHECK_FALSE( isTriangleDirect(B, A, C) );
+      }
     }
   }
 
   SECTION( "Triangles spéciaux" )
   {
-    SECTION( "Triangle aplati" )
+    SECTION( "Triangles aplatis" )
     {
-      A = sf::Vector2f(0, 0);
-      B = sf::Vector2f(1, 0);
-      C = sf::Vector2f(2, 0);
+      Triangle triangles[] = {
+        {{0,0}, {1,0}, {2,0}},
+        {{0,0}, {1,1}, {2,2}},
+        {{-1,-1}, {-1,-4}, {-1,-6}},
+      };
 
-      CHECK( isTriangleDirect(A, B, C) );
-      CHECK( isTriangleDirect(B, C, A) );
-      CHECK( isTriangleDirect(C, A, B) );
+      for (const Triangle &t : triangles)
+      {
+        A = t[0];
+        B = t[1];
+        C = t[2];
+        INFO("A : " << A.x << ", " << A.y);
+        INFO("B : " << B.x << ", " << B.y);
+        INFO("C : " << C.x << ", " << C.y);
 
-      CHECK_FALSE( isTriangleDirect(A, C, B) );
-      CHECK_FALSE( isTriangleDirect(C, B, A) );
-      CHECK_FALSE( isTriangleDirect(B, A, C) );
+        CHECK( isTriangleDirect(A, B, C) );
+        CHECK( isTriangleDirect(B, C, A) );
+        CHECK( isTriangleDirect(C, A, B) );
+
+        CHECK_FALSE( isTriangleDirect(A, C, B) );
+        CHECK_FALSE( isTriangleDirect(C, B, A) );
+        CHECK_FALSE( isTriangleDirect(B, A, C) );
+      }
     }
   }
 
@@ -76,9 +127,12 @@ TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
     float inf = std::numeric_limits<float>::infinity();
     SECTION( "Triangle avec un sommet infini" )
     {
-      A = sf::Vector2f(0, 0);
-      B = sf::Vector2f(1, 0);
-      C = sf::Vector2f(0, +inf);
+      A = Pt(0, 0);
+      B = Pt(1, 0);
+      C = Pt(0, +inf);
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
 
       CHECK( isTriangleDirect(A, B, C) );
       CHECK( isTriangleDirect(B, C, A) );
@@ -91,9 +145,12 @@ TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
 
     SECTION( "Triangle avec deux sommets infinis" )
     {
-      A = sf::Vector2f(0, 0);
-      B = sf::Vector2f(1, -inf);
-      C = sf::Vector2f(1, +inf);
+      A = Pt(0, 0);
+      B = Pt(1, -inf);
+      C = Pt(1, +inf);
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
 
       CHECK( isTriangleDirect(A, B, C) );
       CHECK( isTriangleDirect(B, C, A) );
@@ -106,9 +163,12 @@ TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
 
     SECTION( "Triangle avec trois sommets infinis" )
     {
-      A = sf::Vector2f(-inf, -inf);
-      B = sf::Vector2f(+inf, -inf);
-      C = sf::Vector2f(+inf, +inf);
+      A = Pt(-inf, -inf);
+      B = Pt(+inf, -inf);
+      C = Pt(+inf, +inf);
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
 
       CHECK( isTriangleDirect(A, B, C) );
       CHECK( isTriangleDirect(B, C, A) );
@@ -125,9 +185,12 @@ TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
     float nan = std::numeric_limits<float>::quiet_NaN();
     SECTION( "Triangle avec un sommet indéfini" )
     {
-      A = sf::Vector2f(0, nan);
-      B = sf::Vector2f(1, 0);
-      C = sf::Vector2f(1, 1);
+      A = Pt(0, nan);
+      B = Pt(1, 0);
+      C = Pt(1, 1);
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
 
       CHECK_FALSE ( isTriangleDirect(A, B, C) );
       CHECK_FALSE ( isTriangleDirect(B, C, A) );
@@ -140,9 +203,12 @@ TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
 
     SECTION( "Triangle avec deux sommets indéfinis" )
     {
-      A = sf::Vector2f(0, nan);
-      B = sf::Vector2f(1, nan);
-      C = sf::Vector2f(1, 1);
+      A = Pt(0, nan);
+      B = Pt(1, nan);
+      C = Pt(1, 1);
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
 
       CHECK_FALSE ( isTriangleDirect(A, B, C) );
       CHECK_FALSE ( isTriangleDirect(B, C, A) );
@@ -155,9 +221,12 @@ TEST_CASE( "Triangles directs/indirects", "[isTriangleDirect]")
 
     SECTION( "Triangle avec trois sommets indéfinis" )
     {
-      A = sf::Vector2f(0, nan);
-      B = sf::Vector2f(1, nan);
-      C = sf::Vector2f(1, nan);
+      A = Pt(0, nan);
+      B = Pt(1, nan);
+      C = Pt(1, nan);
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
 
       CHECK_FALSE ( isTriangleDirect(A, B, C) );
       CHECK_FALSE ( isTriangleDirect(B, C, A) );

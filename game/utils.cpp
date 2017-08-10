@@ -168,3 +168,8 @@ sf::Vector2f collideWithFixRectangle (sf::FloatRect rect,
 
   return {0,0};
 }
+
+std::ostream &operator<< (std::ostream &out, const sf::Vector2f &v)
+{
+  return out << "(" << v.x << ", " << v.y << ")";
+}
