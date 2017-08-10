@@ -1,5 +1,5 @@
 #include "game.h"
-#include "main.h"
+#include "config.h"
 #include "utils.h"
 #include <iostream>
 #include <cassert>
@@ -35,45 +35,6 @@ int FGame::mainLoop ()
   while ( isOpen() )
   {
     float eps = m_clock.restart().asSeconds();
-    // Réinitialisation de la partie
-    if (m_reinit)
-    {
-      //m_bSlime.setX ( width/4-slimeWidth/2 );
-      //m_bSlime.setY ( height-slimeHeight );
-
-      //m_rSlime.setX ( 3*width/4-slimeWidth/2 );
-      //m_rSlime.setY ( height-slimeHeight );
-
-      //if (m_rSlime.lost)
-      //  ball.setX ( m_bSlime.x+slimeWidth/2-ballRadius );
-      //else
-      //  ball.setX ( m_rSlime.x+slimeWidth/2-ballRadius );
-
-      //ball.setY ( height/2 );
-
-      //ball.vx = ball.vy = 0;
-      //m_bSlime.vx = bSlime.vy = 0;
-      //m_rSlime.vx = rSlime.vy = 0;
-
-      //m_reinit = m_bSlime.lost = m_rSlime.lost = false;
-    }
-
-    //if (m_bSlime.lost || m_rSlime.lost) // Quelqu'un a perdu ?
-    //{
-    //  sf::Text text ("Perdu !", font);
-    //  if (m_bSlime.lost)
-    //    text.setFillColor (sf::Color::Blue);
-    //  else
-    //    text.setFillColor (sf::Color::Red);
-
-    //  draw (text);
-    //  display ();
-    //  if (m_clock.getElapsedTime().asSeconds() < 1./60.)
-    //    continue;
-
-    //  m_reinit = true;
-    //  continue;
-    //}
 
     while ( pollEvent ( m_event ) )
     {

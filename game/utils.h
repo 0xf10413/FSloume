@@ -13,4 +13,6 @@ sf::Vector2f collideWithFixRectangle (sf::FloatRect rect,
 bool collideTwoSegments(sf::Vector2f A, sf::Vector2f B,
     sf::Vector2f C, sf::Vector2f D);
 
+bool isTriangleDirect (sf::Vector2f A, sf::Vector2f B, sf::Vector2f C);
+
 #endif /* !UTILS_H */

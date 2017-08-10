@@ -2,7 +2,7 @@
 # Variables to set
 ##################
 # Output file name and directory
-BIN=a.out
+BIN=sloume
 BUILD_DIR=./build
 
 # C/C++ compiler (gcc/clang recommended)
@@ -12,32 +12,54 @@ CXX=g++
 # C/C++ compilation flags
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
-			 -Wconversion
+			 -Wconversion -fPIC
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
-				 -Wconversion
+				 -Wconversion -fPIC
 
 # Linker flags
 LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
 
 # Source files (adjust if needed)
-SRC_CXX=$(wildcard src/*.cpp)
-SRC_C=$(wildcard src/*.c)
+SRC_CXX_GAME=$(wildcard game/*.cpp)
+SRC_C_GAME=$(wildcard game/*.c)
+SRC_CXX_TEST=$(wildcard tests/*.cpp)
+SRC_C_TEST=$(wildcard tests/*.c)
+SRC_BIN = main.cpp
 
 ###
 # Automatic variables
 #####################
 
-# Object files
-OBJ_CXX=$(SRC_CXX:%.cpp=$(BUILD_DIR)/%.o)
-OBJ_C=$(SRC_C:%.c=$(BUILD_DIR)/%.o)
-OBJ=$(OBJ_C)
-OBJ+=$(OBJ_CXX)
+# Test binary
+BIN_TEST=$(BIN)_test
 
-# Dependencies
-DEPS_CXX=$(OBJ_CXX:%.o=%.d)
-DEPS_C=$(OBJ_C:%.o=%.d)
-DEPS=$(DEPS_C)
-DEPS+=$(DEPS_CXX)
+# Game lib
+LIB_GAME=$(BIN)_game
+LIB_GAME_FULL_NAME=lib$(LIB_GAME).so
+
+# Object files for game
+OBJ_CXX_GAME=$(SRC_CXX_GAME:%.cpp=$(BUILD_DIR)/%.o)
+OBJ_C_GAME=$(SRC_C_GAME:%.c=$(BUILD_DIR)/%.o)
+OBJ_GAME=$(OBJ_C_GAME)
+OBJ_GAME+=$(OBJ_CXX_GAME)
+
+# Object files for tests
+OBJ_CXX_TEST=$(SRC_CXX_TEST:%.cpp=$(BUILD_DIR)/%.o)
+OBJ_C_TEST=$(SRC_C_TEST:%.c=$(BUILD_DIR)/%.o)
+OBJ_TEST=$(OBJ_C_TEST)
+OBJ_TEST+=$(OBJ_CXX_TEST)
+OBJ_TEST+=$(OBJ_GAME)
+
+# Dependencies for game
+DEPS_CXX_GAME=$(OBJ_CXX_GAME:%.o=%.d)
+DEPS_C_GAME=$(OBJ_C_GAME:%.o=%.d)
+DEPS_GAME=$(DEPS_C_GAME)
+DEPS_GAME+=$(DEPS_CXX_GAME)
+
+DEPS_CXX_TEST=$(OBJ_CXX_TEST:%.o=%.d)
+DEPS_C_TEST=$(OBJ_C_TEST:%.o=%.d)
+DEPS_TEST=$(DEPS_C_TEST)
+DEPS_TEST+=$(DEPS_CXX_TEST)
 
 ###
 # Rules
@@ -47,20 +69,33 @@ DEPS+=$(DEPS_CXX)
 all: check_source_exists $(BIN)
 
 check_source_exists:
-ifeq ($(SRC_CXX)$(SRC_C),)
+ifeq ($(SRC_CXX_GAME)$(SRC_C_GAME),)
 	$(error "No source file. Build failed !")
 endif
 
 $(BIN): $(BUILD_DIR)/$(BIN)
 
+$(BIN_TEST): $(BUILD_DIR)/$(BIN_TEST)
+
+$(LIB_GAME): $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
+
 # Final linker call
-$(BUILD_DIR)/$(BIN): $(OBJ)
+$(BUILD_DIR)/$(BIN): $(SRC_BIN) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 	@mkdir -pv $(@D)
-	$(CXX) -o $@ $^ $(LDFLAGS)
+	$(CXX) -o $@ $(SRC_BIN) -L$(BUILD_DIR) -l$(LIB_GAME) $(LDFLAGS)
+
+$(BUILD_DIR)/$(LIB_GAME_FULL_NAME): $(OBJ_GAME)
+	@mkdir -pv $(@D)
+	$(CXX) -shared -o $(BUILD_DIR)/$(LIB_GAME_FULL_NAME) $^ $(LDFLAGS)
+
+$(BUILD_DIR)/$(BIN_TEST): $(OBJ_TEST) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
+	@mkdir -pv $(@D)
+	$(CXX) -o $@ $(OBJ_TEST) -L$(BUILD_DIR) -l$(LIB_GAME) $(LDFLAGS)
 
 
 # Include dependencies
 -include $(DEPS)
+-include $(DEPS_TEST)
 
 
 # General build target
@@ -76,14 +111,18 @@ $(BUILD_DIR)/%.o: %.c
 # Clean-up targets
 .PHONY: clean mrproper launch debug
 clean:
-	-rm -f $(BUILD_DIR)/$(BIN) $(OBJ) $(DEPS)
+	-rm -f $(BUILD_DIR)/$(BIN) $(BUILD_DIR)/$(BIN_TEST) \
+		$(BUILD_DIR)/$(LIB_GAME_FULL_NAME) $(OBJ) $(DEPS)
 
 mrproper: clean
 	-rm -rf $(BUILD_DIR)
 
 # Launch targets
 launch: all
-	-$(BUILD_DIR)/$(BIN) $(BIN_ARGS)
+	-LD_LIBRARY_PATH=$(BUILD_DIR) $(BUILD_DIR)/$(BIN) $(BIN_ARGS)
+
+test: $(BIN_TEST)
+	-LD_LIBRARY_PATH=$(BUILD_DIR) $(BUILD_DIR)/$(BIN_TEST) $(BIN_ARGS)
 
 debug: all
-	-cgdb --quiet --args $(BUILD_DIR)/$(BIN) $(BIN_ARGS)
+	-LD_LIBRARY_PATH=$(BUILD_DIR) cgdb --quiet --args $(BUILD_DIR)/$(BIN) $(BIN_ARGS)

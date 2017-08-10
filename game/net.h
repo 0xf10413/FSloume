@@ -2,7 +2,7 @@
 #define F_NET_H
 
 #include <SFML/Graphics.hpp>
-#include "main.h"
+#include "config.h"
 #include "unique_drawable.h"
 
 class Net : public MovingEntity

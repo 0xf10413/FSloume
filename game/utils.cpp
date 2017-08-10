@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "main.h"
+#include "config.h"
 #include <cmath>
 #include <iostream>
 

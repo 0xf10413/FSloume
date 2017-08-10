@@ -2,7 +2,7 @@
 #define F_SLIME_H
 
 #include <SFML/Graphics.hpp>
-#include "main.h"
+#include "config.h"
 #include "unique_drawable.h"
 #include "eye.h"
 #include "input.h"
@@ -34,7 +34,7 @@ public:
   /* Contraintes */
   void clampTo (const sf::FloatRect &rect);
 
-  virtual void draw (sf::RenderWindow &);
+  virtual void draw (sf::RenderWindow &) override;
 };
 
 #endif

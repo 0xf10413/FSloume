@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "unique_drawable.h"
-#include "main.h"
+#include "config.h"
 
 class Ball : public MovingEntity
 {
