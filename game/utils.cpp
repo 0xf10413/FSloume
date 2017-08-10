@@ -42,11 +42,47 @@ float collideTwoCircles (sf::Vector2f M, float R, sf::Vector2f V,
   return std::max(0.f, t_min);
 }
 
+bool operator <= (sf::Vector2f A, sf::Vector2f B)
+{
+  return (A.x < B.x) || (A.x == B.x && A.y < B.y);
+}
+
+bool isinf (sf::Vector2f A)
+{
+  return std::isinf(A.x) || std::isinf(A.y);
+}
+
+bool isNaN (sf::Vector2f A)
+{
+  return std::isnan(A.x) || std::isnan(A.y);
+}
+
 /* Renvoie true ssi ABC est un triangle direct */
 bool isTriangleDirect (sf::Vector2f A, sf::Vector2f B, sf::Vector2f C)
 {
-  /* ABC est direct ssi l'angle orienté AB,AC est positif */
-    return (B.x-A.x)*(C.y-A.y) - (B.y-A.y)*(C.x-A.x) >= 0;
+  /* Si un des points est indéfini, le triangle l'est aussi
+   * Le triangle n'est donc pas direct (mais pas indirect non plus)
+   */
+  if (isNaN(A) || isNaN(B) || isNaN(C))
+    return false;
+
+  /* Pour les triangles infinis, c'est délicat
+   * Pour l'instant, on fait pareil qu'avec les triangles indéfinis */
+  if (isinf(A) || isinf(B) || isinf(C))
+    return false;
+
+  /* ABC non plat est direct ssi l'angle orienté AB,AC est positif */
+  /* s'il est plat, il est direct ssi les points sont rangés
+   * dans le même ordre */
+  float AB_AC = det(B-A, C-A);
+
+  if (AB_AC > 0)
+    return true;
+  if (AB_AC < 0)
+    return false;
+  if (AB_AC == 0)
+    return (A <= B && B <= C) || (B <= C && C <= A) || (C <= A && A <= B);
+  return false;
 }
 
 /* Renvoie t tel que A + tAB soit le pt d'intersection des deux

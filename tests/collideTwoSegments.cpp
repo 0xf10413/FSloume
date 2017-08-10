@@ -75,5 +75,27 @@ TEST_CASE( "Test de collision entre segments", "[collideTwoSegments]")
       CHECK( collideTwoSegments(A, B, C, D));
     }
   }
+
+  SECTION ("Segments non-sécants quelconques")
+  {
+    SegPair segPairs[] = {
+      {Pt(0, 0), Pt(1, 4), Pt(5, -1), Pt(-1,10)},
+      {Pt(-10, 1), Pt(5, -10), Pt(-5, 1), Pt(3,100)},
+    };
+
+    for (const SegPair &s : segPairs)
+    {
+      A = s[0];
+      B = s[1];
+      C = s[2];
+      D = s[3];
+      INFO("A : " << A.x << ", " << A.y);
+      INFO("B : " << B.x << ", " << B.y);
+      INFO("C : " << C.x << ", " << C.y);
+      INFO("D : " << D.x << ", " << D.y);
+
+      CHECK_FALSE( collideTwoSegments(A, B, C, D));
+    }
+  }
 }
 

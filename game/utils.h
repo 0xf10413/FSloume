@@ -18,4 +18,6 @@ bool isTriangleDirect (sf::Vector2f A, sf::Vector2f B, sf::Vector2f C);
 
 std::ostream &operator<< (std::ostream &out, const sf::Vector2f& v);
 
+bool operator <= (sf::Vector2f A, sf::Vector2f B);
+
 #endif /* !UTILS_H */
