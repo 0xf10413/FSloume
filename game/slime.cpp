@@ -150,7 +150,7 @@ void Slime::updateSprite()
       );
 }
 
-void Slime::draw (sf::RenderWindow &w)
+void Slime::draw (sf::RenderWindow &w) const
 {
   w.draw(m_sprite);
   m_eye.draw(w);

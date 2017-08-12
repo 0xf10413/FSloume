@@ -16,7 +16,7 @@ protected:
 public:
   UniqueDrawable();
   virtual ~UniqueDrawable() = default;
-  virtual void draw(sf::RenderWindow &);
+  virtual void draw(sf::RenderWindow &) const;
 };
 
 class MovingEntity : public UniqueDrawable

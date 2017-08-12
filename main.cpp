@@ -10,6 +10,8 @@
 /*
  * Une IA
  * Un menu d'accueil
+ * Des couleurs par défaut pour les items
+ * Un gestionnaire de ressources
  * Une gestion des scores
  * Des ralentisseurs/objets ?
  */

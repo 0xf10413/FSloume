@@ -34,7 +34,7 @@ public:
   /* Contraintes */
   void clampTo (const sf::FloatRect &rect);
 
-  virtual void draw (sf::RenderWindow &) override;
+  virtual void draw (sf::RenderWindow &) const override;
 };
 
 #endif

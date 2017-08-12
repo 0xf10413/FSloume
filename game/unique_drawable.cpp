@@ -5,7 +5,7 @@ UniqueDrawable::UniqueDrawable() :
 {
 }
 
-void UniqueDrawable::draw(sf::RenderWindow &w)
+void UniqueDrawable::draw(sf::RenderWindow &w) const
 {
   w.draw(m_sprite);
 }

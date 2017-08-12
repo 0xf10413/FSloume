@@ -12,9 +12,10 @@ CXX=g++
 # C/C++ compilation flags
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
-			 -Wconversion -fPIC
+			 -Wconversion -Wfloat-equal -Wundef -Wpointer-arithm -Wcast-align \
+			 -Wunreachable-code -fPIC
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
-				 -Wconversion -fPIC
+				 -Wunreachable-code -Wconversion -fPIC
 
 # Linker flags
 LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
@@ -112,7 +113,8 @@ $(BUILD_DIR)/%.o: %.c
 .PHONY: clean mrproper launch debug
 clean:
 	-rm -f $(BUILD_DIR)/$(BIN) $(BUILD_DIR)/$(BIN_TEST) \
-		$(BUILD_DIR)/$(LIB_GAME_FULL_NAME) $(OBJ) $(DEPS)
+		$(BUILD_DIR)/$(LIB_GAME_FULL_NAME) $(OBJ_GAME) $(OBJ_TEST) \
+	 	$(DEPS_GAME) $(DEPS_TEST)
 
 mrproper: clean
 	-rm -rf $(BUILD_DIR)

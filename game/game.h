@@ -7,6 +7,7 @@
 #include "ball.h"
 #include "net.h"
 #include "input.h"
+#include "menu.h"
 
 class FGame : public sf::RenderWindow
 {
@@ -21,10 +22,14 @@ private:
   Ball m_ball;
   Net m_net;
 
+  Menu *m_menu;
+
   void collide (float); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs
 public:
   FGame ();
+  FGame& operator=(const FGame &) = delete;
+  FGame(const FGame &) = delete;
 
   int mainLoop ();
 };

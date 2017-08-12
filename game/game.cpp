@@ -2,12 +2,12 @@
 #include "config.h"
 #include "utils.h"
 #include <iostream>
-#include <cassert>
 
 FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_event(), m_clock(), m_font(), m_input(),
   m_reinit(false),
-  m_bSlime(true), m_rSlime(false), m_ball(), m_net()
+  m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
+  m_menu(nullptr)
 {
   setFramerateLimit (60);
   m_font.loadFromFile ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
@@ -26,11 +26,21 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
 
   m_net.setPosition (WIDTH/2, HEIGHT - NET_HEIGHT/2);
 
+  m_menu = new Menu(m_font);
+  m_menu->addButton ("!!!", sf::Color::Green);
+  m_menu->addButton ("Hello", sf::Color::Green);
+  m_menu->addButton ("World", sf::Color::Green);
+  m_menu->addButton ("!", sf::Color::Green);
+  m_menu->setPosition (WIDTH/2, HEIGHT/2);
+
   m_reinit = false;
 }
 
 int FGame::mainLoop ()
 {
+  /* Réinitialiser l'horloge pour éviter de compter le temps de démarrage */
+  m_clock.restart();
+
   // Boucle principale
   while ( isOpen() )
   {
@@ -46,6 +56,12 @@ int FGame::mainLoop ()
       {
         if ( m_event.key.code == sf::Keyboard::Escape )
           close();
+      }
+      if ( m_event.type == sf::Event::MouseButtonPressed)
+      {
+        std::string click = m_menu->wasIClicked(m_event);
+        if (!click.empty())
+          std::cout << "Click : " << click << std::endl;
       }
     }
 
@@ -65,6 +81,7 @@ int FGame::mainLoop ()
     m_rSlime.draw(*this);
     m_net.draw(*this);
     m_ball.draw(*this);
+    m_menu->draw(*this);
     display();
   }
   return EXIT_SUCCESS;
