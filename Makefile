@@ -95,7 +95,7 @@ $(BUILD_DIR)/$(BIN_TEST): $(OBJ_TEST) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 
 
 # Include dependencies
--include $(DEPS)
+-include $(DEPS_GAME)
 -include $(DEPS_TEST)
 
 
