@@ -31,13 +31,13 @@ void Menu::setPosition(float x, float y)
 }
 
 template<typename T>
-T sum(const std::vector<T> &v, int a, int b)
+T sum(const std::vector<T> &v, size_t a, size_t b)
 {
   if (b <= a)
     return T();
-  if ((unsigned int)a >= v.size())
+  if (a > v.size())
     return T();
-  b = std::min(v.size()-1, (unsigned int)b);
+  b = std::min(v.size()-1, b);
   return std::accumulate(v.begin()+a, v.begin()+b, T());
 }
 
