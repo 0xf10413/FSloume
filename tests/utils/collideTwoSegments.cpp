@@ -1,6 +1,5 @@
 #include <catch.hpp>
-#include "../game/utils.h"
-#include "../game/config.h"
+#include "../../game/utils.h"
 
 typedef sf::Vector2f Pt;
 typedef sf::Vector2f SegPair[4];

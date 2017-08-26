@@ -1,6 +1,6 @@
 #include <catch.hpp>
 #include <SFML/System/Vector2.hpp>
-#include "../game/config.h"
+#include "../../game/utils.h"
 #include <limits>
 
 TEST_CASE( "Opérations supplémentaires sur sf::Vector2f", "[operators_sf_vector2f]")

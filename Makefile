@@ -23,8 +23,8 @@ LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
 # Source files (adjust if needed)
 SRC_CXX_GAME=$(wildcard game/*.cpp)
 SRC_C_GAME=$(wildcard game/*.c)
-SRC_CXX_TEST=$(wildcard tests/*.cpp)
-SRC_C_TEST=$(wildcard tests/*.c)
+SRC_CXX_TEST=$(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp)
+SRC_C_TEST=$(wildcard tests/*.c) $(wildcard tests/*/*.c)
 SRC_BIN = main.cpp
 
 ###

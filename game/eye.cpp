@@ -1,5 +1,6 @@
 #include "eye.h"
 #include "config.h"
+#include "utils.h"
 
 Eye::Eye(bool alignLeft)
 {

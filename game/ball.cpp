@@ -1,4 +1,5 @@
 #include "ball.h"
+#include "utils.h"
 
 Ball::Ball() :
   MovingEntity(),
