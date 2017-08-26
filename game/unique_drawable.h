@@ -29,6 +29,7 @@ protected:
 public:
   MovingEntity();
   virtual ~MovingEntity()= default;
+  virtual void reinit(); // Réinitialise la position et la vitesse
 };
 
 #endif /* !UNIQUE_DRAWABLE_H */

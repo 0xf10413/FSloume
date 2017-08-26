@@ -7,31 +7,49 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_event(), m_clock(), m_font(), m_input(),
   m_reinit(false),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
-  m_menu(nullptr)
+  m_menu(nullptr),
+  m_game_mode(GameMode::TITLE)
 {
   setFramerateLimit (60);
   m_font.loadFromFile ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
 
+
+  sf::Color menuColor = sf::Color::Magenta;
+  menuColor.a = 127;
+  m_menu = new Menu(m_font, menuColor);
+  sf::Vector2f margins{WIDTH/20, HEIGHT/20};
+  sf::Vector2f paddings{WIDTH/40, HEIGHT/40};
+
+  sf::Color button_color = sf::Color::Green;
+  button_color.a = 127;
+  m_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
+  m_menu->addButton ("[Mode un joueur]", button_color, margins, paddings);
+  //m_menu->addButton ("[Mode deux joueurs online]", sf::Color::Green, margins);
+  //m_menu->addButton ("[Histoire]", sf::Color::Green, margins);
+  m_menu->setPosition (WIDTH/2, HEIGHT/2);
+
+  rebuildGame();
+}
+
+void FGame::rebuildGame()
+{
+  m_bSlime.reinit();
   m_bSlime.setX (WIDTH/4);
   m_bSlime.setY (HEIGHT);
   m_bSlime.clampTo(sf::FloatRect(0, 0, WIDTH/2 - NET_WIDTH/2, HEIGHT));
 
+  m_rSlime.reinit();
   m_rSlime.setX (3*WIDTH/4);
   m_rSlime.setY (HEIGHT);
   m_rSlime.clampTo(sf::FloatRect(WIDTH/2 + NET_WIDTH/2, 0, WIDTH/2 - NET_WIDTH/2, HEIGHT));
 
+  m_ball.reinit();
   m_ball.setX (WIDTH/4);
   m_ball.setY (2*HEIGHT/3);
   m_ball.clampTo(sf::FloatRect(0, 0, WIDTH, HEIGHT));
 
+  m_net.reinit();
   m_net.setPosition (WIDTH/2, HEIGHT - NET_HEIGHT/2);
-
-  m_menu = new Menu(m_font);
-  m_menu->addButton ("!!!", sf::Color::Green);
-  m_menu->addButton ("Hello", sf::Color::Green);
-  m_menu->addButton ("World", sf::Color::Green);
-  m_menu->addButton ("!", sf::Color::Green);
-  m_menu->setPosition (WIDTH/2, HEIGHT/2);
 
   m_reinit = false;
 }
@@ -57,16 +75,30 @@ int FGame::mainLoop ()
         if ( m_event.key.code == sf::Keyboard::Escape )
           close();
       }
-      if ( m_event.type == sf::Event::MouseButtonPressed)
+      if (m_event.type == sf::Event::MouseButtonPressed && m_game_mode == GameMode::TITLE)
       {
         std::string click = m_menu->wasIClicked(m_event);
+        if (click == "Mode deux joueurs")
+        {
+          m_game_mode = GameMode::TWO_PLAYERS;
+          m_reinit = true;
+        }
         if (!click.empty())
           std::cout << "Click : " << click << std::endl;
       }
     }
 
-    m_bSlime.prepareMove(m_input);
-    m_rSlime.prepareMove(m_input);
+    if (m_reinit)
+    {
+      rebuildGame();
+      continue;
+    }
+
+    if (m_game_mode == GameMode::TWO_PLAYERS)
+    {
+      m_bSlime.prepareMove(m_input);
+      m_rSlime.prepareMove(m_input);
+    }
 
     collide (eps);
 
@@ -81,7 +113,10 @@ int FGame::mainLoop ()
     m_rSlime.draw(*this);
     m_net.draw(*this);
     m_ball.draw(*this);
-    m_menu->draw(*this);
+
+    if (m_game_mode == GameMode::TITLE)
+      m_menu->draw(*this);
+
     display();
   }
   return EXIT_SUCCESS;

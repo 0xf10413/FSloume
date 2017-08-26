@@ -15,3 +15,9 @@ MovingEntity::MovingEntity() : UniqueDrawable(),
 {
 
 }
+
+void MovingEntity::reinit()
+{
+  m_x = m_y = m_vx = m_vy = 0.;
+  updateSprite();
+}

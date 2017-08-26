@@ -3,19 +3,22 @@
 #include <iostream>
 
 
-Button::Button(const sf::Font &font, const std::string &text, sf::Color color) :
+Button::Button(const sf::Font &font, const std::string &text, sf::Color color,
+    sf::Vector2f margin, sf::Vector2f pad) :
   m_font(font),
   m_text(text, m_font),
   m_color(color),
-  m_size()
+  m_textSize(),
+  m_margin(margin),
+  m_padding(pad)
 {
   sf::FloatRect bounds = m_text.getGlobalBounds();
-  m_size.x = bounds.left + bounds.width + bounds.left;
-  m_size.y = bounds.top + bounds.height + bounds.top;
+  m_textSize.x = bounds.left + bounds.width + bounds.left;
+  m_textSize.y = bounds.top + bounds.height + bounds.top;
 
   m_image.create(
-      (unsigned int)(m_size.x),
-      (unsigned int)(m_size.y),
+      (unsigned int)(m_textSize.x + m_padding.x),
+      (unsigned int)(m_textSize.y + m_padding.y),
       m_color
       );
   m_texture.loadFromImage(m_image);
@@ -29,8 +32,8 @@ void Button::updateSprite()
       m_y - m_sprite.getGlobalBounds().height/2
       );
   m_text.setPosition(
-      m_x - m_sprite.getGlobalBounds().width/2,
-      m_y - m_sprite.getGlobalBounds().height/2
+      m_x - m_textSize.x/2,
+      m_y - m_textSize.y/2
       );
 }
 
@@ -58,10 +61,16 @@ bool Button::wasIClicked(const sf::Event &event) const
 
 sf::Vector2f Button::getSize() const
 {
-  return m_size;
+  return m_textSize;
 }
 
 std::string Button::getTextString() const
 {
   return m_text.getString();
+}
+
+
+sf::Vector2f Button::getTotalSize() const
+{
+  return m_textSize + m_margin + m_padding;
 }

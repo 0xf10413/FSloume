@@ -3,22 +3,24 @@
 #include <cassert>
 #include <numeric>
 
-Menu::Menu(const sf::Font &font):
+Menu::Menu(const sf::Font &font, sf::Color bg_color):
   m_font(font),
   m_buttons(),
   m_size(),
-  m_sizes()
+  m_sizes(),
+  m_bg_color(bg_color)
 {
   m_size.x = 50;
   m_size.y = 1;
-  m_image.create((unsigned int)m_size.x, (unsigned int)m_size.y, sf::Color::Magenta);
+  m_image.create((unsigned int)m_size.x, (unsigned int)m_size.y, m_bg_color);
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture(m_texture);
 }
 
-void Menu::addButton (const std::string &text, sf::Color color)
+void Menu::addButton (const std::string &text, sf::Color color, sf::Vector2f margin,
+    sf::Vector2f padding)
 {
-  m_buttons.push_back(new Button (m_font, text, color));
+  m_buttons.push_back(new Button (m_font, text, color, margin, padding));
   rebuildMenu();
   updateSprite();
 }
@@ -57,14 +59,14 @@ void Menu::rebuildMenu()
   m_sizes.clear();
   for (size_t i = 0; i < m_buttons.size(); ++i)
   {
-    m_sizes.emplace_back(m_buttons[i]->getSize());
+    m_sizes.emplace_back(m_buttons[i]->getTotalSize());
     m_size.y += m_sizes[i].y;
     m_size.x = std::max(m_size.x, m_sizes[i].x);
   }
   m_image.create(
       (unsigned int)m_size.x,
       (unsigned int)m_size.y,
-      sf::Color::Magenta
+      m_bg_color
       );
 
   m_texture.loadFromImage(m_image);
@@ -97,3 +99,4 @@ void Menu::draw(sf::RenderWindow &w) const
   for (const Button *b : m_buttons)
     b->draw(w);
 }
+

@@ -24,8 +24,12 @@ private:
 
   Menu *m_menu;
 
+  enum GameMode {TITLE, TWO_PLAYERS, ONE_PLAYER};
+  GameMode m_game_mode;
+
   void collide (float); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs
+  void rebuildGame();
 public:
   FGame ();
   FGame& operator=(const FGame &) = delete;

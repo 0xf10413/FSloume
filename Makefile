@@ -83,7 +83,7 @@ $(LIB_GAME): $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 # Final linker call
 $(BUILD_DIR)/$(BIN): $(SRC_BIN) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 	@mkdir -pv $(@D)
-	$(CXX) -o $@ $(SRC_BIN) -L$(BUILD_DIR) -l$(LIB_GAME) $(LDFLAGS)
+	$(CXX) -o $@ $(SRC_BIN) $(CXXFLAGS) -L$(BUILD_DIR) -l$(LIB_GAME) $(LDFLAGS)
 
 $(BUILD_DIR)/$(LIB_GAME_FULL_NAME): $(OBJ_GAME)
 	@mkdir -pv $(@D)
