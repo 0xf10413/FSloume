@@ -3,7 +3,8 @@
 
 Ball::Ball() :
   MovingEntity(),
-  m_clamp()
+  m_clamp(),
+  m_path(BALL_ANTICIPATION, sf::Color::Green)
 {
   m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Red);
   makeADisk(m_image);
@@ -80,4 +81,15 @@ void Ball::setSpeed(const sf::Vector2f &v)
 {
   m_vx = v.x;
   m_vy = v.y;
+}
+
+void Ball::draw(sf::RenderWindow &w) const
+{
+  w.draw(m_sprite);
+  m_path.draw(w);
+}
+
+void Ball::updatePath(int i)
+{
+  m_path.setPosition(i, m_x, m_y);
 }

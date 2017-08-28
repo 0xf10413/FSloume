@@ -57,7 +57,7 @@ void Slime::jump()
 void Slime::prepareMove(const Input &input)
 {
   /* Mise à jour des vitesses en fonction de l'input */
-  if (m_alignLeft)
+  if (!m_alignLeft)
   {
     if (input.isKeyDown(sf::Keyboard::Up))
       jump();

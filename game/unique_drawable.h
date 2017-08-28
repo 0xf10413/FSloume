@@ -21,6 +21,8 @@ public:
 
 class MovingEntity : public UniqueDrawable
 {
+private:
+  std::array<float, 4> m_saved_state;
 protected:
   /* Positions et vitesses du centre d'inertie */
   float m_x, m_y;
@@ -30,6 +32,9 @@ public:
   MovingEntity();
   virtual ~MovingEntity()= default;
   virtual void reinit(); // Réinitialise la position et la vitesse
+
+  void pushState(); // Sauvegarde l'état actuelle de la position et de la vitesse
+  void popState(); // Restore l'état précédent de la position et de la vitesse
 };
 
 #endif /* !UNIQUE_DRAWABLE_H */

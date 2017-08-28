@@ -102,6 +102,22 @@ int FGame::mainLoop ()
 
     collide (eps);
 
+    m_bSlime.pushState();
+    m_rSlime.pushState();
+    m_ball.pushState();
+
+    for (int i = 0; i < BALL_ANTICIPATION; ++i)
+    {
+      m_ball.updatePath(i);
+      collide(eps);
+      m_ball.move(eps);
+    }
+
+    m_bSlime.popState();
+    m_rSlime.popState();
+    m_ball.popState();
+
+
     m_bSlime.move(eps, m_ball);
     m_rSlime.move(eps, m_ball);
     m_ball.move(eps);

@@ -38,7 +38,7 @@ TEST_CASE( "Test de collision entre cercles mouvants", "[collideTwoCircles]")
       INFO("R' : " << Rp);
       INFO("dt : " << dt);
 
-      CHECK_FALSE( collideTwoCircles(M, R, V, Mp, Rp, Vp, dt) != -1);
+      CHECK( collideTwoCircles(M, R, V, Mp, Rp, Vp, dt) == Approx(-1));
     }
   }
 }

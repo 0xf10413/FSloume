@@ -24,6 +24,9 @@ constexpr int NET_HEIGHT = SLIME_HEIGHT*2;
 /* Taille de la balle */
 constexpr int BALL_RADIUS = 20;
 
+/* Pas d'anticipation sur le mouvement de la balle */
+constexpr int BALL_ANTICIPATION = 100;
+
 /* Paramètres physiques */
 constexpr float JUMP_DURATION = 1; // Durée du saut en s
 constexpr int JUMP_MAX_HEIGHT = HEIGHT/8;
