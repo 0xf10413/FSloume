@@ -78,6 +78,19 @@ void Slime::prepareMove(const Input &input)
       m_vx = +SLIME_HORIZONTAL_SPEED;
     else
       m_vx = 0;
+
+    /* Version android */
+    if (input.isTouchDown())
+    {
+      sf::Vector2f touchDown = input.whereIsTouch();
+      if (touchDown.x*2 < WIDTH )
+        m_vx = -SLIME_HORIZONTAL_SPEED;
+      else
+        m_vx = +SLIME_HORIZONTAL_SPEED;
+      if (touchDown.y*2 < HEIGHT)
+        jump();
+
+    }
   }
 }
 

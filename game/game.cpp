@@ -2,6 +2,7 @@
 #include "config.h"
 #include "utils.h"
 #include <iostream>
+#include <cmath>
 
 FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_event(), m_clock(), m_font(), m_input(),
@@ -194,9 +195,9 @@ void FGame::collide (float dt)
   {
     auto speed = m_ball.getSpeed();
     if (bounce.x != 0.)
-      speed.x = std::copysignf(speed.x, bounce.x);
+      speed.x = copysignf(speed.x, bounce.x);
     if (bounce.y != 0.)
-      speed.y = std::copysignf(speed.y, bounce.y);
+      speed.y = copysignf(speed.y, bounce.y);
     m_ball.setSpeed(speed);
   }
 }
