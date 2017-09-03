@@ -8,7 +8,11 @@ Path::Path(int length, sf::Color color) :
   size_t n = m_pieces.getVertexCount();
   for (size_t i = 0; i < n; ++i)
   {
-    m_pieces[i].color = m_color;
+    m_pieces[i].color = sf::Color(
+        (sf::Uint8)(m_color.r),
+        (sf::Uint8)(m_color.g),
+        (sf::Uint8)(m_color.b),
+        (sf::Uint8)(255-255*i/n));
     m_pieces[i].position = sf::Vector2f((float)i,(float)i);
   }
 }

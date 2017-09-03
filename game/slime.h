@@ -15,6 +15,7 @@ private:
     bool m_alignLeft;
     bool m_onGround, m_onGround_prev;
     bool m_lost;
+    bool m_main_character; // Qui a les contrôles en 1j sur android ?
     int m_victories;
     sf::FloatRect m_clamp;
 
@@ -24,6 +25,9 @@ public:
     Slime (bool isLeft);
     void prepareMove(const Input &input); // Enregistre les vitesses demandées
     void move(float dt, const Ball &b);
+
+    void setMainCharacter(bool main_character);
+    void toggleMainCharacter();
 
     /* Positionnement du centre d'inertie */
     void setX (float nx);

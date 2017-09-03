@@ -4,7 +4,7 @@
 Ball::Ball() :
   MovingEntity(),
   m_clamp(),
-  m_path(BALL_ANTICIPATION, sf::Color::Green)
+  m_path(BALL_ANTICIPATION, sf::Color::Red)
 {
   m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Red);
   makeADisk(m_image);

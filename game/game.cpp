@@ -21,6 +21,9 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   sf::Vector2f margins{WIDTH/20, HEIGHT/20};
   sf::Vector2f paddings{WIDTH/40, HEIGHT/40};
 
+  m_rSlime.setMainCharacter(false);
+  m_bSlime.setMainCharacter(true);
+
   sf::Color button_color = sf::Color::Green;
   button_color.a = 127;
   m_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
@@ -87,6 +90,20 @@ int FGame::mainLoop ()
         if (!click.empty())
           std::cout << "Click : " << click << std::endl;
       }
+
+      if (m_event.type == sf::Event::TouchBegan)
+      {
+        if (m_event.touch.x > 3*WIDTH/4)
+        {
+          m_rSlime.setMainCharacter(true);
+          m_bSlime.setMainCharacter(false);
+        }
+        if (m_event.touch.x < WIDTH/4)
+        {
+          m_rSlime.setMainCharacter(false);
+          m_bSlime.setMainCharacter(true);
+        }
+      }
     }
 
     if (m_reinit)
@@ -101,7 +118,6 @@ int FGame::mainLoop ()
       m_rSlime.prepareMove(m_input);
     }
 
-    collide (eps);
 
     m_bSlime.pushState();
     m_rSlime.pushState();
@@ -120,6 +136,7 @@ int FGame::mainLoop ()
     m_rSlime.popState();
     m_ball.popState();
 
+    collide (eps);
 
     m_bSlime.move(eps, m_ball);
     m_rSlime.move(eps, m_ball);

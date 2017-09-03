@@ -6,7 +6,7 @@
 #include <iostream>
 
 /* Taille du plateau en px */
-constexpr int WIDTH = 800;
+constexpr int WIDTH = 900;
 constexpr int HEIGHT = 500;
 
 /* Taille d'un slime en px */
