@@ -112,6 +112,8 @@ int FGame::mainLoop ()
       m_ball.updatePath(i);
       collide(eps);
       m_ball.move(eps);
+      m_bSlime.move(eps, m_ball);
+      m_rSlime.move(eps, m_ball);
     }
 
     m_bSlime.popState();

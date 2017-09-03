@@ -2,7 +2,7 @@
 
 Path::Path(int length, sf::Color color) :
   UniqueDrawable(),
-  m_pieces(sf::Lines, length),
+  m_pieces(sf::Lines, 2*length),
   m_color(color)
 {
   size_t n = m_pieces.getVertexCount();
@@ -20,5 +20,8 @@ void Path::draw(sf::RenderWindow &w) const
 
 void Path::setPosition(int i, float x, float y)
 {
-  m_pieces[i].position = {x, y};
+  if (i == 0)
+    m_pieces[0].position = {x, y};
+  m_pieces[2*i+1].position = {x, y};
+  m_pieces[2*i+2].position = {x, y};
 }

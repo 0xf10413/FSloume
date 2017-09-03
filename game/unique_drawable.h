@@ -33,8 +33,8 @@ public:
   virtual ~MovingEntity()= default;
   virtual void reinit(); // Réinitialise la position et la vitesse
 
-  void pushState(); // Sauvegarde l'état actuelle de la position et de la vitesse
-  void popState(); // Restore l'état précédent de la position et de la vitesse
+  virtual void pushState(); // Sauvegarde l'état actuelle de la position et de la vitesse
+  virtual void popState(); // Restore l'état précédent de la position et de la vitesse
 };
 
 #endif /* !UNIQUE_DRAWABLE_H */
