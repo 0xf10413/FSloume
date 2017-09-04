@@ -1,5 +1,5 @@
 #include "counter.h"
-
+#include <sstream>
 
 Counter::Counter(size_t init, bool alignLeft, const sf::Font &font) :
   m_count(init),
@@ -56,7 +56,9 @@ void Counter::setPosition(float x, float y)
 
 void Counter::updateSprite()
 {
-  m_text.setString(std::to_string(m_count));
+  std::ostringstream oss;
+  oss << m_count;
+  m_text.setString(oss.str());
   auto shape = m_text.getLocalBounds();
   if (m_alignLeft) // Position = coin supérieur gauche
   {
