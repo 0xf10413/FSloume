@@ -64,14 +64,14 @@ void Counter::updateSprite()
   {
     m_text.setPosition(
         m_x,
-        m_y
+        m_y - shape.top
         );
   }
   else // Position = coin supérieur gauche
   {
     m_text.setPosition(
         m_x - shape.left - shape.width,
-        m_y
+        m_y - shape.top
         );
   }
 }
