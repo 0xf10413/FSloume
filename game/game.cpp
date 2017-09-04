@@ -9,11 +9,22 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_reinit(false),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
   m_menu(nullptr),
-  m_game_mode(GameMode::TITLE)
+  m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
+  m_game_over_countdown(),
+  m_lScore(0, true, m_font), m_rScore(0, false, m_font),
+  m_gameOverText()
 {
   setFramerateLimit (60);
   m_font.loadFromFile ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
 
+  m_game_mode = GameMode::TWO_PLAYERS;
+  m_gameOverText.setFont(m_font);
+  m_gameOverText.setString("YOU failed!");
+  m_gameOverText.setPosition(
+      WIDTH/2 - m_gameOverText.getGlobalBounds().left - m_gameOverText.getGlobalBounds().width/2,
+      HEIGHT/2 - m_gameOverText.getGlobalBounds().top - m_gameOverText.getGlobalBounds().height/2
+      );
+  m_gameOverText.setFillColor(sf::Color::White);
 
   sf::Color menuColor = sf::Color::Magenta;
   menuColor.a = 127;
@@ -48,12 +59,20 @@ void FGame::rebuildGame()
   m_rSlime.clampTo(sf::FloatRect(WIDTH/2 + NET_WIDTH/2, 0, WIDTH/2 - NET_WIDTH/2, HEIGHT));
 
   m_ball.reinit();
-  m_ball.setX (WIDTH/4);
+  if (m_branch_mode == BranchMode::BLUE_LOST)
+    m_ball.setX(3*WIDTH/4);
+  else
+    m_ball.setX (WIDTH/4);
   m_ball.setY (2*HEIGHT/3);
   m_ball.clampTo(sf::FloatRect(0, 0, WIDTH, HEIGHT));
 
   m_net.reinit();
   m_net.setPosition (WIDTH/2, HEIGHT - NET_HEIGHT/2);
+
+  m_lScore.setPosition(0,0);
+  m_rScore.setPosition(WIDTH,0);
+
+  m_branch_mode = BranchMode::PLAYING;
 
   m_reinit = false;
 }
@@ -112,35 +131,66 @@ int FGame::mainLoop ()
       continue;
     }
 
-    if (m_game_mode == GameMode::TWO_PLAYERS)
+    /* Branche principale de jeu */
+    if (m_branch_mode == BranchMode::PLAYING)
     {
-      m_bSlime.prepareMove(m_input);
-      m_rSlime.prepareMove(m_input);
-    }
+      if (m_game_mode == GameMode::TWO_PLAYERS)
+      {
+        m_bSlime.prepareMove(m_input);
+        m_rSlime.prepareMove(m_input);
+      }
 
 
-    m_bSlime.pushState();
-    m_rSlime.pushState();
-    m_ball.pushState();
+      m_bSlime.pushState();
+      m_rSlime.pushState();
+      m_ball.pushState();
 
-    for (int i = 0; i < BALL_ANTICIPATION; ++i)
-    {
-      m_ball.updatePath(i);
-      collide(eps);
-      m_ball.move(eps);
+      for (int i = 0; i < BALL_ANTICIPATION; ++i)
+      {
+        m_ball.updatePath(i);
+        collide(eps);
+        m_ball.move(eps);
+        m_bSlime.move(eps, m_ball);
+        m_rSlime.move(eps, m_ball);
+      }
+
+      m_bSlime.popState();
+      m_rSlime.popState();
+      m_ball.popState();
+
+      collide (eps);
+
       m_bSlime.move(eps, m_ball);
       m_rSlime.move(eps, m_ball);
+      m_ball.move(eps);
+
+      if (m_ball.getOnGround()) // Game over ! Mais pour qui ?
+      {
+        if (m_ball.getPosition().x > WIDTH/2)
+        {
+          m_branch_mode = BranchMode::RED_LOST;
+          m_gameOverText.setFillColor(sf::Color::Red);
+          ++m_lScore;
+        }
+        else
+        {
+          m_branch_mode = BranchMode::BLUE_LOST;
+          m_gameOverText.setFillColor(sf::Color::Blue);
+          ++m_rScore;
+        }
+        m_game_over_countdown = sf::milliseconds(1000);
+      }
+
     }
 
-    m_bSlime.popState();
-    m_rSlime.popState();
-    m_ball.popState();
+    /* Branche de Game Over */
+    if (m_branch_mode == BranchMode::RED_LOST || m_branch_mode == BranchMode::BLUE_LOST)
+    {
+      m_game_over_countdown -= sf::seconds(eps);
+      if (m_game_over_countdown < sf::seconds(0))
+        m_reinit = true;
+    }
 
-    collide (eps);
-
-    m_bSlime.move(eps, m_ball);
-    m_rSlime.move(eps, m_ball);
-    m_ball.move(eps);
 
 
     // Affichage
@@ -152,6 +202,14 @@ int FGame::mainLoop ()
 
     if (m_game_mode == GameMode::TITLE)
       m_menu->draw(*this);
+    else
+    {
+      m_lScore.draw(*this);
+      m_rScore.draw(*this);
+    }
+
+    if (m_branch_mode != BranchMode::PLAYING)
+      draw(m_gameOverText);
 
     display();
   }

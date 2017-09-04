@@ -128,3 +128,6 @@ test: $(BIN_TEST)
 
 debug: all
 	-LD_LIBRARY_PATH=$(BUILD_DIR) cgdb --quiet --args $(BUILD_DIR)/$(BIN) $(BIN_ARGS)
+
+memcheck: all
+	-LD_LIBRARY_PATH=$(BUILD_DIR) valgrind $(BUILD_DIR)/$(BIN)

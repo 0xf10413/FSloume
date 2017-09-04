@@ -13,7 +13,6 @@ class Slime : public MovingEntity
 private:
     Eye m_eye;
     bool m_alignLeft;
-    bool m_onGround, m_onGround_prev;
     bool m_lost;
     bool m_main_character; // Qui a les contrôles en 1j sur android ?
     int m_victories;
@@ -39,8 +38,6 @@ public:
     void clampTo (const sf::FloatRect &rect);
 
     virtual void draw (sf::RenderWindow &) const override;
-    virtual void pushState() override;
-    virtual void popState() override;
 };
 
 #endif

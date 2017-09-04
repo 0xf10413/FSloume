@@ -4,7 +4,6 @@ Slime::Slime (bool alignLeft) :
   MovingEntity(),
   m_eye(alignLeft),
   m_alignLeft (alignLeft),
-  m_onGround (true), m_onGround_prev(true),
   m_lost(false), m_main_character(false),
   m_victories(0),
   m_clamp()
@@ -170,18 +169,6 @@ void Slime::draw (sf::RenderWindow &w) const
 {
   w.draw(m_sprite);
   m_eye.draw(w);
-}
-
-void Slime::pushState()
-{
-  MovingEntity::pushState();
-  m_onGround_prev = m_onGround;
-}
-
-void Slime::popState()
-{
-  MovingEntity::popState();
-  m_onGround = m_onGround_prev;
 }
 
 void Slime::setMainCharacter(bool main_character)

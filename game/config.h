@@ -18,7 +18,7 @@ constexpr int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 
 constexpr int EYE_RADIUS = (int)sqrt(EYE_RADIUS_SQUARED);
 
 /* Taille du filet */
-constexpr int NET_WIDTH = WIDTH/4;
+constexpr int NET_WIDTH = WIDTH/6;
 constexpr int NET_HEIGHT = SLIME_HEIGHT*2;
 
 /* Taille de la balle */

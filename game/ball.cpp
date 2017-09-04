@@ -50,10 +50,11 @@ void Ball::move (float dt)
     m_vx = -m_vx*BALL_ELASTICITY;
   }
 
-  if (m_y > m_clamp.top + m_clamp.height - BALL_RADIUS)
+  if (m_y > m_clamp.top + m_clamp.height - BALL_RADIUS) // Cas spécial : contact au sol
   {
     m_y = m_clamp.top + m_clamp.height - BALL_RADIUS;
     m_vy = -m_vy*BALL_ELASTICITY;
+    m_onGround = true;
   }
 
   updateSprite();
