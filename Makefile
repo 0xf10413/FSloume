@@ -12,7 +12,7 @@ CXX=g++
 # C/C++ compilation flags
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
-			 -Wconversion -Wfloat-equal -Wundef -Wpointer-arithm -Wcast-align \
+			 -Wconversion -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
 			 -Wunreachable-code -fPIC
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
 				 -Wunreachable-code -Wconversion -fPIC
@@ -20,12 +20,17 @@ CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
 # Linker flags
 LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
 
+# Resource builder
+RC_BUILD = ./tools/objectify.py
+
 # Source files (adjust if needed)
 SRC_CXX_GAME=$(wildcard game/*.cpp)
 SRC_C_GAME=$(wildcard game/*.c)
 SRC_CXX_TEST=$(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp)
 SRC_C_TEST=$(wildcard tests/*.c) $(wildcard tests/*/*.c)
 SRC_BIN = main.cpp
+
+RC_ALL=$(wildcard rc/*)
 
 ###
 # Automatic variables
@@ -50,6 +55,12 @@ OBJ_C_TEST=$(SRC_C_TEST:%.c=$(BUILD_DIR)/%.o)
 OBJ_TEST=$(OBJ_C_TEST)
 OBJ_TEST+=$(OBJ_CXX_TEST)
 OBJ_TEST+=$(OBJ_GAME)
+
+# Objects files for resources
+SRC_RC_TMP = $(RC_ALL:=.c)
+SRC_RC = $(SRC_RC_TMP:%=$(BUILD_DIR)/%)
+OBJ_RC = $(SRC_RC:%.c=%.o)
+OBJ_GAME += $(OBJ_RC)
 
 # Dependencies for game
 DEPS_CXX_GAME=$(OBJ_CXX_GAME:%.o=%.d)
@@ -108,6 +119,14 @@ $(BUILD_DIR)/%.o: %.c
 	@mkdir -pv $(@D)
 	$(CC) -o $@ -c $< $(CFLAGS) -MMD
 
+%.o: %.c
+	@mkdir -pv $(@D)
+	$(CC) -o $@ -c $< $(CFLAGS) -MMD
+
+# Building resources
+$(BUILD_DIR)/%.c : %
+	@mkdir -pv $(@D)
+	$(RC_BUILD) $^ $@
 
 # Clean-up targets
 .PHONY: clean mrproper launch debug
@@ -131,3 +150,7 @@ debug: all
 
 memcheck: all
 	-LD_LIBRARY_PATH=$(BUILD_DIR) valgrind $(BUILD_DIR)/$(BIN)
+
+## Makefile debug
+# Keep intermediary files
+#.SECONDARY:
