@@ -23,6 +23,10 @@ LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
 # Resource builder
 RC_BUILD = ./tools/objectify.py
 
+# Resource files
+RC_ALL=$(wildcard rc/*)
+RC_HEADER=game/rc.h
+
 # Source files (adjust if needed)
 SRC_CXX_GAME=$(wildcard game/*.cpp)
 SRC_C_GAME=$(wildcard game/*.c)
@@ -30,7 +34,6 @@ SRC_CXX_TEST=$(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp)
 SRC_C_TEST=$(wildcard tests/*.c) $(wildcard tests/*/*.c)
 SRC_BIN = main.cpp
 
-RC_ALL=$(wildcard rc/*)
 
 ###
 # Automatic variables
@@ -111,11 +114,11 @@ $(BUILD_DIR)/$(BIN_TEST): $(OBJ_TEST) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 
 
 # General build target
-$(BUILD_DIR)/%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER)
 	@mkdir -pv $(@D)
 	$(CXX) -o $@ -c $< $(CXXFLAGS) -MMD
 
-$(BUILD_DIR)/%.o: %.c
+$(BUILD_DIR)/%.o: %.c $(RC_HEADER)
 	@mkdir -pv $(@D)
 	$(CC) -o $@ -c $< $(CFLAGS) -MMD
 
@@ -126,17 +129,21 @@ $(BUILD_DIR)/%.o: %.c
 # Building resources
 $(BUILD_DIR)/%.c : %
 	@mkdir -pv $(@D)
-	$(RC_BUILD) $^ $@
+	$(RC_BUILD) rc2c $^ --output $@
+
+# Building rc.h
+$(RC_HEADER): $(RC_ALL)
+	$(RC_BUILD) rc2h rc/ --output $@
 
 # Clean-up targets
-.PHONY: clean mrproper launch debug
+.PHONY: clean mrproper launch debug memcheck
 clean:
 	-rm -f $(BUILD_DIR)/$(BIN) $(BUILD_DIR)/$(BIN_TEST) \
 		$(BUILD_DIR)/$(LIB_GAME_FULL_NAME) $(OBJ_GAME) $(OBJ_TEST) \
 	 	$(DEPS_GAME) $(DEPS_TEST)
 
 mrproper: clean
-	-rm -rf $(BUILD_DIR)
+	-rm -rf $(BUILD_DIR) $(RC_HEADER)
 
 # Launch targets
 launch: all

@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """
-Transforme une ressource en .c.
-Représente les octets dans une string, avec une taille max
-d'octets par tableau.
-Regroupe le tout dans un tableau de ces tableaux.
-TODO:
-    création d'un .h qui liste toutes les données
+En mode rc2c :
+    Transforme une ressource en .c.
+    Représente les octets dans une string, avec une taille max
+    d'octets par tableau.
+    Regroupe le tout dans un tableau de ces tableaux.
+En mode rc2h :
+    Construit un .h avec les déclarations nécessaires pour réutiliser
+    les .c.
 """
-from sys import argv, exit
+from sys import exit
+from glob import iglob
+from os.path import getsize
+
+import argparse
 
 ### Paramètres ###
 
@@ -23,22 +29,24 @@ MAX_BYTES_PER_ARRAY = 4000
 ### Fin des paramètres ###
 
 
-def usage():
-    print(argv[0] + " : transforms files into .c")
-    print("Usage : {} input [output]".format(argv[0]))
+parser = argparse.ArgumentParser(
+        description="Changes ressource files into C files")
+parser.add_argument('mode', choices=['rc2c','rc2h'],
+        help="rc2c : resource to C file, "
+        " rc2h : resource folder to C header")
+parser.add_argument('input')
+parser.add_argument('--output', help="Output file, "
+                "default is stdout")
 
-if len(argv) < 2:
-    usage()
-    exit(1)
+args = parser.parse_args()
 
-
-rc_filename = argv[1]
-if len(argv) > 2:
-    c_filename = argv[2]
+rc_filename = args.input
+if args.output is None:
+    c_filename = rc_filename + ".c"
 else:
-    c_filename = argv[1] + ".c"
+    c_filename = args.output
 
-var_name = argv[1].replace(".", "_").replace('/', '_')
+var_name = rc_filename.replace(".", "_").replace('/', '_')
 
 class CString(object):
     """
@@ -87,7 +95,6 @@ class CResource(object):
     """
     Une ressource C-isée
     """
-
     def __init__(self, c_filename, rc_filename):
         self.file = open(c_filename, 'w')
         self.rc_var_name = rc_filename.replace(".", "_").replace('/', '_')
@@ -135,14 +142,6 @@ class CResource(object):
                 ))
         self.file.write('};\n')
 
-    def get_declaration(self):
-        """
-        Renvoie la déclaration à mettre dans le .h
-        """
-        return "char *{} [{}];".format(
-                self.rc_var_name,
-                self.index_of_cur_array+1,
-                )
 
     def __enter__(self):
         return self
@@ -151,7 +150,29 @@ class CResource(object):
         self._conclude()
         self.file.close()
 
-with open(rc_filename, 'rb') as r, CResource(c_filename, rc_filename) as w:
-    for byteline in r:
-        for byte in byteline:
-            w.add(byte)
+def objectify():
+    with open(rc_filename, 'rb') as r, CResource(c_filename, rc_filename) as w:
+        for byteline in r:
+            for byte in byteline:
+                w.add(byte)
+
+def headerify():
+    with open(c_filename, 'w') as w:
+        w.write("#ifndef F_RC_H\n")
+        w.write("#define F_RC_H\n\n")
+        for i in iglob(rc_filename + "/*"):
+            size = getsize(i)
+            pieces = size // MAX_BYTES_PER_ARRAY + 1
+            i = i.replace(".", "_").replace('/', '_')
+            w.write("extern char *{} [{}];\n".format(i, pieces))
+        w.write("\n#endif // defined F_RC_H\n")
+
+
+if __name__ == "__main__":
+    if args.mode == 'rc2c':
+        objectify()
+    elif args.mode == 'rc2h':
+        headerify()
+    else:
+        raise NotImplementedError("Unimplemented mode " + mode)
+
