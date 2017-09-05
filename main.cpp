@@ -9,8 +9,7 @@
 /*** TODO ***/
 /*
  * Une IA
- * Un gestionnaire de ressources
- * Une gestion des scores
+ * Utiliser une macro dans le resource manager
  * Des ralentisseurs/objets ?
  */
 

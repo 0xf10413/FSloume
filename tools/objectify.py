@@ -79,7 +79,7 @@ class CArray(object):
     def begin(self):
         if self.opened:
             return
-        self.master.file.write('char {}_{} [] =\n'. format(
+        self.master.file.write('const char {}_{} [] =\n'. format(
             self.master.rc_var_name,
             self.master.index_of_cur_array,
             ))
@@ -97,10 +97,12 @@ class CResource(object):
     """
     def __init__(self, c_filename, rc_filename):
         self.file = open(c_filename, 'w')
+        self.total_size = getsize(rc_filename)
         self.rc_var_name = rc_filename.replace(".", "_").replace('/', '_')
         self.bytes_in_cur_line = 0
         self.bytes_in_cur_array = 0
         self.index_of_cur_array = 0
+        self.file.write("#include <stddef.h> // For size_t\n\n")
         self.cstr = CString(self)
         self.carray = CArray(self)
         self.carray.begin()
@@ -131,16 +133,23 @@ class CResource(object):
     def _conclude(self):
         """
         Achève le fichier en insérant un tableau des tableaux
+        puis en notant la taille totale
         """
         self.cstr.end()
         self.carray.end()
-        self.file.write('char *{} [{}] = {}\n'.
-                format(self.rc_var_name, self.index_of_cur_array+1, '{'))
+        self.file.write('const char *{} [{}] = {}\n'.
+                format(self.rc_var_name, self.index_of_cur_array+2, '{'))
         for i in range(self.index_of_cur_array+1):
             self.file.write("{}{}_{},\n".format(
                 INDENT, self.rc_var_name, i,
                 ))
-        self.file.write('};\n')
+        self.file.write("{}0,\n".format(
+            INDENT,
+            ))
+        self.file.write('};\n\n')
+        self.file.write('const size_t {} = {};\n'.
+                format(self.rc_var_name + '_size', self.total_size)
+                )
 
 
     def __enter__(self):
@@ -160,11 +169,14 @@ def headerify():
     with open(c_filename, 'w') as w:
         w.write("#ifndef F_RC_H\n")
         w.write("#define F_RC_H\n\n")
+        w.write("#include <stddef.h> // For size_t\n\n")
+        w.write("#define RC_MAX_BYTES_PER_ARRAY {}\n\n".format(MAX_BYTES_PER_ARRAY))
         for i in iglob(rc_filename + "/*"):
             size = getsize(i)
-            pieces = size // MAX_BYTES_PER_ARRAY + 1
+            pieces = size // MAX_BYTES_PER_ARRAY + 2
             i = i.replace(".", "_").replace('/', '_')
-            w.write("extern char *{} [{}];\n".format(i, pieces))
+            w.write("extern const char *{} [{}];\n".format(i, pieces))
+            w.write("extern const size_t {} ;\n".format(i + '_size', size))
         w.write("\n#endif // defined F_RC_H\n")
 
 

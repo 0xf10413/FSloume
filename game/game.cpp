@@ -5,7 +5,8 @@
 #include <cmath>
 
 FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
-  m_event(), m_clock(), m_font(), m_input(),
+  m_event(), m_clock(), m_font_stream(ResourceManager::fetchMe("rc_8bitoperator_ttf")),
+  m_font(), m_input(),
   m_reinit(false),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
   m_menu(nullptr),
@@ -15,7 +16,7 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_gameOverText()
 {
   setFramerateLimit (60);
-  m_font.loadFromFile ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+  m_font.loadFromStream (m_font_stream);
 
   m_game_mode = GameMode::TWO_PLAYERS;
   m_gameOverText.setFont(m_font);

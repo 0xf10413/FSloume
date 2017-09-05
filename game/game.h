@@ -9,12 +9,14 @@
 #include "input.h"
 #include "menu.h"
 #include "counter.h"
+#include "rc_manager.h"
 
 class FGame : public sf::RenderWindow
 {
 private:
   sf::Event m_event;
   sf::Clock m_clock;
+  ResourceStream m_font_stream;
   sf::Font m_font;
   Input m_input;
   bool m_reinit; // Faut-il tout replacer ?
