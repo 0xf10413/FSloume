@@ -10,6 +10,7 @@
 #include "menu.h"
 #include "counter.h"
 #include "rc_manager.h"
+#include "target.h"
 
 class FGame : public sf::RenderWindow
 {
@@ -37,6 +38,7 @@ private:
   Counter m_lScore, m_rScore;
 
   sf::Text m_gameOverText;
+  Target m_target;
 
   void collide (float); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs

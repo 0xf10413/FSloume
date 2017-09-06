@@ -13,7 +13,8 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
   m_game_over_countdown(),
   m_lScore(0, true, m_font), m_rScore(0, false, m_font),
-  m_gameOverText()
+  m_gameOverText(),
+  m_target()
 {
   setFramerateLimit (60);
   m_font.loadFromStream (m_font_stream);
@@ -111,14 +112,17 @@ int FGame::mainLoop ()
           std::cout << "Click : " << click << std::endl;
       }
 
-      if (m_event.type == sf::Event::TouchBegan)
+      if (m_event.type == sf::Event::TouchBegan ||
+          m_event.type == sf::Event::TouchMoved ||
+          m_event.type == sf::Event::TouchEnded)
       {
-        if (m_event.touch.x > 3*WIDTH/4)
+        m_target.setPosition(m_event.touch.x, m_event.touch.y);
+        if (m_event.touch.x >= WIDTH/2)
         {
           m_rSlime.setMainCharacter(true);
           m_bSlime.setMainCharacter(false);
         }
-        if (m_event.touch.x < WIDTH/4)
+        if (m_event.touch.x <= WIDTH/2)
         {
           m_rSlime.setMainCharacter(false);
           m_bSlime.setMainCharacter(true);
@@ -211,6 +215,7 @@ int FGame::mainLoop ()
 
     if (m_branch_mode != BranchMode::PLAYING)
       draw(m_gameOverText);
+    m_target.draw(*this);
 
     display();
   }

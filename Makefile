@@ -160,4 +160,5 @@ memcheck: all
 
 ## Makefile debug
 # Keep intermediary files
-#.SECONDARY:
+# Necessary for android (for now…)
+.SECONDARY:

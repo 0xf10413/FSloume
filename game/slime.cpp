@@ -86,13 +86,15 @@ void Slime::prepareMove(const Input &input)
   if (m_main_character && input.isTouchDown())
   {
     sf::Vector2f touchDown = input.whereIsTouch();
-    if (touchDown.x*2 < WIDTH )
-      m_vx = -SLIME_HORIZONTAL_SPEED;
-    else
-      m_vx = +SLIME_HORIZONTAL_SPEED;
-    if (touchDown.y*2 < HEIGHT)
-      jump();
-
+    if (std::abs(touchDown.x - m_x) >= 1.) // évite les vibrations
+    {
+      if (touchDown.x < m_x)
+        m_vx = -SLIME_HORIZONTAL_SPEED;
+      else if (touchDown.x > m_x)
+        m_vx = +SLIME_HORIZONTAL_SPEED;
+      if (touchDown.y*2 < HEIGHT)
+        jump();
+    }
   }
 }
 
@@ -179,4 +181,10 @@ void Slime::setMainCharacter(bool main_character)
 void Slime::toggleMainCharacter()
 {
   m_main_character = !m_main_character;
+}
+
+bool Slime::touched(float x, float y)
+{
+  return std::abs(m_x-x) <= SLIME_WIDTH/2. &&
+    m_y >= y && m_y - SLIME_HEIGHT <= y;
 }

@@ -25,6 +25,7 @@ public:
     void prepareMove(const Input &input); // Enregistre les vitesses demandées
     void move(float dt, const Ball &b);
 
+    bool touched(float x, float y); // A-t-on posé le doigt dessus ?
     void setMainCharacter(bool main_character);
     void toggleMainCharacter();
 
