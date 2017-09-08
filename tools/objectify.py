@@ -9,7 +9,7 @@ En mode rc2h :
     Construit un .h avec les déclarations nécessaires pour réutiliser
     les .c.
 """
-from sys import exit
+from sys import exit, stdout
 from glob import iglob
 from os.path import getsize
 
@@ -35,14 +35,13 @@ parser.add_argument('mode', choices=['rc2c','rc2h'],
         help="rc2c : resource to C file, "
         " rc2h : resource folder to C header")
 parser.add_argument('input')
-parser.add_argument('--output', help="Output file, "
-                "default is stdout")
+parser.add_argument('--output', help="Output file, default is stdout")
 
 args = parser.parse_args()
 
 rc_filename = args.input
 if args.output is None:
-    c_filename = rc_filename + ".c"
+    c_filename = '-'
 else:
     c_filename = args.output
 
@@ -88,7 +87,7 @@ class CArray(object):
     def end(self):
         if not self.opened:
             return
-        self.master.file.write(';\n')
+        self.master.file.write(';\n\n')
         self.opened = False
 
 class CResource(object):
@@ -96,7 +95,7 @@ class CResource(object):
     Une ressource C-isée
     """
     def __init__(self, c_filename, rc_filename):
-        self.file = open(c_filename, 'w')
+        self.file = stdout if c_filename == '-' else open(c_filename, 'w')
         self.total_size = getsize(rc_filename)
         self.rc_var_name = rc_filename.replace(".", "_").replace('/', '_')
         self.bytes_in_cur_line = 0
@@ -126,7 +125,7 @@ class CResource(object):
             self.bytes_in_cur_line = 0
             self.cstr.begin()
         # On peut insérer en toute sérénité
-        self.file.write("{}".format(hex(byte).replace('0', '\\',1)))
+        self.file.write("{0:#04x}".format(byte).replace('0','\\', 1))
         self.bytes_in_cur_line += 1
         self.bytes_in_cur_array += 1
 
@@ -153,9 +152,17 @@ class CResource(object):
 
 
     def __enter__(self):
+        """
+        Appelée à l'entrée d'un contexte
+        Aucun traitement spécifique à effectuer
+        """
         return self
 
     def __exit__(self, type, value, traceback):
+        """
+        Appelée à la sortie d'un contexte
+        S'assure que le fichier est correctement conclu et fermé
+        """
         self._conclude()
         self.file.close()
 
@@ -166,7 +173,8 @@ def objectify():
                 w.add(byte)
 
 def headerify():
-    with open(c_filename, 'w') as w:
+    file = stdout if c_filename == "-" else open(c_filename, 'w')
+    with file as w:
         w.write("#ifndef F_RC_H\n")
         w.write("#define F_RC_H\n\n")
         w.write("#include <stddef.h> // For size_t\n\n")
@@ -176,8 +184,8 @@ def headerify():
             pieces = size // MAX_BYTES_PER_ARRAY + 2
             i = i.replace(".", "_").replace('/', '_')
             w.write("extern const char *{} [{}];\n".format(i, pieces))
-            w.write("extern const size_t {} ;\n".format(i + '_size', size))
-        w.write("\n#endif // defined F_RC_H\n")
+            w.write("extern const size_t {};\n\n".format(i + '_size', size))
+        w.write("#endif // defined F_RC_H\n")
 
 
 if __name__ == "__main__":
