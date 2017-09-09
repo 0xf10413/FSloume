@@ -5,8 +5,10 @@
  * Collision par dessous : un slime entre en collision
  * de façon circulaire avec la balle par en-dessous.
  * Balle gluante : la balle peut se retrouver coincée sur un sloume
- * Souci de résolution sur les android, et probablement
- * avec les touch event en général
+ * Config générale : passer par un générateur de cpp au lieu de variables
+ * globales.
+ * Config générale : problème de l'initialisation
+ * Config générale : résolution sur PC trop grande
  * */
 /*** TODO ***/
 /*
@@ -18,6 +20,7 @@
 
 int main ()
 {
+  Config();
   FGame game;
   return game.mainLoop();
 }

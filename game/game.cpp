@@ -4,7 +4,8 @@
 #include <iostream>
 #include <cmath>
 
-FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
+FGame::FGame () :
+  sf::RenderWindow(sf::VideoMode (CG::WIDTH, CG::HEIGHT ), "SFML"),
   m_event(), m_clock(), m_font_stream(ResourceManager::fetchMe("rc_8bitoperator_ttf")),
   m_font(), m_input(),
   m_reinit(false),
@@ -12,7 +13,8 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_menu(nullptr),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
   m_game_over_countdown(),
-  m_lScore(0, true, m_font), m_rScore(0, false, m_font),
+  m_lScore(sf::VideoMode::getDesktopMode().width, true, m_font),
+  m_rScore(sf::VideoMode::getDesktopMode().height, false, m_font),
   m_gameOverText(),
   m_target()
 {
@@ -23,16 +25,16 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_gameOverText.setFont(m_font);
   m_gameOverText.setString("YOU failed!");
   m_gameOverText.setPosition(
-      WIDTH/2 - m_gameOverText.getGlobalBounds().left - m_gameOverText.getGlobalBounds().width/2,
-      HEIGHT/2 - m_gameOverText.getGlobalBounds().top - m_gameOverText.getGlobalBounds().height/2
+      CG::WIDTH/2 - m_gameOverText.getGlobalBounds().left - m_gameOverText.getGlobalBounds().width/2,
+      CG::HEIGHT/2 - m_gameOverText.getGlobalBounds().top - m_gameOverText.getGlobalBounds().height/2
       );
   m_gameOverText.setFillColor(sf::Color::White);
 
   sf::Color menuColor = sf::Color::Magenta;
   menuColor.a = 127;
   m_menu = new Menu(m_font, menuColor);
-  sf::Vector2f margins{WIDTH/20, HEIGHT/20};
-  sf::Vector2f paddings{WIDTH/40, HEIGHT/40};
+  sf::Vector2f margins{(float)CG::WIDTH/20, (float)CG::HEIGHT/20};
+  sf::Vector2f paddings{(float)CG::WIDTH/40, (float)CG::HEIGHT/40};
 
   m_rSlime.setMainCharacter(false);
   m_bSlime.setMainCharacter(true);
@@ -43,7 +45,7 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
   m_menu->addButton ("[Mode un joueur]", button_color, margins, paddings);
   //m_menu->addButton ("[Mode deux joueurs online]", sf::Color::Green, margins);
   //m_menu->addButton ("[Histoire]", sf::Color::Green, margins);
-  m_menu->setPosition (WIDTH/2, HEIGHT/2);
+  m_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
 
   rebuildGame();
 }
@@ -51,28 +53,28 @@ FGame::FGame () : sf::RenderWindow( sf::VideoMode ( WIDTH, HEIGHT ), "SFML"),
 void FGame::rebuildGame()
 {
   m_bSlime.reinit();
-  m_bSlime.setX (WIDTH/4);
-  m_bSlime.setY (HEIGHT);
-  m_bSlime.clampTo(sf::FloatRect(0, 0, WIDTH/2 - NET_WIDTH/2, HEIGHT));
+  m_bSlime.setX (CG::WIDTH/4);
+  m_bSlime.setY (CG::HEIGHT);
+  m_bSlime.clampTo(sf::FloatRect(0, 0, CG::WIDTH/2 - CG::NET_WIDTH/2, CG::HEIGHT));
 
   m_rSlime.reinit();
-  m_rSlime.setX (3*WIDTH/4);
-  m_rSlime.setY (HEIGHT);
-  m_rSlime.clampTo(sf::FloatRect(WIDTH/2 + NET_WIDTH/2, 0, WIDTH/2 - NET_WIDTH/2, HEIGHT));
+  m_rSlime.setX (3*CG::WIDTH/4);
+  m_rSlime.setY (CG::HEIGHT);
+  m_rSlime.clampTo(sf::FloatRect(CG::WIDTH/2 + CG::NET_WIDTH/2, 0, CG::WIDTH/2 - CG::NET_WIDTH/2, CG::HEIGHT));
 
   m_ball.reinit();
   if (m_branch_mode == BranchMode::BLUE_LOST)
-    m_ball.setX(3*WIDTH/4);
+    m_ball.setX(3*CG::WIDTH/4);
   else
-    m_ball.setX (WIDTH/4);
-  m_ball.setY (2*HEIGHT/3);
-  m_ball.clampTo(sf::FloatRect(0, 0, WIDTH, HEIGHT));
+    m_ball.setX (CG::WIDTH/4);
+  m_ball.setY (2*CG::HEIGHT/3);
+  m_ball.clampTo(sf::FloatRect(0, 0, CG::WIDTH, CG::HEIGHT));
 
   m_net.reinit();
-  m_net.setPosition (WIDTH/2, HEIGHT - NET_HEIGHT/2);
+  m_net.setPosition (CG::WIDTH/2, CG::HEIGHT - CG::NET_HEIGHT/2);
 
   m_lScore.setPosition(0,0);
-  m_rScore.setPosition(WIDTH,0);
+  m_rScore.setPosition(CG::WIDTH,0);
 
   m_branch_mode = BranchMode::PLAYING;
 
@@ -117,12 +119,12 @@ int FGame::mainLoop ()
           m_event.type == sf::Event::TouchEnded)
       {
         m_target.setPosition(m_event.touch.x, m_event.touch.y);
-        if (m_event.touch.x >= WIDTH/2)
+        if (m_event.touch.x >= CG::WIDTH/2)
         {
           m_rSlime.setMainCharacter(true);
           m_bSlime.setMainCharacter(false);
         }
-        if (m_event.touch.x <= WIDTH/2)
+        if (m_event.touch.x <= CG::WIDTH/2)
         {
           m_rSlime.setMainCharacter(false);
           m_bSlime.setMainCharacter(true);
@@ -150,7 +152,7 @@ int FGame::mainLoop ()
       m_rSlime.pushState();
       m_ball.pushState();
 
-      for (int i = 0; i < BALL_ANTICIPATION; ++i)
+      for (int i = 0; i < CG::BALL_ANTICIPATION; ++i)
       {
         m_ball.updatePath(i);
         collide(eps);
@@ -171,7 +173,7 @@ int FGame::mainLoop ()
 
       if (m_ball.getOnGround()) // Game over ! Mais pour qui ?
       {
-        if (m_ball.getPosition().x > WIDTH/2)
+        if (m_ball.getPosition().x > CG::WIDTH/2)
         {
           m_branch_mode = BranchMode::RED_LOST;
           m_gameOverText.setFillColor(sf::Color::Red);
@@ -231,8 +233,8 @@ void FGame::collide (float dt)
 
   /* bSlime et balle */
   float t = collideTwoCircles(
-      m_bSlime.getPosition(), SLIME_HEIGHT, m_bSlime.getSpeed(),
-      m_ball.getPosition(), BALL_RADIUS, m_ball.getSpeed(), dt);
+      m_bSlime.getPosition(), CG::SLIME_HEIGHT, m_bSlime.getSpeed(),
+      m_ball.getPosition(), CG::BALL_RADIUS, m_ball.getSpeed(), dt);
   if (t >= 0.) // Intersection !
   {
     /* cf. https://en.wikipedia.org/wiki/Elastic_collision */
@@ -245,14 +247,14 @@ void FGame::collide (float dt)
     sf::Vector2f deltaX = x2 - x1;
     sf::Vector2f v2p = v2 - 2*dotProduct(v2 - v1, deltaX)
       *deltaX/abs2(deltaX);
-    v2p *= BALL_ELASTICITY*SLIME_ELASTICITY;
+    v2p *= CG::BALL_ELASTICITY*CG::SLIME_ELASTICITY;
     m_ball.setSpeed(v2p);
   }
 
   /* rSlime et balle */
   t = collideTwoCircles(
-      m_rSlime.getPosition(), SLIME_HEIGHT, m_rSlime.getSpeed(),
-      m_ball.getPosition(), BALL_RADIUS, m_ball.getSpeed(), dt);
+      m_rSlime.getPosition(), CG::SLIME_HEIGHT, m_rSlime.getSpeed(),
+      m_ball.getPosition(), CG::BALL_RADIUS, m_ball.getSpeed(), dt);
   if (t >= 0.) // Intersection !
   {
     sf::Vector2f v1 = m_rSlime.getSpeed();
@@ -263,7 +265,7 @@ void FGame::collide (float dt)
     sf::Vector2f deltaX = x2 - x1;
     sf::Vector2f v2p = v2 - 2*dotProduct(v2 - v1, deltaX)
       *deltaX/abs2(deltaX);
-    v2p *= BALL_ELASTICITY*SLIME_ELASTICITY;
+    v2p *= CG::BALL_ELASTICITY*CG::SLIME_ELASTICITY;
     m_ball.setSpeed(v2p);
   }
 
@@ -271,7 +273,7 @@ void FGame::collide (float dt)
   /* filet et balle */
   sf::Vector2f bounce = collideWithFixRectangle(
       m_net.getBox(),
-      m_ball.getPosition(), BALL_RADIUS,m_ball.getSpeed(),  dt
+      m_ball.getPosition(), CG::BALL_RADIUS,m_ball.getSpeed(),  dt
       );
 
   if (abs2(bounce) != 0.)

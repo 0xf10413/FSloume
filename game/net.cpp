@@ -2,7 +2,7 @@
 
 Net::Net () : MovingEntity()
 {
-  m_image.create (NET_WIDTH, NET_HEIGHT, sf::Color::Yellow);
+  m_image.create (CG::NET_WIDTH, CG::NET_HEIGHT, sf::Color::Yellow);
   m_texture.loadFromImage (m_image);
   m_sprite.setTexture(m_texture);
 }
@@ -34,17 +34,17 @@ sf::Vector2f Net::getPosition() const
 void Net::updateSprite()
 {
   m_sprite.setPosition(
-      m_x - NET_WIDTH/2,
-      m_y - NET_HEIGHT/2
+      m_x - (float)CG::NET_WIDTH/2,
+      m_y - (float)CG::NET_HEIGHT/2
       );
 }
 
 sf::FloatRect Net::getBox() const
 {
   sf::FloatRect rect;
-  rect.top = m_y - NET_HEIGHT/2;
-  rect.left = m_x - NET_WIDTH/2;
-  rect.height = NET_HEIGHT;
-  rect.width = NET_WIDTH;
+  rect.top = m_y - (float)CG::NET_HEIGHT/2;
+  rect.left = m_x - (float)CG::NET_WIDTH/2;
+  rect.height = (float)CG::NET_HEIGHT;
+  rect.width = (float)CG::NET_WIDTH;
   return rect;
 }

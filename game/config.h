@@ -5,36 +5,45 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-/* Taille du plateau en px */
-constexpr int WIDTH = 900;
-constexpr int HEIGHT = 500;
+class Config
+{
+private:
+  void updateParams();
+public:
+  /* Taille du plateau en px */
+  static int WIDTH;
+  static int HEIGHT;
 
-/* Taille d'un slime en px */
-constexpr int SLIME_WIDTH = WIDTH/8;
-constexpr int SLIME_HEIGHT = SLIME_WIDTH/2;
-constexpr int PUPIL_RADIUS = 5;
-// Maximise la taille de l'œil avec les coordonnées choisies
-constexpr int EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 2. ) ) /8);
-constexpr int EYE_RADIUS = (int)sqrt(EYE_RADIUS_SQUARED);
+  /* Taille d'un slime en px */
+  static int SLIME_WIDTH;
+  static int SLIME_HEIGHT;
+  static int PUPIL_RADIUS;
+  // Maximise la taille de l'œil avec les coordonnées choisies
+  static int EYE_RADIUS_SQUARED;
+  static int EYE_RADIUS;
 
-/* Taille du filet */
-constexpr int NET_WIDTH = WIDTH/6;
-constexpr int NET_HEIGHT = SLIME_HEIGHT*2;
+  /* Taille du filet */
+  static int NET_WIDTH;
+  static int NET_HEIGHT;
 
-/* Taille de la balle */
-constexpr int BALL_RADIUS = 20;
+  /* Taille de la balle */
+  static int BALL_RADIUS;
 
-/* Pas d'anticipation sur le mouvement de la balle */
-constexpr int BALL_ANTICIPATION = 100;
+  /* Pas d'anticipation sur le mouvement de la balle */
+  static int BALL_ANTICIPATION;
 
-/* Paramètres physiques */
-constexpr float JUMP_DURATION = 1; // Durée du saut en s
-constexpr int JUMP_MAX_HEIGHT = HEIGHT/8;
-constexpr int SLIME_HORIZONTAL_SPEED = 240;
-constexpr float BALL_ELASTICITY = .9f; // Elasticité de la balle, entre 0 et 1
-constexpr float SLIME_ELASTICITY = .9f; // Elasticité du sloume, entre 0 et 1
-// Calculés automatiquement
-constexpr int GRAVITY = 8*JUMP_MAX_HEIGHT/JUMP_DURATION/JUMP_DURATION;
-constexpr int SLIME_JUMP_SPEED = 4*JUMP_MAX_HEIGHT/JUMP_DURATION;
+  /* Paramètres physiques */
+  static float JUMP_DURATION; // Durée du saut en s
+  static int JUMP_MAX_HEIGHT;
+  static int SLIME_HORIZONTAL_SPEED;
+  static float BALL_ELASTICITY; // Elasticité de la balle, entre 0 et 1
+  static float SLIME_ELASTICITY; // Elasticité du sloume, entre 0 et 1
+  // Calculés automatiquement
+  static float GRAVITY;
+  static int SLIME_JUMP_SPEED;
 
+  Config();
+};
+
+typedef Config CG;
 #endif

@@ -4,9 +4,9 @@
 Ball::Ball() :
   MovingEntity(),
   m_clamp(),
-  m_path(BALL_ANTICIPATION, sf::Color::Red)
+  m_path(CG::BALL_ANTICIPATION, sf::Color::Red)
 {
-  m_image.create(BALL_RADIUS*2, BALL_RADIUS*2, sf::Color::Red);
+  m_image.create(CG::BALL_RADIUS*2, CG::BALL_RADIUS*2, sf::Color::Red);
   makeADisk(m_image);
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture(m_texture);
@@ -36,24 +36,24 @@ void Ball::move (float dt)
   m_y += dt*m_vy;
 
   /* Perte de vitesse avec la gravité */
-  m_vy += GRAVITY*dt;
+  m_vy += CG::GRAVITY*dt;
 
-  if (m_x < m_clamp.left + BALL_RADIUS)
+  if (m_x < m_clamp.left + (float)CG::BALL_RADIUS)
   {
-    m_x = m_clamp.left + BALL_RADIUS;
-    m_vx = -m_vx*BALL_ELASTICITY;
+    m_x = m_clamp.left + (float)CG::BALL_RADIUS;
+    m_vx = -m_vx*CG::BALL_ELASTICITY;
   }
 
-  if (m_x > m_clamp.left + m_clamp.width - BALL_RADIUS)
+  if (m_x > m_clamp.left + m_clamp.width - (float)CG::BALL_RADIUS)
   {
-    m_x = m_clamp.left + m_clamp.width - BALL_RADIUS;
-    m_vx = -m_vx*BALL_ELASTICITY;
+    m_x = m_clamp.left + m_clamp.width - (float)CG::BALL_RADIUS;
+    m_vx = -m_vx*CG::BALL_ELASTICITY;
   }
 
-  if (m_y > m_clamp.top + m_clamp.height - BALL_RADIUS) // Cas spécial : contact au sol
+  if (m_y > m_clamp.top + m_clamp.height - (float)CG::BALL_RADIUS) // Cas spécial : contact au sol
   {
-    m_y = m_clamp.top + m_clamp.height - BALL_RADIUS;
-    m_vy = -m_vy*BALL_ELASTICITY;
+    m_y = m_clamp.top + m_clamp.height - (float)CG::BALL_RADIUS;
+    m_vy = -m_vy*CG::BALL_ELASTICITY;
     m_onGround = true;
   }
 
@@ -63,8 +63,8 @@ void Ball::move (float dt)
 void Ball::updateSprite()
 {
   m_sprite.setPosition(
-      m_x - BALL_RADIUS,
-      m_y - BALL_RADIUS
+      m_x - (float)CG::BALL_RADIUS,
+      m_y - (float)CG::BALL_RADIUS
       );
 }
 

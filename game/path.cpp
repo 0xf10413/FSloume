@@ -29,11 +29,11 @@ void Path::setPosition(int i, float x, float y)
     m_pieces[0].position = {x, y};
 
   m_pieces[2*i+1].position = {x, y};
-  m_pieces[2*i+1].color.r = (x > WIDTH/2)*255;
+  m_pieces[2*i+1].color.r = (float)((x > CG::WIDTH/2)*255);
   m_pieces[2*i+1].color.b = 255;
-  m_pieces[2*i+1].color.g = (x < WIDTH/2)*255;
+  m_pieces[2*i+1].color.g = (unsigned)(x < CG::WIDTH/2)*255;
   m_pieces[2*i+2].position = {x, y};
-  m_pieces[2*i+2].color.r = (x > WIDTH/2)*255;
+  m_pieces[2*i+2].color.r = (x > CG::WIDTH/2)*255;
   m_pieces[2*i+2].color.b = 255;
-  m_pieces[2*i+2].color.g = (x < WIDTH/2)*255;
+  m_pieces[2*i+2].color.g = (x < CG::WIDTH/2)*255;
 }
