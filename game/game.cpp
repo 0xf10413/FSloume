@@ -13,8 +13,8 @@ FGame::FGame () :
   m_menu(nullptr),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
   m_game_over_countdown(),
-  m_lScore(sf::VideoMode::getDesktopMode().width, true, m_font),
-  m_rScore(sf::VideoMode::getDesktopMode().height, false, m_font),
+  m_lScore(0, true, m_font),
+  m_rScore(0, false, m_font),
   m_gameOverText(),
   m_target()
 {

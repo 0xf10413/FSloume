@@ -5,8 +5,12 @@
 Config::Config()
 {
   /* Taille du plateau en px */
+  WIDTH = 900;
+  HEIGHT = 480;
+#ifdef F_CONFIG_ANDROID
   WIDTH = (signed)sf::VideoMode::getDesktopMode().width;
   HEIGHT = (signed)sf::VideoMode::getDesktopMode().height;
+#endif
 
   updateParams();
 }
@@ -16,17 +20,17 @@ void Config::updateParams()
   /* Taille d'un slime en px */
   SLIME_WIDTH = WIDTH/8;
   SLIME_HEIGHT = SLIME_WIDTH/2;
-  PUPIL_RADIUS = 5;
   // Maximise la taille de l'œil avec les coordonnées choisies
   EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 2. ) ) /8);
   EYE_RADIUS = (int)sqrt(EYE_RADIUS_SQUARED);
+  PUPIL_RADIUS = EYE_RADIUS/3;
 
   /* Taille du filet */
   NET_WIDTH = WIDTH/6;
   NET_HEIGHT = SLIME_HEIGHT*2;
 
   /* Taille de la balle */
-  BALL_RADIUS = 20;
+  BALL_RADIUS = SLIME_HEIGHT/4;
 
   /* Pas d'anticipation sur le mouvement de la balle */
   BALL_ANTICIPATION = 100;
@@ -34,7 +38,7 @@ void Config::updateParams()
   /* Paramètres physiques */
   JUMP_DURATION = 1; // Durée du saut en s
   JUMP_MAX_HEIGHT = HEIGHT/8;
-  SLIME_HORIZONTAL_SPEED = 240;
+  SLIME_HORIZONTAL_SPEED = WIDTH/5;
   BALL_ELASTICITY = .9f; // Elasticité de la balle, entre 0 et 1
   SLIME_ELASTICITY = .9f; // Elasticité du sloume, entre 0 et 1
   // Calculés automatiquement
