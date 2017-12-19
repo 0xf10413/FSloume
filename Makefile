@@ -13,12 +13,14 @@ CXX=g++
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
 			 -Wconversion -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
-			 -Wunreachable-code -fPIC
+			 -Wunreachable-code -fPIC -fprofile-arcs -ftest-coverage
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
-				 -Wunreachable-code -Wconversion -fPIC
+				 -Wunreachable-code -Wconversion -fPIC -fprofile-arcs -ftest-coverage
 
 # Linker flags
-LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
+LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics -lgcov \
+				-fprofile-arcs -ftest-coverage
+
 
 # Resource builder
 RC_BUILD = ./tools/objectify.py
@@ -83,6 +85,10 @@ DEPS_TEST+=$(DEPS_CXX_TEST)
 # Main build target
 all: check_source_exists $(BIN)
 
+# Just an alias for everything that needs to be rebuild
+# if the Makefile changes
+FORCE_REBUILD: Makefile
+
 check_source_exists:
 ifeq ($(SRC_CXX_GAME)$(SRC_C_GAME),)
 	$(error "No source file. Build failed !")
@@ -114,25 +120,25 @@ $(BUILD_DIR)/$(BIN_TEST): $(OBJ_TEST) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 
 
 # General build target
-$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER)
+$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CXX) -o $@ -c $< $(CXXFLAGS) -MMD
 
-$(BUILD_DIR)/%.o: %.c $(RC_HEADER)
+$(BUILD_DIR)/%.o: %.c $(RC_HEADER) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CC) -o $@ -c $< $(CFLAGS) -MMD
 
-%.o: %.c
+%.o: %.c FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CC) -o $@ -c $< $(CFLAGS) -MMD
 
 # Building resources
-$(BUILD_DIR)/%.c : %
+$(BUILD_DIR)/%.c : % FORCE_REBUILD
 	@mkdir -pv $(@D)
-	$(RC_BUILD) rc2c $^ --output $@
+	$(RC_BUILD) rc2c $< --output $@
 
 # Building rc.h
-$(RC_HEADER): $(RC_ALL)
+$(RC_HEADER): $(RC_ALL) FORCE_REBUILD
 	$(RC_BUILD) rc2h rc/ --output $@
 
 # Clean-up targets
@@ -140,7 +146,7 @@ $(RC_HEADER): $(RC_ALL)
 clean:
 	-rm -f $(BUILD_DIR)/$(BIN) $(BUILD_DIR)/$(BIN_TEST) \
 		$(BUILD_DIR)/$(LIB_GAME_FULL_NAME) $(OBJ_GAME) $(OBJ_TEST) \
-	 	$(DEPS_GAME) $(DEPS_TEST)
+	 	$(DEPS_GAME) $(DEPS_TEST) *.gcda *.gcno
 
 mrproper: clean
 	-rm -rf $(BUILD_DIR) $(RC_HEADER)
@@ -157,6 +163,12 @@ debug: all
 
 memcheck: all
 	-LD_LIBRARY_PATH=$(BUILD_DIR) valgrind $(BUILD_DIR)/$(BIN)
+
+coverage: test
+	-mkdir -pv $(BUILD_DIR)/gcov
+	-gcov -r $(SRC_CXX_GAME:%=$(BUILD_DIR)/%)
+	-mv *.gcov $(BUILD_DIR)/gcov
+	-ag "#####" $(BUILD_DIR)/gcov
 
 ## Makefile debug
 # Keep intermediary files
