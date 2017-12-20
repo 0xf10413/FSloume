@@ -78,6 +78,7 @@ DEPS_C_TEST=$(OBJ_C_TEST:%.o=%.d)
 DEPS_TEST=$(DEPS_C_TEST)
 DEPS_TEST+=$(DEPS_CXX_TEST)
 
+
 ###
 # Rules
 ##################
@@ -150,6 +151,7 @@ clean:
 
 mrproper: clean
 	-rm -rf $(BUILD_DIR) $(RC_HEADER)
+	-cd android && make mrproper
 
 # Launch targets
 launch: all
@@ -169,6 +171,9 @@ coverage: test
 	-gcov -r $(SRC_CXX_GAME:%=$(BUILD_DIR)/%)
 	-mv *.gcov $(BUILD_DIR)/gcov
 	-ag "#####" $(BUILD_DIR)/gcov
+
+android: $(SRC_RC) $(RC_HEADER) $(SRC_CXX_GAME)
+	-cd android && make
 
 ## Makefile debug
 # Keep intermediary files

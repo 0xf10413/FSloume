@@ -1,0 +1,5 @@
+.externalNativeBuild
+.gradle
+CppList.mk
+build/
+local.properties

@@ -1,0 +1,30 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fsloume.fsloume">
+
+   <application
+       android:label="SFML"
+       android:hasCode="false"
+       android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+       >
+       <activity
+           android:name="android.app.NativeActivity"
+           android:label="SFML"
+           android:screenOrientation="landscape"
+           >
+           <meta-data
+               android:name="android.app.lib_name"
+               android:value="sfml-activity">
+           </meta-data>
+           <meta-data
+               android:name="sfml.app.lib_name"
+               android:value="sfml-example">
+           </meta-data>
+           <intent-filter>
+               <action android:name="android.intent.action.MAIN" />
+               <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+       </activity>
+   </application>
+
+
+</manifest>
