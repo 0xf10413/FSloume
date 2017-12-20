@@ -29,6 +29,9 @@ public:
   /* Taille de la balle */
   static int BALL_RADIUS;
 
+  /* Taille du panneau danger */
+  static int DANGERPT_WIDTH;
+
   /* Pas d'anticipation sur le mouvement de la balle */
   static int BALL_ANTICIPATION;
 
@@ -46,4 +49,5 @@ public:
 };
 
 typedef Config CG;
+
 #endif

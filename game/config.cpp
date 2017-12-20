@@ -32,6 +32,9 @@ void Config::updateParams()
   /* Taille de la balle */
   BALL_RADIUS = SLIME_HEIGHT/6;
 
+  /* Taille du panneau de danger */
+  DANGERPT_WIDTH = 2*BALL_RADIUS;
+
   /* Pas d'anticipation sur le mouvement de la balle */
   BALL_ANTICIPATION = 100;
 
@@ -59,6 +62,8 @@ int Config::NET_WIDTH;
 int Config::NET_HEIGHT;
 
 int Config::BALL_RADIUS;
+
+int Config::DANGERPT_WIDTH;
 
 int Config::BALL_ANTICIPATION;
 

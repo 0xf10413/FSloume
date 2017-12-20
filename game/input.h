@@ -7,8 +7,9 @@
 class Input {
 private:
   std::map<int, bool> keyDowns;
-  bool touchDown;
-  sf::Vector2f touchPlace;
+  static const size_t maxFingers = 5;
+  bool touchDowns[maxFingers];
+  sf::Vector2f touchPlaces[maxFingers];
 public:
   Input();
   void process (const sf::Event &e);

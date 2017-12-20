@@ -86,13 +86,16 @@ void Slime::prepareMove(const Input &input)
   if (m_main_character && input.isTouchDown())
   {
     sf::Vector2f touchDown = input.whereIsTouch();
-    if (std::abs(touchDown.x - m_x) >= 1.) // évite les vibrations
+    if (std::abs(touchDown.x - m_x) >= 2.) // évite les vibrations
     {
-      if (touchDown.x < m_x)
-        m_vx = -CG::SLIME_HORIZONTAL_SPEED;
-      else if (touchDown.x > m_x)
-        m_vx = +CG::SLIME_HORIZONTAL_SPEED;
-      if (touchDown.y*2 < CG::HEIGHT)
+      if (touchDown.y*2 > CG::HEIGHT)
+      {
+        if (touchDown.x < CG::WIDTH/2)
+          m_vx = -CG::SLIME_HORIZONTAL_SPEED;
+        else if (touchDown.x > CG::WIDTH/2)
+          m_vx = +CG::SLIME_HORIZONTAL_SPEED;
+      }
+      else
         jump();
     }
   }

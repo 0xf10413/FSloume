@@ -1,8 +1,10 @@
 #include "input.h"
+#include <cassert>
 
-Input::Input() : keyDowns(), touchDown(false), touchPlace()
+Input::Input() : keyDowns(), touchDowns(), touchPlaces()
 {
   for (int i = 0; i < sf::Keyboard::KeyCount; i++) keyDowns[i] = false;
+  for (size_t i = 0; i < maxFingers; ++i) touchDowns[i] = false;
 }
 
 void Input::process (const sf::Event &e)
@@ -13,18 +15,18 @@ void Input::process (const sf::Event &e)
     keyDowns[e.key.code] = false;
   else if (e.type == sf::Event::TouchBegan)
   {
-    touchPlace.x = (float)e.touch.x;
-    touchPlace.y = (float)e.touch.y;
-    touchDown = true;
+    touchPlaces[e.touch.finger].x = (float)e.touch.x;
+    touchPlaces[e.touch.finger].y = (float)e.touch.y;
+    touchDowns[e.touch.finger] = true;
   }
   else if (e.type == sf::Event::TouchEnded)
   {
-    touchDown = false;
+    touchDowns[e.touch.finger] = false;
   }
   else if (e.type == sf::Event::TouchMoved)
   {
-    touchPlace.x = (float)e.touch.x;
-    touchPlace.y = (float)e.touch.y;
+    touchPlaces[e.touch.finger].x = (float)e.touch.x;
+    touchPlaces[e.touch.finger].y = (float)e.touch.y;
   }
 }
 
@@ -35,11 +37,14 @@ bool Input::isKeyDown (int i) const
 
 bool Input::isTouchDown () const
 {
-  return touchDown;
+  return std::find(std::begin(touchDowns), std::end(touchDowns), true) != std::end(touchDowns);
 }
 
 sf::Vector2f Input::whereIsTouch() const
 {
-  return touchPlace;
+  size_t i = maxFingers-1;
+  for (; i < maxFingers && !touchDowns[i]; --i);
+  assert (i < maxFingers);
+  return touchPlaces[i];
 }
 

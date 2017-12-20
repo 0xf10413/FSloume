@@ -17,12 +17,13 @@ FGame::FGame () :
   m_lScore(0, true, m_font),
   m_rScore(0, false, m_font),
   m_gameOverText(),
-  m_target()
+  m_target(),
+  m_dangerpt(sf::Color::Magenta)
 {
   setFramerateLimit (60);
   m_font.loadFromStream (m_font_stream);
 
-  m_game_mode = GameMode::TWO_PLAYERS; // Changer à TITLE pour afficher le menu
+  m_game_mode = GameMode::ONE_PLAYER; // Changer à TITLE pour afficher le menu
   m_gameOverText.setFont(m_font);
   m_gameOverText.setString("YOU failed!");
   m_gameOverText.setPosition(
@@ -43,7 +44,7 @@ FGame::FGame () :
   sf::Color button_color = sf::Color::Green;
   button_color.a = 127;
   m_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
-  m_menu->addButton ("[Mode un joueur]", button_color, margins, paddings);
+  m_menu->addButton ("Mode un joueur", button_color, margins, paddings);
   //m_menu->addButton ("[Mode deux joueurs online]", sf::Color::Green, margins);
   //m_menu->addButton ("[Histoire]", sf::Color::Green, margins);
   m_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
@@ -112,6 +113,11 @@ int FGame::mainLoop ()
           m_game_mode = GameMode::TWO_PLAYERS;
           m_reinit = true;
         }
+        if (click == "Mode un joueur")
+        {
+          m_game_mode = GameMode::ONE_PLAYER;
+          m_reinit = true;
+        }
         if (!click.empty())
           std::cout << "Click : " << click << std::endl;
       }
@@ -121,16 +127,16 @@ int FGame::mainLoop ()
           m_event.type == sf::Event::TouchEnded)
       {
         m_target.setPosition(m_event.touch.x, m_event.touch.y);
-        if (m_event.touch.x >= CG::WIDTH/2)
-        {
-          m_rSlime.setMainCharacter(true);
-          m_bSlime.setMainCharacter(false);
-        }
-        if (m_event.touch.x <= CG::WIDTH/2)
-        {
-          m_rSlime.setMainCharacter(false);
-          m_bSlime.setMainCharacter(true);
-        }
+        //if (m_event.touch.x >= CG::WIDTH/2)
+        //{
+        //  m_rSlime.setMainCharacter(true);
+        //  m_bSlime.setMainCharacter(false);
+        //}
+        //if (m_event.touch.x <= CG::WIDTH/2)
+        //{
+        //  m_rSlime.setMainCharacter(false);
+        //  m_bSlime.setMainCharacter(true);
+        //}
       }
     }
 
@@ -143,7 +149,7 @@ int FGame::mainLoop ()
     /* Branche principale de jeu */
     if (m_branch_mode == BranchMode::PLAYING)
     {
-      if (m_game_mode == GameMode::TWO_PLAYERS)
+      if (m_game_mode == GameMode::TWO_PLAYERS || m_game_mode == GameMode::ONE_PLAYER)
       {
         m_bSlime.prepareMove(m_input);
         m_rSlime.prepareMove(m_input);
@@ -154,7 +160,7 @@ int FGame::mainLoop ()
       m_rSlime.pushState();
       m_ball.pushState();
 
-      sf::Vector2f dangerPt (-2, -2);
+      m_dangerpt.setPosition({-100, -100});
       for (int i = 0; i < CG::BALL_ANTICIPATION; ++i)
       {
         m_ball.updatePath(i);
@@ -162,12 +168,14 @@ int FGame::mainLoop ()
         {
           collide(eps);
           m_ball.move(eps);
+          //IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition());
+          //IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
           m_bSlime.move(eps, m_ball);
           m_rSlime.move(eps, m_ball);
         }
         else
         {
-          dangerPt = m_ball.getPosition();
+          m_dangerpt.setPosition(m_ball.getPosition());
         }
       }
 
@@ -176,9 +184,15 @@ int FGame::mainLoop ()
       m_ball.popState();
 
       /* Action IA */
-      IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, dangerPt);
-      IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, dangerPt);
-
+      if (m_game_mode == GameMode::TITLE)
+      {
+        IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition());
+        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
+      }
+      if (m_game_mode == GameMode::ONE_PLAYER)
+      {
+        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
+      }
 
 
       collide (eps);
@@ -234,7 +248,9 @@ int FGame::mainLoop ()
 
     if (m_branch_mode != BranchMode::PLAYING)
       draw(m_gameOverText);
-    m_target.draw(*this);
+    if (m_input.isTouchDown())
+      m_target.draw(*this);
+    m_dangerpt.draw(*this);
 
     display();
   }
