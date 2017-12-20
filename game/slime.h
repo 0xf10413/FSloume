@@ -11,6 +11,7 @@
 class Slime : public MovingEntity
 {
 private:
+    friend class IA;
     Eye m_eye;
     bool m_alignLeft;
     bool m_lost;
