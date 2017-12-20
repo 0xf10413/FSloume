@@ -38,6 +38,7 @@ void Ball::move (float dt)
   /* Perte de vitesse avec la gravité */
   m_vy += CG::GRAVITY*dt;
 
+  /* Contact sur les murs */
   if (m_x < m_clamp.left + (float)CG::BALL_RADIUS)
   {
     m_x = m_clamp.left + (float)CG::BALL_RADIUS;
@@ -48,6 +49,12 @@ void Ball::move (float dt)
   {
     m_x = m_clamp.left + m_clamp.width - (float)CG::BALL_RADIUS;
     m_vx = -m_vx*CG::BALL_ELASTICITY;
+  }
+
+  if (m_y <= - (float)CG::BALL_RADIUS)
+  {
+    m_y = CG::BALL_RADIUS;
+    m_vy = -m_vy*CG::BALL_ELASTICITY;
   }
 
   if (m_y > m_clamp.top + m_clamp.height - (float)CG::BALL_RADIUS) // Cas spécial : contact au sol

@@ -37,6 +37,7 @@ void MovingEntity::popState()
   m_vx = m_saved_state[2];
   m_vy = m_saved_state[3];
   m_onGround = (bool)m_saved_state[4];
+  updateSprite();
 }
 
 bool MovingEntity::getOnGround() const

@@ -26,11 +26,11 @@ void Config::updateParams()
   PUPIL_RADIUS = EYE_RADIUS/3;
 
   /* Taille du filet */
-  NET_WIDTH = WIDTH/6;
+  NET_WIDTH = WIDTH/15;
   NET_HEIGHT = SLIME_HEIGHT*2;
 
   /* Taille de la balle */
-  BALL_RADIUS = SLIME_HEIGHT/4;
+  BALL_RADIUS = SLIME_HEIGHT/6;
 
   /* Pas d'anticipation sur le mouvement de la balle */
   BALL_ANTICIPATION = 100;

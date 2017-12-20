@@ -1,6 +1,7 @@
 #include "game.h"
 #include "config.h"
 #include "utils.h"
+#include "ia.h"
 #include <iostream>
 #include <cmath>
 
@@ -21,7 +22,7 @@ FGame::FGame () :
   setFramerateLimit (60);
   m_font.loadFromStream (m_font_stream);
 
-  m_game_mode = GameMode::TWO_PLAYERS;
+  m_game_mode = GameMode::TWO_PLAYERS; // Changer à TITLE pour afficher le menu
   m_gameOverText.setFont(m_font);
   m_gameOverText.setString("YOU failed!");
   m_gameOverText.setPosition(
@@ -50,6 +51,7 @@ FGame::FGame () :
   rebuildGame();
 }
 
+/* Replace tous les éléments à leurs positions initiales */
 void FGame::rebuildGame()
 {
   m_bSlime.reinit();
@@ -152,24 +154,39 @@ int FGame::mainLoop ()
       m_rSlime.pushState();
       m_ball.pushState();
 
+      sf::Vector2f dangerPt (-2, -2);
       for (int i = 0; i < CG::BALL_ANTICIPATION; ++i)
       {
         m_ball.updatePath(i);
-        collide(eps);
-        m_ball.move(eps);
-        m_bSlime.move(eps, m_ball);
-        m_rSlime.move(eps, m_ball);
+        if (!m_ball.getOnGround())
+        {
+          collide(eps);
+          m_ball.move(eps);
+          m_bSlime.move(eps, m_ball);
+          m_rSlime.move(eps, m_ball);
+        }
+        else
+        {
+          dangerPt = m_ball.getPosition();
+        }
       }
 
       m_bSlime.popState();
       m_rSlime.popState();
       m_ball.popState();
 
+      /* Action IA */
+      IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, dangerPt);
+      IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, dangerPt);
+
+
+
       collide (eps);
 
+      m_ball.move(eps);
       m_bSlime.move(eps, m_ball);
       m_rSlime.move(eps, m_ball);
-      m_ball.move(eps);
+
 
       if (m_ball.getOnGround()) // Game over ! Mais pour qui ?
       {
