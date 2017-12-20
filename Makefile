@@ -78,6 +78,10 @@ DEPS_C_TEST=$(OBJ_C_TEST:%.o=%.d)
 DEPS_TEST=$(DEPS_C_TEST)
 DEPS_TEST+=$(DEPS_CXX_TEST)
 
+# APK file
+APK_NAME=android-arm-debug.apk
+APK_DIR=android/build/outputs/apk/arm/debug/
+
 
 ###
 # Rules
@@ -172,10 +176,14 @@ coverage: test
 	-mv *.gcov $(BUILD_DIR)/gcov
 	-ag "#####" $(BUILD_DIR)/gcov
 
-android: $(SRC_RC) $(RC_HEADER) $(SRC_CXX_GAME)
+apk: $(BUILD_DIR)/$(APK_NAME)
+
+$(BUILD_DIR)/$(APK_NAME): $(APK_DIR)/$(APK_NAME)
+	-cp -v $? $@
+
+$(APK_DIR)/$(APK_NAME): $(SRC_RC) $(RC_HEADER) $(SRC_CXX_GAME)
 	-cd android && make
 
 ## Makefile debug
 # Keep intermediary files
-# Necessary for android (for now…)
-.SECONDARY:
+#.SECONDARY:
