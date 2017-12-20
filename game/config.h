@@ -24,6 +24,9 @@ constexpr int NET_HEIGHT = SLIME_HEIGHT*2;
 /* Taille de la balle */
 constexpr int BALL_RADIUS = 10;
 
+/* Taille du panneau de danger */
+constexpr int DANGERPT_WIDTH = 2*BALL_RADIUS;
+
 /* Pas d'anticipation sur le mouvement de la balle */
 constexpr int BALL_ANTICIPATION = 100;
 

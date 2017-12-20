@@ -11,6 +11,7 @@
 #include "counter.h"
 #include "rc_manager.h"
 #include "target.h"
+#include "dangerpt.h"
 
 class FGame : public sf::RenderWindow
 {
@@ -39,6 +40,8 @@ private:
 
   sf::Text m_gameOverText;
   Target m_target;
+
+  DangerPoint m_dangerpt;
 
   void collide (float); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs
