@@ -18,7 +18,7 @@ private:
     bool m_main_character; // Qui a les contrôles en 1j sur android ?
     enum class MovingHStatus {STOPPED, MOVING, MOVING_WAIT, MOVING_FAST};
     enum class MovingVStatus {STOPPED, JUMPING, JUMPING_WAIT, DOUBLE_JUMPING};
-    enum Direction {LEFT, RIGHT, UP, NONE};
+    enum Direction {LEFT, RIGHT, UP, DOWN, NONE};
     MovingHStatus m_movingh_status[2]; // Statut du déplacement à gauche et à droite
     MovingVStatus m_movingv_status, m_prev_movingv_status; // Statut du déplacement vertical
     sf::Clock m_moving_timer[3];
@@ -27,6 +27,7 @@ private:
 
     virtual void updateSprite() override;
     void jump();
+    void antijump();
 public:
     Slime (bool isLeft);
     void prepareMove(const Input &input); // Enregistre les vitesses demandées

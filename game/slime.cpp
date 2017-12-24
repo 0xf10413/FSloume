@@ -58,6 +58,14 @@ void Slime::jump()
   m_vy -= CG::SLIME_JUMP_SPEED;
 }
 
+/* Starts to cancel a jump */
+void Slime::antijump()
+{
+  if (m_onGround)
+    return;
+  m_vy += CG::SLIME_JUMP_SPEED;
+}
+
 void Slime::prepareMove(const Input &input)
 {
   /* Mise à jour des vitesses en fonction de l'input */
@@ -66,8 +74,10 @@ void Slime::prepareMove(const Input &input)
 #ifndef F_CONFIG_ANDROID
   if (!m_alignLeft)
   {
-    if (input.isKeyDown(sf::Keyboard::Up))
-      dirv = Direction::UP;
+    if (input.isKeyDown(sf::Keyboard::Up) && !input.isKeyDown(sf::Keyboard::Down))
+      dirv = UP;
+    if (input.isKeyDown(sf::Keyboard::Down) && !input.isKeyDown(sf::Keyboard::Up))
+      dirv = DOWN;
     if (input.isKeyDown(sf::Keyboard::Left) && !input.isKeyDown(sf::Keyboard::Right))
       dirh = LEFT;
     else if (input.isKeyDown(sf::Keyboard::Right) && !input.isKeyDown(sf::Keyboard::Left))
@@ -75,8 +85,10 @@ void Slime::prepareMove(const Input &input)
   }
   else
   {
-    if (input.isKeyDown(sf::Keyboard::Z))
+    if (input.isKeyDown(sf::Keyboard::Z) && !input.isKeyDown(sf::Keyboard::S))
       dirv = UP;
+    else if (input.isKeyDown(sf::Keyboard::S) && !input.isKeyDown(sf::Keyboard::Z))
+      dirv = DOWN;
     if (input.isKeyDown(sf::Keyboard::Q) && !input.isKeyDown(sf::Keyboard::D))
       dirh = LEFT;
     else if (input.isKeyDown(sf::Keyboard::D) && !input.isKeyDown(sf::Keyboard::Q))
@@ -102,6 +114,14 @@ void Slime::prepareMove(const Input &input)
           dirv = UP;
       }
     }
+    /* Si aucun saut n'a été demandé, on regarde si une annulation est demandée */
+    if (dirv != UP)
+      for (const auto &v : touchDowns)
+        if (std::abs(v.x - m_x) <= CG::SLIME_WIDTH/2 && v.y >= m_y)
+        {
+          dirv = DOWN;
+          dirh = NONE;
+        }
   }
 #endif
 
@@ -117,7 +137,8 @@ void Slime::prepareMove(const Input &input)
         case MovingHStatus::MOVING:
           break;
         case MovingHStatus::MOVING_WAIT:
-          if (m_moving_timer[i].getElapsedTime().asSeconds() < CG::SLIME_TIME_BOOST)
+          if (m_onGround &&
+              m_moving_timer[i].getElapsedTime().asSeconds() < CG::SLIME_TIME_BOOST)
             m_movingh_status[i] = MovingHStatus::MOVING_FAST;
           break;
         case MovingHStatus::MOVING_FAST:
@@ -178,6 +199,8 @@ void Slime::prepareMove(const Input &input)
         case MovingVStatus::DOUBLE_JUMPING:
           break;
       }
+  if (dirv == DOWN)
+    antijump();
 
   /* Finalisation du mouvement horizontal */
   float dir_f = 0;
