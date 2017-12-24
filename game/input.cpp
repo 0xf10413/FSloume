@@ -4,7 +4,7 @@
 Input::Input() : keyDowns(), touchDowns(), touchPlaces()
 {
   for (int i = 0; i < sf::Keyboard::KeyCount; i++) keyDowns[i] = false;
-  for (size_t i = 0; i < maxFingers; ++i) touchDowns[i] = false;
+  for (size_t i = 0; i < CG::NB_MAX_FINGERS; ++i) touchDowns[i] = false;
 }
 
 void Input::process (const sf::Event &e)
@@ -45,7 +45,7 @@ std::vector<sf::Vector2f> Input::whereAreTouch() const
   size_t i;
   std::vector<sf::Vector2f> touches;
   touches.reserve(3);
-  for (i = 0; i < maxFingers; ++i)
+  for (i = 0; i < CG::NB_MAX_FINGERS; ++i)
     if (touchDowns[i])
       touches.push_back(touchPlaces[i]);
   return touches;

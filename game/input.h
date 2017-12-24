@@ -3,13 +3,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <map>
+#include "config.h"
 
 class Input {
 private:
   std::map<int, bool> keyDowns;
-  static const size_t maxFingers = 5;
-  bool touchDowns[maxFingers];
-  sf::Vector2f touchPlaces[maxFingers];
+  bool touchDowns[CG::NB_MAX_FINGERS];
+  sf::Vector2f touchPlaces[CG::NB_MAX_FINGERS];
 public:
   Input();
   void process (const sf::Event &e);

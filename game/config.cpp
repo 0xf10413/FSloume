@@ -40,6 +40,10 @@ void Config::updateParams()
   /* Taille du panneau de danger */
   DANGERPT_WIDTH = 2*BALL_RADIUS;
 
+  /* Taille des mires */
+  TARGET_WIDTH = WIDTH/8;
+  TARGET_HEIGHT = HEIGHT/8;
+
   /* Pas d'anticipation sur le mouvement de la balle */
   BALL_ANTICIPATION = 100;
 
@@ -59,6 +63,9 @@ void Config::updateParams()
 int Config::WIDTH;
 int Config::HEIGHT;
 
+const size_t Config::NB_MAX_FINGERS;
+
+
 
 unsigned int Config::FONT_BASE_SIZE_PX;
 
@@ -74,6 +81,9 @@ int Config::NET_HEIGHT;
 int Config::BALL_RADIUS;
 
 int Config::DANGERPT_WIDTH;
+
+unsigned int Config::TARGET_WIDTH;
+unsigned int Config::TARGET_HEIGHT;
 
 int Config::BALL_ANTICIPATION;
 

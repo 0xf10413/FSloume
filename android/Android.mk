@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := sfml-example
+LOCAL_MODULE    := sloume-module
 
 include CppList.mk
 

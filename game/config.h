@@ -14,6 +14,9 @@ public:
   static int WIDTH;
   static int HEIGHT;
 
+  /* Nb max de doigts gérés (android) */
+  static const size_t NB_MAX_FINGERS = 10;
+
   /* Taille de base de la police */
   static unsigned int FONT_BASE_SIZE_PX;
 
@@ -34,6 +37,10 @@ public:
 
   /* Taille du panneau danger */
   static int DANGERPT_WIDTH;
+
+  /* Taille des mires */
+  static unsigned int TARGET_WIDTH;
+  static unsigned int TARGET_HEIGHT;
 
   /* Pas d'anticipation sur le mouvement de la balle */
   static int BALL_ANTICIPATION;

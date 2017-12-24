@@ -1,6 +1,7 @@
 #ifndef F_GAME_H
 #define F_GAME_H
 
+#include <array>
 #include <SFML/Graphics.hpp>
 
 #include "slime.h"
@@ -39,7 +40,7 @@ private:
   Counter m_lScore, m_rScore;
 
   sf::Text m_gameOverText;
-  Target m_target;
+  std::array<Target,10> m_targets;
 
   DangerPoint m_dangerpt;
 

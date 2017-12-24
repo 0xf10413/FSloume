@@ -19,7 +19,7 @@
            </meta-data>
            <meta-data
                android:name="sfml.app.lib_name"
-               android:value="sfml-example">
+               android:value="sloume-module">
            </meta-data>
            <intent-filter>
                <action android:name="android.intent.action.MAIN" />

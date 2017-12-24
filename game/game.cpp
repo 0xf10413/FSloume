@@ -4,6 +4,7 @@
 #include "ia.h"
 #include <iostream>
 #include <cmath>
+#include <cassert>
 
 FGame::FGame () :
   sf::RenderWindow(sf::VideoMode (CG::WIDTH, CG::HEIGHT ), "SFML"),
@@ -17,7 +18,7 @@ FGame::FGame () :
   m_lScore(0, true, m_font),
   m_rScore(0, false, m_font),
   m_gameOverText(),
-  m_target(),
+  m_targets{},
   m_dangerpt(sf::Color(255,165,0)) // orange
 {
   setFramerateLimit (60);
@@ -122,23 +123,6 @@ int FGame::mainLoop ()
         if (!click.empty())
           std::cout << "Click : " << click << std::endl;
       }
-
-      if (m_event.type == sf::Event::TouchBegan ||
-          m_event.type == sf::Event::TouchMoved ||
-          m_event.type == sf::Event::TouchEnded)
-      {
-        m_target.setPosition(m_event.touch.x, m_event.touch.y);
-        //if (m_event.touch.x >= CG::WIDTH/2)
-        //{
-        //  m_rSlime.setMainCharacter(true);
-        //  m_bSlime.setMainCharacter(false);
-        //}
-        //if (m_event.touch.x <= CG::WIDTH/2)
-        //{
-        //  m_rSlime.setMainCharacter(false);
-        //  m_bSlime.setMainCharacter(true);
-        //}
-      }
     }
 
     if (m_reinit)
@@ -202,6 +186,14 @@ int FGame::mainLoop ()
       m_bSlime.move(eps, m_ball);
       m_rSlime.move(eps, m_ball);
 
+      /* Placement des mires */
+      const std::vector<sf::Vector2f> touches = m_input.whereAreTouch();
+      assert(touches.size() <= m_targets.size());
+      for (size_t i = 0; i < touches.size(); ++i)
+        m_targets[i].setPosition(touches[i].x, touches[i].y);
+      for (size_t i = touches.size(); i < m_targets.size(); ++i)
+        m_targets[i].hide();
+
 
       if (m_ball.getOnGround()) // Game over ! Mais pour qui ?
       {
@@ -249,8 +241,8 @@ int FGame::mainLoop ()
 
     if (m_branch_mode != BranchMode::PLAYING)
       draw(m_gameOverText);
-    if (m_input.isTouchDown())
-      m_target.draw(*this);
+    for (auto &target : m_targets)
+      target.draw(*this);
     m_dangerpt.draw(*this);
 
     display();
