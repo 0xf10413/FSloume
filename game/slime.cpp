@@ -5,6 +5,8 @@ Slime::Slime (bool alignLeft) :
   m_eye(alignLeft),
   m_alignLeft (alignLeft),
   m_lost(false), m_main_character(false),
+  m_moving_status{MovingStatus::STOPPED, MovingStatus::STOPPED},
+  m_moving_timer{{}, {}},
   m_victories(0),
   m_clamp()
 {
@@ -58,31 +60,29 @@ void Slime::jump()
 void Slime::prepareMove(const Input &input)
 {
   /* Mise à jour des vitesses en fonction de l'input */
+  Direction dir = Direction::NONE;
+#ifndef F_CONFIG_ANDROID
   if (!m_alignLeft)
   {
     if (input.isKeyDown(sf::Keyboard::Up))
       jump();
     if (input.isKeyDown(sf::Keyboard::Left) && !input.isKeyDown(sf::Keyboard::Right))
-      m_vx = -CG::SLIME_HORIZONTAL_SPEED;
+      dir = LEFT;
     else if (input.isKeyDown(sf::Keyboard::Right) && !input.isKeyDown(sf::Keyboard::Left))
-      m_vx = +CG::SLIME_HORIZONTAL_SPEED;
-    else
-      m_vx = 0;
+      dir = RIGHT;
   }
   else
   {
     if (input.isKeyDown(sf::Keyboard::Z))
       jump();
     if (input.isKeyDown(sf::Keyboard::Q) && !input.isKeyDown(sf::Keyboard::D))
-      m_vx = -CG::SLIME_HORIZONTAL_SPEED;
+      dir = LEFT;
     else if (input.isKeyDown(sf::Keyboard::D) && !input.isKeyDown(sf::Keyboard::Q))
-      m_vx = +CG::SLIME_HORIZONTAL_SPEED;
-    else
-      m_vx = 0;
-
+      dir = RIGHT;
   }
-
+#else
   /* Version android */
+  // TODO: ajouter la gestion de la machine à états
   if (m_main_character && input.isTouchDown())
   {
     sf::Vector2f touchDown = input.whereIsTouch();
@@ -91,14 +91,61 @@ void Slime::prepareMove(const Input &input)
       if (touchDown.y*2 > CG::HEIGHT)
       {
         if (touchDown.x < CG::WIDTH/2)
-          m_vx = -CG::SLIME_HORIZONTAL_SPEED;
+          dir = LEFT;
         else if (touchDown.x > CG::WIDTH/2)
-          m_vx = +CG::SLIME_HORIZONTAL_SPEED;
+          dir = RIGHT;
       }
       else
         jump();
     }
   }
+#endif
+
+  /* Màj de la machine à états */
+  for (int i = 0; i < Direction::NONE; ++i)
+  {
+    if (dir == i)
+      switch (m_moving_status[i])
+      {
+        case STOPPED:
+          m_moving_status[i] = MovingStatus::MOVING;
+          break;
+        case MOVING:
+          break;
+        case MOVING_WAIT:
+          if (m_moving_timer[i].getElapsedTime().asSeconds() < CG::SLIME_TIME_BOOST)
+            m_moving_status[i] = MovingStatus::MOVING_FAST;
+          break;
+        case MOVING_FAST:
+          break;
+      }
+    else
+      switch (m_moving_status[i])
+      {
+        case STOPPED:
+          break;
+        case MOVING:
+          m_moving_status[i] = MovingStatus::MOVING_WAIT;
+          m_moving_timer[i].restart();
+          break;
+        case MOVING_WAIT:
+          if (m_moving_timer[i].getElapsedTime().asSeconds() >= CG::SLIME_TIME_BOOST)
+            m_moving_status[i] = MovingStatus::STOPPED;
+          break;
+        case MOVING_FAST:
+          m_moving_status[i] = MovingStatus::STOPPED;
+          break;
+      }
+  }
+  float dir_f = 0;
+  if (dir != Direction::NONE)
+  {
+    dir_f = 2*dir-1;
+    if (m_moving_status[dir] == MovingStatus::MOVING_FAST)
+      dir_f *= 2;
+  }
+  m_vx = dir_f*CG::SLIME_HORIZONTAL_SPEED;
+
 }
 
 void Slime::move(float dt, const Ball &b)
@@ -168,6 +215,13 @@ void Slime::updateSprite()
       m_x - CG::SLIME_WIDTH/2,
       m_y - CG::SLIME_HEIGHT
       );
+}
+
+void Slime::reinit()
+{
+  m_moving_status[0] = MovingStatus::STOPPED;
+  m_moving_status[1] = MovingStatus::STOPPED;
+  MovingEntity::reinit();
 }
 
 void Slime::draw (sf::RenderWindow &w) const

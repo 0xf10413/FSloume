@@ -16,6 +16,10 @@ private:
     bool m_alignLeft;
     bool m_lost;
     bool m_main_character; // Qui a les contrôles en 1j sur android ?
+    enum MovingStatus {STOPPED, MOVING, MOVING_WAIT, MOVING_FAST};
+    enum Direction {LEFT, RIGHT, NONE};
+    MovingStatus m_moving_status[2]; // Statut du déplacement à gauche et à droite
+    sf::Clock m_moving_timer[2];
     int m_victories;
     sf::FloatRect m_clamp;
 
@@ -39,6 +43,7 @@ public:
     /* Contraintes */
     void clampTo (const sf::FloatRect &rect);
 
+    virtual void reinit() override;
     virtual void draw (sf::RenderWindow &) const override;
 };
 

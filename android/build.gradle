@@ -40,7 +40,7 @@ android {
         }
       }
       defaultConfig {
-          applicationId "com.example.flodeu.testsfml"
+          applicationId "com.fsloume.fsloume"
           minSdkVersion 15
           targetSdkVersion 27
           versionCode 1
