@@ -11,6 +11,7 @@ BUGS
 TODO
 ----
 * Add a background
+* Add energy bar for special actions
 * Add a max score and finish a round
 * Add a generator for config.h/config.cpp
 * Add items

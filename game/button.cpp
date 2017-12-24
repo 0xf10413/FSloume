@@ -1,4 +1,5 @@
 #include "button.h"
+#include "config.h"
 #include <cassert>
 #include <iostream>
 
@@ -12,6 +13,7 @@ Button::Button(const sf::Font &font, const std::string &text, sf::Color color,
   m_margin(margin),
   m_padding(pad)
 {
+  m_text.setCharacterSize(CG::FONT_BASE_SIZE_PX/2);
   sf::FloatRect bounds = m_text.getGlobalBounds();
   m_textSize.x = bounds.left + bounds.width + bounds.left;
   m_textSize.y = bounds.top + bounds.height + bounds.top;
@@ -52,11 +54,17 @@ void Button::draw(sf::RenderWindow &w) const
 
 bool Button::wasIClicked(const sf::Event &event) const
 {
-  assert (event.type == sf::Event::MouseButtonPressed);
-  return m_sprite.getGlobalBounds().contains(
+  if (event.type == sf::Event::MouseButtonPressed)
+    return m_sprite.getGlobalBounds().contains(
         (float)event.mouseButton.x,
         (float)event.mouseButton.y
         );
+  else if (event.type == sf::Event::TouchEnded)
+    return m_sprite.getGlobalBounds().contains(
+        (float)event.touch.x,
+        (float)event.touch.y
+        );
+  throw std::runtime_error("Called with wrong event type");
 }
 
 sf::Vector2f Button::getSize() const

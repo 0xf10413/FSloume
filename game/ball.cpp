@@ -93,8 +93,8 @@ void Ball::setSpeed(const sf::Vector2f &v)
 
 void Ball::draw(sf::RenderWindow &w) const
 {
+  m_path.draw(w);
   w.draw(m_sprite);
-  //m_path.draw(w);
 }
 
 void Ball::updatePath(int i)

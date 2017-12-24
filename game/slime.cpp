@@ -52,7 +52,7 @@ Slime::Slime (bool alignLeft) :
 
 void Slime::jump()
 {
-  if (!m_alignLeft && !m_onGround) // TODO: corriger la dissymétrie
+  if (!m_onGround && m_movingv_status != MovingVStatus::JUMPING_WAIT)
     return;
   m_onGround = false;
   m_vy -= CG::SLIME_JUMP_SPEED;
@@ -324,4 +324,9 @@ bool Slime::touched(float x, float y)
 {
   return std::abs(m_x-x) <= CG::SLIME_WIDTH/2. &&
     m_y >= y && m_y - CG::SLIME_HEIGHT <= y;
+}
+
+void Slime::stopX ()
+{
+  m_vx = 0;
 }

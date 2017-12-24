@@ -24,7 +24,7 @@ FGame::FGame () :
   setFramerateLimit (60);
   m_font.loadFromStream (m_font_stream);
 
-  m_game_mode = GameMode::ONE_PLAYER; // Changer à TITLE pour afficher le menu
+  m_game_mode = GameMode::TITLE; // Changer à TITLE pour afficher le menu
   m_gameOverText.setFont(m_font);
   m_gameOverText.setCharacterSize(CG::FONT_BASE_SIZE_PX);
   m_gameOverText.setString("YOU failed!");
@@ -45,7 +45,9 @@ FGame::FGame () :
 
   sf::Color button_color = sf::Color::Green;
   button_color.a = 127;
+#ifndef F_CONFIG_ANDROID
   m_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
+#endif
   m_menu->addButton ("Mode un joueur", button_color, margins, paddings);
   //m_menu->addButton ("[Mode deux joueurs online]", sf::Color::Green, margins);
   //m_menu->addButton ("[Histoire]", sf::Color::Green, margins);
@@ -107,7 +109,8 @@ int FGame::mainLoop ()
         if ( m_event.key.code == sf::Keyboard::Escape )
           close();
       }
-      if (m_event.type == sf::Event::MouseButtonPressed && m_game_mode == GameMode::TITLE)
+      if ((m_event.type == sf::Event::MouseButtonPressed ||
+            m_event.type == sf::Event::TouchEnded) && m_game_mode == GameMode::TITLE)
       {
         std::string click = m_menu->wasIClicked(m_event);
         if (click == "Mode deux joueurs")
@@ -144,6 +147,12 @@ int FGame::mainLoop ()
       m_bSlime.pushState();
       m_rSlime.pushState();
       m_ball.pushState();
+
+      if (m_game_mode == GameMode::TITLE)
+      {
+        m_bSlime.stopX();
+        m_rSlime.stopX();
+      }
 
       m_dangerpt.setPosition({-100, -100});
       for (int i = 0; i < CG::BALL_ANTICIPATION; ++i)
@@ -256,6 +265,8 @@ void FGame::collide (float dt)
   /* On observe juste les collisions qui se produiraient si les objets se déplacaient */
   /* On suppose qu'entre t et t+dt, les objets ont un mouvement rectiligne uniforme */
   /* (décrit par leurs vitesses à l'instant t) */
+
+  // TODO : gérer les collisions type clamp ici aussi
 
   /* bSlime et balle */
   float t = collideTwoCircles(

@@ -45,6 +45,7 @@ public:
 
     /* Contraintes */
     void clampTo (const sf::FloatRect &rect);
+    void stopX ();
 
     virtual void reinit() override;
     virtual void pushState() override;

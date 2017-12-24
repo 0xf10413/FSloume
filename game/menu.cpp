@@ -75,16 +75,29 @@ void Menu::rebuildMenu()
 
 std::string Menu::wasIClicked(const sf::Event &event) const
 {
-  assert (event.type == sf::Event::MouseButtonPressed);
-
-  if (m_sprite.getGlobalBounds().contains(
-        (float)event.mouseButton.x,
-        (float)event.mouseButton.y
-        ))
-    for (const Button *b : m_buttons)
-      if (b->wasIClicked(event))
-        return b->getTextString();
-  return "";
+  if (event.type == sf::Event::MouseButtonPressed)
+  {
+    if (m_sprite.getGlobalBounds().contains(
+          (float)event.mouseButton.x,
+          (float)event.mouseButton.y
+          ))
+      for (const Button *b : m_buttons)
+        if (b->wasIClicked(event))
+          return b->getTextString();
+    return "";
+  }
+  else if (event.type == sf::Event::TouchEnded)
+  {
+    if (m_sprite.getGlobalBounds().contains(
+          (float)event.touch.x,
+          (float)event.touch.y
+          ))
+      for (const Button *b : m_buttons)
+        if (b->wasIClicked(event))
+          return b->getTextString();
+    return "";
+  }
+  throw std::runtime_error("Called with wrong event type");
 }
 
 Menu::~Menu()
