@@ -12,10 +12,10 @@ CXX=g++
 # C/C++ compilation flags
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
-			 -Wconversion -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
+			 -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
 			 -Wunreachable-code -fPIC -fprofile-arcs -ftest-coverage
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
-				 -Wunreachable-code -Wconversion -fPIC -fprofile-arcs -ftest-coverage
+				 -Wunreachable-code -fPIC -fprofile-arcs -ftest-coverage
 
 # Linker flags
 LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics -lgcov \
@@ -28,6 +28,7 @@ RC_BUILD = ./tools/objectify.py
 # Resource files
 RC_ALL=$(wildcard rc/*)
 RC_HEADER=game/rc.h
+RC_CPP_INTERNAL=game/rc_manager.inc # Beware not to compile it !
 
 # Source files (adjust if needed)
 SRC_CXX_GAME=$(wildcard game/*.cpp)
@@ -125,7 +126,7 @@ $(BUILD_DIR)/$(BIN_TEST): $(OBJ_TEST) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 
 
 # General build target
-$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER) FORCE_REBUILD
+$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER) $(RC_CPP_INTERNAL) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CXX) -o $@ -c $< $(CXXFLAGS) -MMD
 
@@ -146,6 +147,10 @@ $(BUILD_DIR)/%.c : % FORCE_REBUILD
 $(RC_HEADER): $(RC_ALL) FORCE_REBUILD
 	$(RC_BUILD) rc2h rc/ --output $@
 
+# Building an internal part for ressource manager
+$(RC_CPP_INTERNAL): $(RC_ALL) FORCE_REBUILD
+	$(RC_BUILD) rc2cpp rc/ --output $@
+
 # Clean-up targets
 .PHONY: clean mrproper launch debug memcheck
 clean:
@@ -154,7 +159,7 @@ clean:
 	 	$(DEPS_GAME) $(DEPS_TEST) *.gcda *.gcno
 
 mrproper: clean
-	-rm -rf $(BUILD_DIR) $(RC_HEADER)
+	-rm -rf $(BUILD_DIR) $(RC_HEADER) $(RC_CPP_INTERNAL)
 	-cd android && make mrproper
 
 # Launch targets
@@ -186,4 +191,4 @@ $(APK_DIR)/$(APK_NAME): $(SRC_RC) $(RC_HEADER) $(SRC_CXX_GAME)
 
 ## Makefile debug
 # Keep intermediary files
-#.SECONDARY:
+.SECONDARY:

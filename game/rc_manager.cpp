@@ -45,7 +45,7 @@ sf::Int64 ResourceStream::getSize()
 
 ResourceStream ResourceManager::fetchMe (const std::string &name)
 {
-  if (name == "rc_8bitoperator_ttf")
-    return ResourceStream(rc_8bitoperator_ttf, rc_8bitoperator_ttf_size);
+  // TODO: ajouter une mise en cache
+#include "../game/rc_manager.inc"
   throw std::runtime_error("Resource not found !");
 }

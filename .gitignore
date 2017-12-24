@@ -4,3 +4,4 @@ build/*
 game/rc.h
 *.gcda
 *.gcno
+game/rc_manager.inc

@@ -31,9 +31,10 @@ MAX_BYTES_PER_ARRAY = 4000
 
 parser = argparse.ArgumentParser(
         description="Changes ressource files into C files")
-parser.add_argument('mode', choices=['rc2c','rc2h'],
+parser.add_argument('mode', choices=['rc2c','rc2h','rc2cpp'],
         help="rc2c : resource to C file, "
-        " rc2h : resource folder to C header")
+        " rc2h : resource folder to C header"
+        " rc2cpp : ressource folder to C++ ressource manager source")
 parser.add_argument('input')
 parser.add_argument('--output', help="Output file, default is stdout")
 
@@ -187,12 +188,28 @@ def headerify():
             w.write("extern const size_t {};\n\n".format(i + '_size', size))
         w.write("#endif // defined F_RC_H\n")
 
+def cppify():
+    file = stdout if c_filename == "-" else open(c_filename, 'w')
+    with file as w:
+        first_iteration = True
+        for i in iglob(rc_filename + "/*"):
+            i = i.replace(".", "_").replace('/', '_')
+            if first_iteration:
+                w.write("if ")
+                first_iteration = False
+            else:
+                w.write("else if ")
+            w.write('(name == "{}")\n'.format(i))
+            w.write('   return ResourceStream({}, {}_size);\n'.format(i,i))
+
 
 if __name__ == "__main__":
     if args.mode == 'rc2c':
         objectify()
     elif args.mode == 'rc2h':
         headerify()
+    elif args.mode == 'rc2cpp':
+        cppify()
     else:
         raise NotImplementedError("Unimplemented mode " + mode)
 

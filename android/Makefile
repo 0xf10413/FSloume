@@ -12,5 +12,5 @@ clean:
 	-rm .gradle -rf
 
 mrproper: clean
-	-rm CppList.mk
+	-rm CppList.mk -f
 	-rm build -rf
