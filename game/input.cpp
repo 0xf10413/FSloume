@@ -40,11 +40,14 @@ bool Input::isTouchDown () const
   return std::find(std::begin(touchDowns), std::end(touchDowns), true) != std::end(touchDowns);
 }
 
-sf::Vector2f Input::whereIsTouch() const
+std::vector<sf::Vector2f> Input::whereAreTouch() const
 {
-  size_t i = maxFingers-1;
-  for (; i < maxFingers && !touchDowns[i]; --i);
-  assert (i < maxFingers);
-  return touchPlaces[i];
+  size_t i;
+  std::vector<sf::Vector2f> touches;
+  touches.reserve(3);
+  for (i = 0; i < maxFingers; ++i)
+    if (touchDowns[i])
+      touches.push_back(touchPlaces[i]);
+  return touches;
 }
 

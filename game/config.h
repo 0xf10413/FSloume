@@ -14,6 +14,9 @@ public:
   static int WIDTH;
   static int HEIGHT;
 
+  /* Taille de base de la police */
+  static unsigned int FONT_BASE_SIZE_PX;
+
   /* Taille d'un slime en px */
   static int SLIME_WIDTH;
   static int SLIME_HEIGHT;

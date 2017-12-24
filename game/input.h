@@ -15,7 +15,7 @@ public:
   void process (const sf::Event &e);
   bool isKeyDown (int i) const;
   bool isTouchDown () const;
-  sf::Vector2f whereIsTouch() const;
+  std::vector<sf::Vector2f> whereAreTouch() const;
 };
 
 

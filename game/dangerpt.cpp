@@ -14,10 +14,10 @@ DangerPoint::DangerPoint(const sf::Color &c) : MovingEntity(), m_color(c)
   m_image.create(CG::DANGERPT_WIDTH, CG::DANGERPT_WIDTH, m_color);
   for (int i = CG::DANGERPT_WIDTH/10; i < 7*CG::DANGERPT_WIDTH/10; ++i)
     for (int j = CG::DANGERPT_WIDTH/2-1; j < CG::DANGERPT_WIDTH/2+2; ++j)
-      m_image.setPixel(j, i, sf::Color::White);
+      m_image.setPixel(j, i, sf::Color::Black);
   for (int i = CG::DANGERPT_WIDTH/2-2; i < CG::DANGERPT_WIDTH/2+3; ++i)
     for (int j = 9*CG::DANGERPT_WIDTH/10-2; j < 9*CG::DANGERPT_WIDTH/10+2; ++j)
-      m_image.setPixel(i, j, sf::Color::White);
+      m_image.setPixel(i, j, sf::Color::Black);
   for (int i = 0; i < CG::DANGERPT_WIDTH; ++i)
     for (int j = 0; j < CG::DANGERPT_WIDTH; ++j)
     {

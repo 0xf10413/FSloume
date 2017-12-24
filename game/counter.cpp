@@ -1,4 +1,5 @@
 #include "counter.h"
+#include "config.h"
 #include <sstream>
 
 Counter::Counter(size_t init, bool alignLeft, const sf::Font &font) :
@@ -8,6 +9,7 @@ Counter::Counter(size_t init, bool alignLeft, const sf::Font &font) :
   m_text()
 {
   m_text.setFont(m_font);
+  m_text.setCharacterSize(CG::FONT_BASE_SIZE_PX);
   if (m_alignLeft)
     m_text.setFillColor(sf::Color::Cyan);
   else

@@ -18,13 +18,14 @@ FGame::FGame () :
   m_rScore(0, false, m_font),
   m_gameOverText(),
   m_target(),
-  m_dangerpt(sf::Color::Magenta)
+  m_dangerpt(sf::Color(255,165,0)) // orange
 {
   setFramerateLimit (60);
   m_font.loadFromStream (m_font_stream);
 
   m_game_mode = GameMode::ONE_PLAYER; // Changer à TITLE pour afficher le menu
   m_gameOverText.setFont(m_font);
+  m_gameOverText.setCharacterSize(CG::FONT_BASE_SIZE_PX);
   m_gameOverText.setString("YOU failed!");
   m_gameOverText.setPosition(
       CG::WIDTH/2 - m_gameOverText.getGlobalBounds().left - m_gameOverText.getGlobalBounds().width/2,

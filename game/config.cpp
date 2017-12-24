@@ -7,6 +7,7 @@ Config::Config()
   /* Taille du plateau en px */
   WIDTH = 900;
   HEIGHT = 480;
+
 #ifdef F_CONFIG_ANDROID
   WIDTH = (signed)sf::VideoMode::getDesktopMode().width;
   HEIGHT = (signed)sf::VideoMode::getDesktopMode().height;
@@ -20,6 +21,10 @@ void Config::updateParams()
   /* Taille d'un slime en px */
   SLIME_WIDTH = WIDTH/8;
   SLIME_HEIGHT = SLIME_WIDTH/2;
+
+  /* Taille de base de la police */
+  FONT_BASE_SIZE_PX = (unsigned int)HEIGHT/10;
+
   // Maximise la taille de l'œil avec les coordonnées choisies
   EYE_RADIUS_SQUARED = (int)(SLIME_WIDTH*SLIME_WIDTH* (3.-2.*sqrt ( 2. ) ) /8);
   EYE_RADIUS = (int)sqrt(EYE_RADIUS_SQUARED);
@@ -53,6 +58,9 @@ void Config::updateParams()
 
 int Config::WIDTH;
 int Config::HEIGHT;
+
+
+unsigned int Config::FONT_BASE_SIZE_PX;
 
 int Config::SLIME_WIDTH;
 int Config::SLIME_HEIGHT;

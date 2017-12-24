@@ -54,7 +54,7 @@ void Ball::move (float dt)
   if (m_y <= - (float)CG::BALL_RADIUS)
   {
     m_y = CG::BALL_RADIUS;
-    m_vy = -m_vy*CG::BALL_ELASTICITY;
+    m_vy = -m_vy;
   }
 
   if (m_y > m_clamp.top + m_clamp.height - (float)CG::BALL_RADIUS) // Cas spécial : contact au sol

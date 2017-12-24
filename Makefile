@@ -183,6 +183,9 @@ coverage: test
 
 apk: $(BUILD_DIR)/$(APK_NAME)
 
+apk-install: apk
+	-adb install -r $(BUILD_DIR)/$(APK_NAME)
+
 $(BUILD_DIR)/$(APK_NAME): $(APK_DIR)/$(APK_NAME)
 	-cp -v $? $@
 

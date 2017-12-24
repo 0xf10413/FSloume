@@ -86,18 +86,21 @@ void Slime::prepareMove(const Input &input)
   /* Version android */
   if (m_main_character && input.isTouchDown())
   {
-    sf::Vector2f touchDown = input.whereIsTouch();
-    if (std::abs(touchDown.x - m_x) >= 2.) // évite les vibrations
+    std::vector<sf::Vector2f> touchDowns = input.whereAreTouch();
+    for (const auto &v : touchDowns)
     {
-      if (touchDown.y*2 > CG::HEIGHT)
+      if (std::abs(v.x - m_x) >= 2.) // évite les vibrations
       {
-        if (touchDown.x < CG::WIDTH/2)
-          dirh = LEFT;
-        else if (touchDown.x > CG::WIDTH/2)
-          dirh = RIGHT;
+        if (v.y*2 > CG::HEIGHT)
+        {
+          if (v.x < CG::WIDTH/2)
+            dirh = LEFT;
+          else if (v.x > CG::WIDTH/2)
+            dirh = RIGHT;
+        }
+        else
+          dirv = UP;
       }
-      else
-        dirv = UP;
     }
   }
 #endif
@@ -150,6 +153,8 @@ void Slime::prepareMove(const Input &input)
         m_moving_timer[2].restart();
         break;
       case MovingVStatus::JUMPING:
+        break;
+      case MovingVStatus::JUMPING_WAIT:
         if (m_moving_timer[2].getElapsedTime().asSeconds() > CG::SLIME_DOUBLE_JUMP_TIME)
         {
           jump();
@@ -159,8 +164,20 @@ void Slime::prepareMove(const Input &input)
       case MovingVStatus::DOUBLE_JUMPING:
         break;
     }
-
   }
+  else
+    switch(m_movingv_status)
+      {
+        case MovingVStatus::STOPPED:
+          break;
+        case MovingVStatus::JUMPING:
+          m_movingv_status = MovingVStatus::JUMPING_WAIT;
+          break;
+        case MovingVStatus::JUMPING_WAIT:
+          break;
+        case MovingVStatus::DOUBLE_JUMPING:
+          break;
+      }
 
   /* Finalisation du mouvement horizontal */
   float dir_f = 0;
