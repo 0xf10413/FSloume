@@ -11,6 +11,7 @@ FGame::FGame () :
   m_event(), m_clock(), m_font_stream(ResourceManager::fetchMe("rc_8bitoperator_ttf")),
   m_font(), m_input(),
   m_reinit(false),
+  m_background(),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
   m_menu(nullptr),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
@@ -49,6 +50,7 @@ FGame::FGame () :
   m_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
 #endif
   m_menu->addButton ("Mode un joueur", button_color, margins, paddings);
+  m_menu->addButton ("Test", button_color, margins, paddings);
   //m_menu->addButton ("[Mode deux joueurs online]", sf::Color::Green, margins);
   //m_menu->addButton ("[Histoire]", sf::Color::Green, margins);
   m_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
@@ -106,8 +108,18 @@ int FGame::mainLoop ()
         close();
       if ( m_event.type == sf::Event::KeyPressed )
       {
+#ifndef F_CONFIG_ANDROID
         if ( m_event.key.code == sf::Keyboard::Escape )
           close();
+#else
+        if (m_game_mode != GameMode::TITLE)
+        {
+          m_game_mode = GameMode::TITLE;
+          m_reinit = true;
+        }
+        else
+          close();
+#endif
       }
       if ((m_event.type == sf::Event::MouseButtonPressed ||
             m_event.type == sf::Event::TouchEnded) && m_game_mode == GameMode::TITLE)
@@ -123,8 +135,11 @@ int FGame::mainLoop ()
           m_game_mode = GameMode::ONE_PLAYER;
           m_reinit = true;
         }
-        if (!click.empty())
-          std::cout << "Click : " << click << std::endl;
+        if (click == "Test")
+        {
+          m_game_mode = GameMode::TEST;
+          m_reinit = true;
+        }
       }
     }
 
@@ -137,7 +152,8 @@ int FGame::mainLoop ()
     /* Branche principale de jeu */
     if (m_branch_mode == BranchMode::PLAYING)
     {
-      if (m_game_mode == GameMode::TWO_PLAYERS || m_game_mode == GameMode::ONE_PLAYER)
+      if (m_game_mode == GameMode::TWO_PLAYERS || m_game_mode == GameMode::ONE_PLAYER
+        || m_game_mode == GameMode::TEST)
       {
         m_bSlime.prepareMove(m_input);
         m_rSlime.prepareMove(m_input);
@@ -158,7 +174,7 @@ int FGame::mainLoop ()
       for (int i = 0; i < CG::BALL_ANTICIPATION; ++i)
       {
         m_ball.updatePath(i);
-        if (!m_ball.getOnGround())
+        if (!m_ball.getOnGround() || m_game_mode == GameMode::TEST)
         {
           collide(eps);
           m_ball.move(eps);
@@ -204,7 +220,7 @@ int FGame::mainLoop ()
         m_targets[i].hide();
 
 
-      if (m_ball.getOnGround()) // Game over ! Mais pour qui ?
+      if (m_ball.getOnGround() && m_game_mode != GameMode::TEST) // Game over ! Mais pour qui ?
       {
         if (m_ball.getPosition().x > CG::WIDTH/2)
         {
@@ -235,6 +251,7 @@ int FGame::mainLoop ()
 
     // Affichage
     clear();
+    m_background.draw(*this);
     m_bSlime.draw(*this);
     m_rSlime.draw(*this);
     m_net.draw(*this);
@@ -252,7 +269,8 @@ int FGame::mainLoop ()
       draw(m_gameOverText);
     for (auto &target : m_targets)
       target.draw(*this);
-    m_dangerpt.draw(*this);
+    //if (m_game_mode != GameMode::TEST)
+        m_dangerpt.draw(*this);
 
     display();
   }

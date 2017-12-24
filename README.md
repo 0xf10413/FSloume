@@ -17,3 +17,5 @@ TODO
 * Add items
 * Add skill levels
 * Add a tutorial
+* Add a story
+* Add a multiplayer mode

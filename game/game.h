@@ -13,6 +13,7 @@
 #include "rc_manager.h"
 #include "target.h"
 #include "dangerpt.h"
+#include "background.h"
 
 class FGame : public sf::RenderWindow
 {
@@ -24,13 +25,15 @@ private:
   Input m_input;
   bool m_reinit; // Faut-il tout replacer ?
 
+
+  Background m_background;
   Slime m_bSlime, m_rSlime;
   Ball m_ball;
   Net m_net;
 
   Menu *m_menu;
 
-  enum GameMode {TITLE, TWO_PLAYERS, ONE_PLAYER};
+  enum GameMode {TITLE, TWO_PLAYERS, ONE_PLAYER, TEST};
   GameMode m_game_mode;
 
   enum BranchMode {PLAYING, BLUE_LOST, RED_LOST};
