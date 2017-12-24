@@ -42,7 +42,8 @@ void Config::updateParams()
   JUMP_DURATION = 1; // Durée du saut en s
   JUMP_MAX_HEIGHT = HEIGHT/8;
   SLIME_HORIZONTAL_SPEED = WIDTH/5;
-  SLIME_TIME_BOOST = .2f; // Temps en s avant de pouvoir booster
+  SLIME_TIME_BOOST = .2f; // Temps en s où on peut booster
+  SLIME_DOUBLE_JUMP_TIME = .3f; // Temps en s avant de pouvoir double-jump
   BALL_ELASTICITY = .9f; // Elasticité de la balle, entre 0 et 1
   SLIME_ELASTICITY = .9f; // Elasticité du sloume, entre 0 et 1
   // Calculés automatiquement
@@ -71,7 +72,8 @@ int Config::BALL_ANTICIPATION;
 float Config::JUMP_DURATION; // Durée du saut en s
 int Config::JUMP_MAX_HEIGHT;
 int Config::SLIME_HORIZONTAL_SPEED;
-float Config::SLIME_TIME_BOOST; // Temps en s avant de pouvoir booster
+float Config::SLIME_TIME_BOOST; // Temps en s où on peut booster
+float Config::SLIME_DOUBLE_JUMP_TIME; // Temps en s avant de pouvoir double-jump
 float Config::BALL_ELASTICITY; // Elasticité de la balle, entre 0 et 1
 float Config::SLIME_ELASTICITY; // Elasticité du sloume, entre 0 et 1
 

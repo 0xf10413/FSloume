@@ -5,8 +5,9 @@ Slime::Slime (bool alignLeft) :
   m_eye(alignLeft),
   m_alignLeft (alignLeft),
   m_lost(false), m_main_character(false),
-  m_moving_status{MovingStatus::STOPPED, MovingStatus::STOPPED},
-  m_moving_timer{{}, {}},
+  m_movingh_status{MovingHStatus::STOPPED, MovingHStatus::STOPPED},
+  m_movingv_status(), m_prev_movingv_status(),
+  m_moving_timer{},
   m_victories(0),
   m_clamp()
 {
@@ -51,7 +52,7 @@ Slime::Slime (bool alignLeft) :
 
 void Slime::jump()
 {
-  if (!m_onGround)
+  if (!m_alignLeft && !m_onGround) // TODO: corriger la dissymétrie
     return;
   m_onGround = false;
   m_vy -= CG::SLIME_JUMP_SPEED;
@@ -60,29 +61,29 @@ void Slime::jump()
 void Slime::prepareMove(const Input &input)
 {
   /* Mise à jour des vitesses en fonction de l'input */
-  Direction dir = Direction::NONE;
+  Direction dirh = Direction::NONE;
+  Direction dirv = Direction::NONE;
 #ifndef F_CONFIG_ANDROID
   if (!m_alignLeft)
   {
     if (input.isKeyDown(sf::Keyboard::Up))
-      jump();
+      dirv = Direction::UP;
     if (input.isKeyDown(sf::Keyboard::Left) && !input.isKeyDown(sf::Keyboard::Right))
-      dir = LEFT;
+      dirh = LEFT;
     else if (input.isKeyDown(sf::Keyboard::Right) && !input.isKeyDown(sf::Keyboard::Left))
-      dir = RIGHT;
+      dirh = RIGHT;
   }
   else
   {
     if (input.isKeyDown(sf::Keyboard::Z))
-      jump();
+      dirv = UP;
     if (input.isKeyDown(sf::Keyboard::Q) && !input.isKeyDown(sf::Keyboard::D))
-      dir = LEFT;
+      dirh = LEFT;
     else if (input.isKeyDown(sf::Keyboard::D) && !input.isKeyDown(sf::Keyboard::Q))
-      dir = RIGHT;
+      dirh = RIGHT;
   }
 #else
   /* Version android */
-  // TODO: ajouter la gestion de la machine à états
   if (m_main_character && input.isTouchDown())
   {
     sf::Vector2f touchDown = input.whereIsTouch();
@@ -91,57 +92,82 @@ void Slime::prepareMove(const Input &input)
       if (touchDown.y*2 > CG::HEIGHT)
       {
         if (touchDown.x < CG::WIDTH/2)
-          dir = LEFT;
+          dirh = LEFT;
         else if (touchDown.x > CG::WIDTH/2)
-          dir = RIGHT;
+          dirh = RIGHT;
       }
       else
-        jump();
+        dirv = UP;
     }
   }
 #endif
 
-  /* Màj de la machine à états */
-  for (int i = 0; i < Direction::NONE; ++i)
+  /* Màj de la machine à états horizontale */
+  for (int i = 0; i < 2; ++i)
   {
-    if (dir == i)
-      switch (m_moving_status[i])
+    if (dirh == i)
+      switch (m_movingh_status[i])
       {
-        case STOPPED:
-          m_moving_status[i] = MovingStatus::MOVING;
+        case MovingHStatus::STOPPED:
+          m_movingh_status[i] = MovingHStatus::MOVING;
           break;
-        case MOVING:
+        case MovingHStatus::MOVING:
           break;
-        case MOVING_WAIT:
+        case MovingHStatus::MOVING_WAIT:
           if (m_moving_timer[i].getElapsedTime().asSeconds() < CG::SLIME_TIME_BOOST)
-            m_moving_status[i] = MovingStatus::MOVING_FAST;
+            m_movingh_status[i] = MovingHStatus::MOVING_FAST;
           break;
-        case MOVING_FAST:
+        case MovingHStatus::MOVING_FAST:
           break;
       }
     else
-      switch (m_moving_status[i])
+      switch (m_movingh_status[i])
       {
-        case STOPPED:
+        case MovingHStatus::STOPPED:
           break;
-        case MOVING:
-          m_moving_status[i] = MovingStatus::MOVING_WAIT;
+        case MovingHStatus::MOVING:
+          m_movingh_status[i] = MovingHStatus::MOVING_WAIT;
           m_moving_timer[i].restart();
           break;
-        case MOVING_WAIT:
+        case MovingHStatus::MOVING_WAIT:
           if (m_moving_timer[i].getElapsedTime().asSeconds() >= CG::SLIME_TIME_BOOST)
-            m_moving_status[i] = MovingStatus::STOPPED;
+            m_movingh_status[i] = MovingHStatus::STOPPED;
           break;
-        case MOVING_FAST:
-          m_moving_status[i] = MovingStatus::STOPPED;
+        case MovingHStatus::MOVING_FAST:
+          m_movingh_status[i] = MovingHStatus::STOPPED;
           break;
       }
   }
-  float dir_f = 0;
-  if (dir != Direction::NONE)
+
+  /* Màj de la machine à états verticale */
+  if (dirv == Direction::UP)
   {
-    dir_f = 2*dir-1;
-    if (m_moving_status[dir] == MovingStatus::MOVING_FAST)
+    switch(m_movingv_status)
+    {
+      case MovingVStatus::STOPPED:
+        jump();
+        m_movingv_status = MovingVStatus::JUMPING;
+        m_moving_timer[2].restart();
+        break;
+      case MovingVStatus::JUMPING:
+        if (m_moving_timer[2].getElapsedTime().asSeconds() > CG::SLIME_DOUBLE_JUMP_TIME)
+        {
+          jump();
+          m_movingv_status = MovingVStatus::DOUBLE_JUMPING;
+        }
+        break;
+      case MovingVStatus::DOUBLE_JUMPING:
+        break;
+    }
+
+  }
+
+  /* Finalisation du mouvement horizontal */
+  float dir_f = 0;
+  if (dirh < Direction::UP)
+  {
+    dir_f = 2*dirh-1;
+    if (m_movingh_status[dirh] == MovingHStatus::MOVING_FAST)
       dir_f *= 2;
   }
   m_vx = dir_f*CG::SLIME_HORIZONTAL_SPEED;
@@ -170,6 +196,7 @@ void Slime::move(float dt, const Ball &b)
     m_y = m_clamp.top + m_clamp.height;
     m_vy = 0;
     m_onGround = true;
+    m_movingv_status = MovingVStatus::STOPPED;
   }
 
   /* Déplacement de la pupille vers la balle */
@@ -181,6 +208,18 @@ void Slime::move(float dt, const Ball &b)
 
   /* Mise à jour finale du sprite */
   updateSprite();
+}
+
+void Slime::pushState()
+{
+  MovingEntity::pushState();
+  m_prev_movingv_status = m_movingv_status;
+}
+
+void Slime::popState()
+{
+  MovingEntity::popState();
+  m_movingv_status = m_prev_movingv_status;
 }
 
 void Slime::clampTo(const sf::FloatRect &rect)
@@ -219,8 +258,9 @@ void Slime::updateSprite()
 
 void Slime::reinit()
 {
-  m_moving_status[0] = MovingStatus::STOPPED;
-  m_moving_status[1] = MovingStatus::STOPPED;
+  m_movingh_status[0] = MovingHStatus::STOPPED;
+  m_movingh_status[1] = MovingHStatus::STOPPED;
+  m_movingv_status = MovingVStatus::STOPPED;
   MovingEntity::reinit();
 }
 

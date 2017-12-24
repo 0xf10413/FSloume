@@ -39,7 +39,8 @@ public:
   static float JUMP_DURATION; // Durée du saut en s
   static int JUMP_MAX_HEIGHT;
   static int SLIME_HORIZONTAL_SPEED;
-  static float SLIME_TIME_BOOST; // Temps en s avant de pouvoir booster
+  static float SLIME_TIME_BOOST; // Temps en s où on peut booster
+  static float SLIME_DOUBLE_JUMP_TIME; // Temps en s avant de pouvoir double-jump
   static float BALL_ELASTICITY; // Elasticité de la balle, entre 0 et 1
   static float SLIME_ELASTICITY; // Elasticité du sloume, entre 0 et 1
   // Calculés automatiquement

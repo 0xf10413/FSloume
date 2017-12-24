@@ -130,7 +130,7 @@ $(BUILD_DIR)/%.o: %.cpp $(RC_HEADER) $(RC_CPP_INTERNAL) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CXX) -o $@ -c $< $(CXXFLAGS) -MMD
 
-$(BUILD_DIR)/%.o: %.c $(RC_HEADER) FORCE_REBUILD
+$(BUILD_DIR)/%.o: %.c $(RC_HEADER) $(RC_CPP_INTERNAL) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CC) -o $@ -c $< $(CFLAGS) -MMD
 
@@ -186,7 +186,7 @@ apk: $(BUILD_DIR)/$(APK_NAME)
 $(BUILD_DIR)/$(APK_NAME): $(APK_DIR)/$(APK_NAME)
 	-cp -v $? $@
 
-$(APK_DIR)/$(APK_NAME): $(SRC_RC) $(RC_HEADER) $(SRC_CXX_GAME)
+$(APK_DIR)/$(APK_NAME): $(SRC_RC) $(RC_HEADER) $(RC_CPP_INTERNAL) $(SRC_CXX_GAME)
 	-cd android && make
 
 ## Makefile debug
