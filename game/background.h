@@ -10,7 +10,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "unique_drawable.h"
-#include "cloud.h"
+#include "cloudzone.h"
 
 class Background : public MovingEntity
 {

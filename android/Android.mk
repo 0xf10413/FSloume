@@ -13,8 +13,10 @@ LOCAL_SHARED_LIBRARIES += sfml-audio
 LOCAL_SHARED_LIBRARIES += openal
 LOCAL_SHARED_LIBRARIES += sfml-network
 LOCAL_SHARED_LIBRARIES += sfml-activity
+LOCAL_STATIC_LIBRARIES += boost
 LOCAL_WHOLE_STATIC_LIBRARIES := sfml-main
 
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,sfml)
+$(call import-module,boost)

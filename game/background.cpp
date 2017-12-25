@@ -9,7 +9,7 @@
 #include "config.h"
 
 Background::Background() :
-  m_clouds(sf::FloatRect(0,CG::HEIGHT/5, CG::WIDTH, CG::HEIGHT/5), 20)
+  m_clouds(sf::FloatRect(0,CG::HEIGHT/5, CG::WIDTH, CG::HEIGHT/5), 25)
 {
   m_image.create(CG::WIDTH, CG::HEIGHT, sf::Color::White);
   for (int i = 0; i < CG::WIDTH; ++i)

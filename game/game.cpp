@@ -229,13 +229,15 @@ int FGame::mainLoop ()
         {
           m_branch_mode = BranchMode::RED_LOST;
           m_gameOverText.setFillColor(sf::Color::Red);
-          ++m_lScore;
+          if (m_game_mode != GameMode::TITLE)
+            ++m_lScore;
         }
         else
         {
           m_branch_mode = BranchMode::BLUE_LOST;
           m_gameOverText.setFillColor(sf::Color::Blue);
-          ++m_rScore;
+          if (m_game_mode != GameMode::TITLE)
+            ++m_rScore;
         }
         m_game_over_countdown = sf::milliseconds(1000);
       }

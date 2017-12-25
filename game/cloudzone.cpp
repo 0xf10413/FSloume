@@ -5,7 +5,7 @@
  * Distributed under terms of the MIT license.
  */
 
-#include "cloud.h"
+#include "cloudzone.h"
 #include "config.h"
 #include <random>
 

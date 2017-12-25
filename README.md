@@ -10,10 +10,11 @@ BUGS
 
 TODO
 ----
-* Add a background
+* Merge clouds in CloudZone
 * Add energy bar for special actions
 * Add a max score and finish a round
 * Add a generator for config.h/config.cpp
+* Improve fast landing
 * Add items
 * Add skill levels
 * Add a tutorial
