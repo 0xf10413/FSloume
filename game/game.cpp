@@ -211,6 +211,9 @@ int FGame::mainLoop ()
       m_bSlime.move(eps, m_ball);
       m_rSlime.move(eps, m_ball);
 
+      /* Animation du background */
+      m_background.animate(eps);
+
       /* Placement des mires */
       const std::vector<sf::Vector2f> touches = m_input.whereAreTouch();
       assert(touches.size() <= m_targets.size());
@@ -257,6 +260,9 @@ int FGame::mainLoop ()
     m_net.draw(*this);
     m_ball.draw(*this);
 
+    if (m_branch_mode != BranchMode::PLAYING)
+      draw(m_gameOverText);
+
     if (m_game_mode == GameMode::TITLE)
       m_menu->draw(*this);
     else
@@ -265,8 +271,6 @@ int FGame::mainLoop ()
       m_rScore.draw(*this);
     }
 
-    if (m_branch_mode != BranchMode::PLAYING)
-      draw(m_gameOverText);
     for (auto &target : m_targets)
       target.draw(*this);
     //if (m_game_mode != GameMode::TEST)

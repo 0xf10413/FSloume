@@ -5,6 +5,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+/* TODO: organiser en master constantes, constantes de démarrage
+ * et constantes liées */
+
 class Config
 {
 private:
@@ -37,6 +40,10 @@ public:
 
   /* Taille du panneau danger */
   static int DANGERPT_WIDTH;
+
+  /* Taille du nuage */
+  static int CLOUD_WIDTH;
+  static int CLOUD_HEIGHT;
 
   /* Taille des mires */
   static unsigned int TARGET_WIDTH;

@@ -40,6 +40,9 @@ void Config::updateParams()
   /* Taille du panneau de danger */
   DANGERPT_WIDTH = 2*BALL_RADIUS;
 
+  CLOUD_WIDTH = WIDTH/10;
+  CLOUD_HEIGHT = HEIGHT/10;
+
   /* Taille des mires */
   TARGET_WIDTH = WIDTH/8;
   TARGET_HEIGHT = HEIGHT/8;
@@ -81,6 +84,9 @@ int Config::NET_HEIGHT;
 int Config::BALL_RADIUS;
 
 int Config::DANGERPT_WIDTH;
+
+int Config::CLOUD_WIDTH;
+int Config::CLOUD_HEIGHT;
 
 unsigned int Config::TARGET_WIDTH;
 unsigned int Config::TARGET_HEIGHT;

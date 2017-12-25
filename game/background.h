@@ -10,13 +10,17 @@
 
 #include <SFML/Graphics.hpp>
 #include "unique_drawable.h"
+#include "cloud.h"
 
 class Background : public MovingEntity
 {
 private:
+  CloudZone m_clouds;
 public:
   Background();
-  virtual void updateSprite();
+  void animate(float dt);
+  virtual void updateSprite() override;
+  virtual void draw(sf::RenderWindow &w) const override;
 };
 
 #endif /* !BACKGROUND_H */
