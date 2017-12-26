@@ -69,7 +69,7 @@ void Slime::antijump()
 {
   if (m_onGround)
     return;
-  m_vy = std::min(m_vy, 0.f);
+  m_vy = std::max(m_vy, 0.f);
   m_vy += 2*CG::SLIME_JUMP_SPEED;
 }
 
@@ -238,6 +238,28 @@ void Slime::prepareMove(const Input &input)
         case MovingVStatus::GROUND_POUND:
           break;
       }
+  /* Animation en cas de charge au sol */
+  if (m_movingv_status == MovingVStatus::GROUND_POUND
+      && m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
+  {
+    // TODO : ajouter theta et omega
+    float mid_height = .33*CG::HEIGHT + .66*m_apec;
+    if (m_y < m_apec)
+      m_sprite.setRotation(180*(m_y-m_apec)/(CG::HEIGHT-m_apec)
+          *(m_alignLeft ? 1 : -1));
+    else if (m_y < mid_height)
+    {
+      m_sprite.setRotation(360*(m_y-mid_height)/(mid_height-m_apec)
+          *(m_alignLeft ? 1 : -1));
+      dirh = Direction::NONE;
+    }
+    else
+    {
+      m_sprite.setRotation(0);
+      antijump();
+      dirh = Direction::NONE;
+    }
+  }
 
   /* Finalisation du mouvement horizontal */
   float dir_f = 0;
@@ -249,13 +271,6 @@ void Slime::prepareMove(const Input &input)
   }
   m_vx = dir_f*CG::SLIME_HORIZONTAL_SPEED;
 
-  /* Animation en cas de charge au sol */
-  if (m_movingv_status == MovingVStatus::GROUND_POUND
-      && m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
-    m_sprite.setRotation(360*(m_y-m_apec)/(CG::HEIGHT-m_apec)
-        *(m_alignLeft ? 1 : -1));
-  else
-    m_sprite.setRotation(0);
 }
 
 void Slime::move(float dt, const Ball &b)

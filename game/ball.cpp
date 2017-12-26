@@ -51,7 +51,7 @@ void Ball::move (float dt)
     m_vx = -m_vx*CG::BALL_ELASTICITY;
   }
 
-  if (m_y <= (float)CG::BALL_RADIUS)
+  if (m_y < (float)CG::BALL_RADIUS)
   {
     m_y = CG::BALL_RADIUS;
     m_vy = -m_vy;
