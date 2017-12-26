@@ -7,6 +7,7 @@ Slime::Slime (bool alignLeft) :
   m_lost(false), m_main_character(false),
   m_movingh_status{MovingHStatus::STOPPED, MovingHStatus::STOPPED},
   m_movingv_status(), m_prev_movingv_status(),
+  m_apec(0),
   m_moving_timer{},
   m_victories(0),
   m_clamp()
@@ -47,6 +48,7 @@ Slime::Slime (bool alignLeft) :
 
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture (m_texture);
+  m_sprite.setOrigin(CG::SLIME_WIDTH/2, CG::SLIME_HEIGHT/2);
 
   if (m_alignLeft)
     m_eye.setPosition (m_x + CG::SLIME_WIDTH/4, m_y);
@@ -67,7 +69,7 @@ void Slime::antijump()
 {
   if (m_onGround)
     return;
-  m_vy += CG::SLIME_JUMP_SPEED;
+  m_vy = -CG::SLIME_JUMP_SPEED;
 }
 
 void Slime::prepareMove(const Input &input)
@@ -188,6 +190,8 @@ void Slime::prepareMove(const Input &input)
         break;
       case MovingVStatus::DOUBLE_JUMPING:
         break;
+      case MovingVStatus::GROUND_POUND:
+        break;
     }
   }
   else
@@ -202,9 +206,24 @@ void Slime::prepareMove(const Input &input)
           break;
         case MovingVStatus::DOUBLE_JUMPING:
           break;
+        case MovingVStatus::GROUND_POUND:
+          break;
       }
   if (dirv == DOWN)
-    antijump();
+    switch(m_movingv_status)
+      {
+        case MovingVStatus::STOPPED:
+          break;
+        case MovingVStatus::JUMPING_WAIT:
+        case MovingVStatus::DOUBLE_JUMPING:
+        case MovingVStatus::JUMPING:
+          m_movingv_status = MovingVStatus::GROUND_POUND;
+          m_apec = m_y;
+          antijump();
+          break;
+        case MovingVStatus::GROUND_POUND:
+          break;
+      }
 
   /* Finalisation du mouvement horizontal */
   float dir_f = 0;
@@ -216,6 +235,12 @@ void Slime::prepareMove(const Input &input)
   }
   m_vx = dir_f*CG::SLIME_HORIZONTAL_SPEED;
 
+  /* Animation en cas de charge au sol */
+  if (m_movingv_status == MovingVStatus::GROUND_POUND
+      && m_apec < CG::HEIGHT - 1.5*CG::SLIME_HEIGHT)
+    m_sprite.setRotation(360*(m_y-m_apec)/(CG::HEIGHT-m_apec));
+  else
+    m_sprite.setRotation(0);
 }
 
 void Slime::move(float dt, const Ball &b)
@@ -295,8 +320,8 @@ sf::Vector2f Slime::getSpeed()
 void Slime::updateSprite()
 {
   m_sprite.setPosition (
-      m_x - CG::SLIME_WIDTH/2,
-      m_y - CG::SLIME_HEIGHT
+      m_x,
+      m_y-CG::SLIME_HEIGHT/2
       );
 }
 
