@@ -69,7 +69,14 @@ void Slime::antijump()
 {
   if (m_onGround)
     return;
-  m_vy = -CG::SLIME_JUMP_SPEED;
+  m_vy = std::min(m_vy, 0.f);
+  m_vy += 2*CG::SLIME_JUMP_SPEED;
+}
+
+void Slime::groundPound()
+{
+  if (m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
+    m_vy = -CG::SLIME_JUMP_SPEED/2;
 }
 
 void Slime::prepareMove(const Input &input)
@@ -171,7 +178,6 @@ void Slime::prepareMove(const Input &input)
 
   /* Màj de la machine à états verticale */
   if (dirv == Direction::UP)
-  {
     switch(m_movingv_status)
     {
       case MovingVStatus::STOPPED:
@@ -190,10 +196,31 @@ void Slime::prepareMove(const Input &input)
         break;
       case MovingVStatus::DOUBLE_JUMPING:
         break;
+      case MovingVStatus::FAST_LAND:
+        m_movingv_status = MovingVStatus::GROUND_POUND;
+        m_apec = m_y;
+        groundPound();
+        break;
       case MovingVStatus::GROUND_POUND:
         break;
     }
-  }
+  else if (dirv == DOWN)
+    switch(m_movingv_status)
+      {
+        case MovingVStatus::STOPPED:
+          break;
+        case MovingVStatus::JUMPING_WAIT:
+        case MovingVStatus::DOUBLE_JUMPING:
+        case MovingVStatus::JUMPING:
+          m_movingv_status = MovingVStatus::FAST_LAND;
+          m_apec = m_y;
+          antijump();
+          break;
+        case MovingVStatus::FAST_LAND:
+          break;
+        case MovingVStatus::GROUND_POUND:
+          break;
+      }
   else
     switch(m_movingv_status)
       {
@@ -206,20 +233,7 @@ void Slime::prepareMove(const Input &input)
           break;
         case MovingVStatus::DOUBLE_JUMPING:
           break;
-        case MovingVStatus::GROUND_POUND:
-          break;
-      }
-  if (dirv == DOWN)
-    switch(m_movingv_status)
-      {
-        case MovingVStatus::STOPPED:
-          break;
-        case MovingVStatus::JUMPING_WAIT:
-        case MovingVStatus::DOUBLE_JUMPING:
-        case MovingVStatus::JUMPING:
-          m_movingv_status = MovingVStatus::GROUND_POUND;
-          m_apec = m_y;
-          antijump();
+        case MovingVStatus::FAST_LAND:
           break;
         case MovingVStatus::GROUND_POUND:
           break;
@@ -237,8 +251,9 @@ void Slime::prepareMove(const Input &input)
 
   /* Animation en cas de charge au sol */
   if (m_movingv_status == MovingVStatus::GROUND_POUND
-      && m_apec < CG::HEIGHT - 1.5*CG::SLIME_HEIGHT)
-    m_sprite.setRotation(360*(m_y-m_apec)/(CG::HEIGHT-m_apec));
+      && m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
+    m_sprite.setRotation(360*(m_y-m_apec)/(CG::HEIGHT-m_apec)
+        *(m_alignLeft ? 1 : -1));
   else
     m_sprite.setRotation(0);
 }

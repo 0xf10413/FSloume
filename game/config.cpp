@@ -56,6 +56,7 @@ void Config::updateParams()
   SLIME_HORIZONTAL_SPEED = WIDTH/5;
   SLIME_TIME_BOOST = .2f; // Temps en s où on peut booster
   SLIME_DOUBLE_JUMP_TIME = .3f; // Temps en s avant de pouvoir double-jump
+  SLIME_HEIGHT_GROUND_POUND = HEIGHT - NET_HEIGHT; // Hauteur min pour une charge au sol
   BALL_ELASTICITY = .9f; // Elasticité de la balle, entre 0 et 1
   SLIME_ELASTICITY = .9f; // Elasticité du sloume, entre 0 et 1
   // Calculés automatiquement
@@ -103,3 +104,5 @@ float Config::SLIME_ELASTICITY; // Elasticité du sloume, entre 0 et 1
 
 float Config::GRAVITY;
 int Config::SLIME_JUMP_SPEED;
+
+float Config::SLIME_HEIGHT_GROUND_POUND; // Hauteur min pour une charge au sol
