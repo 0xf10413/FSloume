@@ -5,7 +5,7 @@ Yet another slime volleyball clone.
 
 BUGS
 ----
-* sticky ball
+* ball crushed against a wall or the net
 * ball under the slime
 
 TODO

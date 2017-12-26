@@ -8,14 +8,23 @@
 #include <SFML/Graphics/Image.hpp>
 
 // Rend invisible les pixels à l'extérieur d'un disque aussi gros
-// que possible dans l'image rectangulaire
-inline void makeADisk ( sf::Image &img )
+// que possible dans l'image rectangulaire, et colorie éventuellement
+// une bordure supplémentaire
+inline void makeADisk (sf::Image &img, int outline = 0,
+    sf::Color outline_color = sf::Color(0,0,0,127))
 {
-  int r = img.getSize().x /2; // Rayon
-  for (int i=0; i < 2*r; i++)
-    for (int j = 0; j < 2*r; j++)
-      if ((i - r) * (i - r) + (j - r) * (j - r) > r*r)
+  int R = img.getSize().x /2; // Rayon grand disque
+  int r = R - outline; // Rayon interne de la couronne
+  for (int i=0; i < 2*R; i++)
+    for (int j = 0; j < 2*R; j++)
+    {
+      int ii = i - R;
+      int jj = j - R;
+      if (ii*ii + jj*jj > R*R)
         img.setPixel (i, j, sf::Color (0, 0, 0, 0));
+      else if (ii*ii + jj*jj > r*r)
+        img.setPixel(i, j, outline_color);
+    }
 }
 
 /* Fonctions de collisions */

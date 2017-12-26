@@ -7,7 +7,7 @@ Ball::Ball() :
   m_path(CG::BALL_ANTICIPATION, sf::Color::Red)
 {
   m_image.create(CG::BALL_RADIUS*2, CG::BALL_RADIUS*2, sf::Color::Red);
-  makeADisk(m_image);
+  makeADisk(m_image, 2);
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture(m_texture);
 }

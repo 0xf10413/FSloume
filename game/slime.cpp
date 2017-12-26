@@ -21,6 +21,10 @@ Slime::Slime (bool alignLeft) :
           (j - CG::SLIME_HEIGHT) * (j-CG::SLIME_HEIGHT) >=
           (CG::SLIME_WIDTH*CG::SLIME_WIDTH/4))
         m_image.setPixel (i, j, sf::Color (0, 0, 0, 0));
+      else if ((i - CG::SLIME_WIDTH/2) * (i - CG::SLIME_WIDTH/2) +
+          (j - CG::SLIME_HEIGHT) * (j-CG::SLIME_HEIGHT) >=
+          ((CG::SLIME_WIDTH-5)*(CG::SLIME_WIDTH-5)/4))
+        m_image.setPixel (i, j, sf::Color::Black);
 
   if (m_alignLeft)
   {

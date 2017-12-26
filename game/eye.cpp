@@ -8,7 +8,7 @@ Eye::Eye(bool alignLeft)
       CG::PUPIL_RADIUS*2,
       CG::PUPIL_RADIUS*2,
       alignLeft ? sf::Color::Cyan : sf::Color::Magenta );
-  makeADisk(m_image);
+  makeADisk(m_image, 1);
   m_texture.loadFromImage(m_image);
   m_sprite.setTexture (m_texture);
 }
