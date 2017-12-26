@@ -108,18 +108,16 @@ int FGame::mainLoop ()
         close();
       if ( m_event.type == sf::Event::KeyPressed )
       {
-#ifndef F_CONFIG_ANDROID
         if ( m_event.key.code == sf::Keyboard::Escape )
-          close();
-#else
-        if (m_game_mode != GameMode::TITLE)
         {
-          m_game_mode = GameMode::TITLE;
-          m_reinit = true;
+          if (m_game_mode != GameMode::TITLE)
+          {
+            m_game_mode = GameMode::TITLE;
+            m_reinit = true;
+          }
+          else
+            close();
         }
-        else
-          close();
-#endif
       }
       if ((m_event.type == sf::Event::MouseButtonPressed ||
             m_event.type == sf::Event::TouchEnded) && m_game_mode == GameMode::TITLE)

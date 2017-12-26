@@ -18,7 +18,7 @@ float collideTwoCircles (sf::Vector2f M, float R, sf::Vector2f V,
   float RppR2 = pow2(R+Rp);
   sf::Vector2f MpM = Mp - M;
   float a = abs2(delta_v);
-  float b = dotProduct(MpM, delta_v);
+  float b = 2*dotProduct(MpM, delta_v);
   float c = abs2(MpM) - RppR2;
 
   if (a == 0.) // Pas de trinôme
@@ -104,10 +104,10 @@ bool collideTwoSegments(sf::Vector2f A, sf::Vector2f B,
 bool collideCircleWithPoint(sf::Vector2f M, float R, sf::Vector2f V,
     sf::Vector2f Mp, float dt)
 {
-  sf::Vector2f MpM = M-Mp;
+  sf::Vector2f MMp = Mp-M;
   float a = abs2(V);
-  float b = dotProduct(MpM, V);
-  float c = abs2(MpM) - R*R;
+  float b = -2*dotProduct(MMp, V);
+  float c = abs2(MMp) - R*R;
 
   if (a == 0)
   {

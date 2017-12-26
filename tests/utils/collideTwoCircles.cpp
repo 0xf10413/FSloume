@@ -34,16 +34,6 @@ TEST_CASE( "Test de collision entre cercles mouvants", "[collideTwoCircles]")
       {Pt(0, 0), 1, Sp(1, 0), Pt(3, 0), 1, Sp(1, 0), 100, -1}, // Normal
       {Pt(0, 0), 0, Sp(1, 0), Pt(3, 0), .5, Sp(1, 0), 100, -1}, // Un rayon nul
       {Pt(0, 0), 0, Sp(1, 0), Pt(3, 0), 0, Sp(1, 0), 100, -1}, // Deux rayons nuls
-      {Pt(-inf, 0), 0, Sp(1, 0), Pt(3, 0), 0, Sp(1, 0), 100, -1}, // Un point à l'infini
-      {Pt(-inf, -inf), 0, Sp(1, 0), Pt(3, 0), 0, Sp(1, 0), 100, -1}, // Un point à l'infini
-      {Pt(-inf, -inf), 0, Sp(1, 0), Pt(inf, 0), 0, Sp(1, 0), 100, -1}, // Deux points à l'infini
-      {Pt(-inf, -inf), 0, Sp(1, 0), Pt(inf, inf), 0, Sp(1, 0), 100, -1}, // Deux points à l'infini
-      {Pt(0, 0), 1, Sp(inf, 0), Pt(3, 0), 1, Sp(1, 0), 100, -1}, // Une vitesse infinie
-      {Pt(0, 0), 1, Sp(-inf, 0), Pt(3, 0), 1, Sp(1, 0), 100, -1}, // Une vitesse infinie
-      {Pt(0, 0), 1, Sp(inf, 0), Pt(3, 0), 1, Sp(inf, 0), 100, -1}, // Deux vitesses infinies
-      {Pt(0, 0), 1, Sp(-inf, 0), Pt(3, 0), 1, Sp(inf, 0), 100, -1}, // Deux vitesses infinies
-      {Pt(0, 0), 1, Sp(inf, 0), Pt(3, 0), 1, Sp(-inf, 0), 100, -1}, // Deux vitesses infinies
-      {Pt(0, 0), 1, Sp(-inf, 0), Pt(3, 0), 1, Sp(-inf, 0), 100, -1}, // Deux vitesses infinies
     };
 
     for (const TestData &d : testData)
@@ -65,13 +55,9 @@ TEST_CASE( "Test de collision entre cercles mouvants", "[collideTwoCircles]")
   SECTION ("Vitesses parallèles, intersection")
   {
     TestData testData[] = {
-      {Pt(0, 0), 1, Sp(1, 0), Pt(10, 0), 1, Sp(1, 0), 100, 1}, // Normal
-      {Pt(0, 0), 0, Sp(1, 0), Pt(10, 0), .5, Sp(-1, 0), 100, 1}, // Un rayon nul
-      {Pt(0, 0), 0, Sp(1, 0), Pt(10, 0), 0, Sp(-1, 0), 100, 1}, // Deux rayons nuls
-      {Pt(-inf, -inf), 1, Sp(1, 0), Pt(-inf, -inf), 1, Sp(-1, 0), 100, 0}, // Deux points à l'infini
-      {Pt(0, 0), 1, Sp(inf, 0), Pt(10, 0), 1, Sp(1, 0), 100, 0}, // Une vitesse infinie
-      {Pt(0, 0), 1, Sp(0, 0), Pt(10, 0), 1, Sp(-inf, 0), 100, 0}, // Une vitesse infinie
-      {Pt(0, 0), 1, Sp(inf, 0), Pt(10, 0), 1, Sp(-inf, 0), 100, 0}, // Deux vitesses infinies
+      {Pt(0, 0), 1, Sp(1, 0), Pt(10, 0), 1, Sp(-1, 0), 100, 4}, // Normal
+      {Pt(0, 0), 0, Sp(1, 0), Pt(10, 0), 1, Sp(-1, 0), 100, 4.5}, // Un rayon nul
+      {Pt(0, 0), 0, Sp(1, 0), Pt(10, 0), 0, Sp(-1, 0), 100, 5}, // Deux rayons nuls
     };
 
     for (const TestData &d : testData)
@@ -90,4 +76,48 @@ TEST_CASE( "Test de collision entre cercles mouvants", "[collideTwoCircles]")
     }
   }
 
+  SECTION ("Vitesses quelconques, pas d'intersection")
+  {
+    TestData testData[] = {
+      {Pt(0, 0), 1, Sp(.2, .3), Pt(10, 0), 1, Sp(.2, -.1), 100, -1},
+      {Pt(0, 0), 1, Sp(.2, .3), Pt(10, 0), 1, Sp(.2, .1), 100, -1},
+    };
+
+    for (const TestData &d : testData)
+    {
+      AFFECT_SYMBOLS_FROM(d);
+      INFO("M : " << M.x << ", " << M.y);
+      INFO("R : " << R);
+      INFO("V : " << V.x << ", " << V.y);
+      INFO("M' : " << Mp.x << ", " << Mp.y);
+      INFO("R' : " << Rp);
+      INFO("V' : " << Vp.x << ", " << Vp.y);
+      INFO("dt : " << dt);
+      INFO("t_expect : " << t_expect);
+
+      CHECK( collideTwoCircles(M, R, V, Mp, Rp, Vp, dt) == Approx(t_expect) );
+    }
+  }
+
+  SECTION ("Vitesses quelconques, intersection")
+  {
+    TestData testData[] = {
+      {Pt(0, 0), 1, Sp(1, .2), Pt(5, 0), 1, Sp(0, .2), 3, 3},
+    };
+
+    for (const TestData &d : testData)
+    {
+      AFFECT_SYMBOLS_FROM(d);
+      INFO("M : " << M.x << ", " << M.y);
+      INFO("R : " << R);
+      INFO("V : " << V.x << ", " << V.y);
+      INFO("M' : " << Mp.x << ", " << Mp.y);
+      INFO("R' : " << Rp);
+      INFO("V' : " << Vp.x << ", " << Vp.y);
+      INFO("dt : " << dt);
+      INFO("t_expect : " << t_expect);
+
+      CHECK( collideTwoCircles(M, R, V, Mp, Rp, Vp, dt) == Approx(t_expect) );
+    }
+  }
 }

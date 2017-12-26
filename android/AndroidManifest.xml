@@ -4,13 +4,13 @@
     package="com.fsloume.fsloume">
 
    <application
-       android:label="SFML"
+       android:label="FSloume"
        android:hasCode="false"
        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
        >
        <activity
            android:name="android.app.NativeActivity"
-           android:label="SFML"
+           android:label="FSloume"
            android:screenOrientation="landscape"
            >
            <meta-data

@@ -23,6 +23,9 @@ inline void makeADisk ( sf::Image &img )
 float collideTwoCircles (sf::Vector2f M, float R, sf::Vector2f V,
     sf::Vector2f Mp, float Rp, sf::Vector2f Vp, float dt);
 
+bool collideCircleWithPoint(sf::Vector2f M, float R, sf::Vector2f V,
+    sf::Vector2f Mp, float dt);
+
 sf::Vector2f collideWithFixRectangle (sf::FloatRect rect,
    sf::Vector2f Mp, float R, sf::Vector2f Vp, float dt);
 

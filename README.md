@@ -11,12 +11,13 @@ BUGS
 TODO
 ----
 * Merge clouds in CloudZone
+* Unit test collideWithFixRectangle
 * Add energy bar for special actions
-* Add a max score and finish a round
+* Add a max score and finish a round, and reset counters
 * Add a generator for config.h/config.cpp
 * Improve fast landing
 * Add items
 * Add skill levels
 * Add a tutorial
 * Add a story
-* Add a multiplayer mode
+* Add a multiplayer online mode
