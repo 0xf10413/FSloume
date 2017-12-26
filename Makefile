@@ -25,13 +25,21 @@ LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics -lgcov \
 # Resource builder
 RC_BUILD = ./tools/objectify.py
 
+# Config builder
+CG_BUILD = ./tools/generate_config.py
+
 # Resource files
 RC_ALL=$(wildcard rc/*)
 RC_HEADER=game/rc.h
 RC_CPP_INTERNAL=game/rc_manager.inc # Beware not to compile it !
 
+# Config files
+CG_HEADER=game/config.h
+CG_SRC=game/config.cpp
+CG_INI=config.ini
+
 # Source files (adjust if needed)
-SRC_CXX_GAME=$(wildcard game/*.cpp)
+SRC_CXX_GAME=$(sort $(wildcard game/*.cpp) $(CG_SRC))
 SRC_C_GAME=$(wildcard game/*.c)
 SRC_CXX_TEST=$(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp)
 SRC_C_TEST=$(wildcard tests/*.c) $(wildcard tests/*/*.c)
@@ -126,11 +134,11 @@ $(BUILD_DIR)/$(BIN_TEST): $(OBJ_TEST) $(BUILD_DIR)/$(LIB_GAME_FULL_NAME)
 
 
 # General build target
-$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER) $(RC_CPP_INTERNAL) FORCE_REBUILD
+$(BUILD_DIR)/%.o: %.cpp $(RC_HEADER) $(RC_CPP_INTERNAL) $(CG_HEADER) $(CG_SRC) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CXX) -o $@ -c $< $(CXXFLAGS) -MMD
 
-$(BUILD_DIR)/%.o: %.c $(RC_HEADER) $(RC_CPP_INTERNAL) FORCE_REBUILD
+$(BUILD_DIR)/%.o: %.c $(RC_HEADER) $(RC_CPP_INTERNAL) $(CG_HEADER) $(CG_SRC) FORCE_REBUILD
 	@mkdir -pv $(@D)
 	$(CC) -o $@ -c $< $(CFLAGS) -MMD
 
@@ -151,6 +159,10 @@ $(RC_HEADER): $(RC_ALL) FORCE_REBUILD
 $(RC_CPP_INTERNAL): $(RC_ALL) FORCE_REBUILD
 	$(RC_BUILD) rc2cpp rc/ --output $@
 
+# Building config.h and config.cpp
+$(CG_HEADER) $(CG_SRC): $(CG_INI)
+	$(CG_BUILD) $? $(CG_HEADER) $(CG_SRC)
+
 # Clean-up targets
 .PHONY: clean mrproper launch debug memcheck
 clean:
@@ -159,7 +171,7 @@ clean:
 	 	$(DEPS_GAME) $(DEPS_TEST) *.gcda *.gcno
 
 mrproper: clean
-	-rm -rf $(BUILD_DIR) $(RC_HEADER) $(RC_CPP_INTERNAL)
+	-rm -rf $(BUILD_DIR) $(RC_HEADER) $(RC_CPP_INTERNAL) $(CG_HEADER) $(CG_SRC)
 	-cd android && make mrproper
 
 # Launch targets
@@ -189,7 +201,8 @@ apk-install: apk
 $(BUILD_DIR)/$(APK_NAME): $(APK_DIR)/$(APK_NAME)
 	-cp -v $? $@
 
-$(APK_DIR)/$(APK_NAME): $(SRC_RC) $(RC_HEADER) $(RC_CPP_INTERNAL) $(SRC_CXX_GAME)
+$(APK_DIR)/$(APK_NAME): $(SRC_RC) $(RC_HEADER) $(RC_CPP_INTERNAL) $(SRC_CXX_GAME) \
+	$(CG_HEADER) $(CG_SRC)
 	-cd android && make
 
 ## Makefile debug

@@ -54,14 +54,15 @@ CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
 {
   std::random_device rd;
   std::mt19937 twister (rd());
-  std::uniform_real_distribution<float> dist_x(0, m_zone.width);
-  std::uniform_real_distribution<float> dist_y(0, m_zone.height);
-  std::uniform_real_distribution<float> dist_vx(10, 40);
-  std::uniform_real_distribution<float> dist_vy(-5, 5);
+  std::uniform_real_distribution<float> dist_x(m_zone.left-CG::CLOUD_WIDTH/2,
+      m_zone.width+CG::CLOUD_WIDTH/2);
+  std::uniform_real_distribution<float> dist_y(m_zone.top, m_zone.top + m_zone.height);
+  std::uniform_real_distribution<float> dist_vx(CG::CLOUD_MIN_SPEED_X, CG::CLOUD_MAX_SPEED_X);
+  std::uniform_real_distribution<float> dist_vy(CG::CLOUD_MIN_SPEED_Y, CG::CLOUD_MAX_SPEED_Y);
 
   for (Cloud &c : m_clouds)
   {
-    c.setPosition(m_zone.left + dist_x(twister), m_zone.top + dist_y(twister));
+    c.setPosition(dist_x(twister), dist_y(twister));
     c.setSpeed(dist_vx(twister), dist_vy(twister));
   }
 }

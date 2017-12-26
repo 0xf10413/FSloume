@@ -5,3 +5,5 @@ game/rc.h
 *.gcda
 *.gcno
 game/rc_manager.inc
+game/config.cpp
+game/config.h

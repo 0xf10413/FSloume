@@ -9,6 +9,7 @@ Input::Input() : keyDowns(), touchDowns(), touchPlaces()
 
 void Input::process (const sf::Event &e)
 {
+  // TODO : ignorer les finger > nb_max_finger
   if (e.type == sf::Event::KeyPressed)
     keyDowns[e.key.code] = true;
   else if (e.type == sf::Event::KeyReleased)
