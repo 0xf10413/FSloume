@@ -39,7 +39,7 @@ CG_SRC=game/config.cpp
 CG_INI=config.ini
 
 # Source files (adjust if needed)
-SRC_CXX_GAME=$(sort $(wildcard game/*.cpp) $(CG_SRC))
+SRC_CXX_GAME=$(wildcard game/*.cpp)
 SRC_C_GAME=$(wildcard game/*.c)
 SRC_CXX_TEST=$(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp)
 SRC_C_TEST=$(wildcard tests/*.c) $(wildcard tests/*/*.c)
@@ -56,6 +56,9 @@ BIN_TEST=$(BIN)_test
 # Game lib
 LIB_GAME=$(BIN)_game
 LIB_GAME_FULL_NAME=lib$(LIB_GAME).so
+
+# Add config file
+SRC_CXX_GAME := $(sort ${SRC_CXX_GAME} $(CG_SRC))
 
 # Object files for game
 OBJ_CXX_GAME=$(SRC_CXX_GAME:%.cpp=$(BUILD_DIR)/%.o)

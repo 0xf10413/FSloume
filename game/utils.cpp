@@ -205,6 +205,51 @@ sf::Vector2f collideWithFixRectangle (sf::FloatRect rect,
   return {0,0};
 }
 
+float clamp(float value, float min, float max)
+{
+  if (value <= min)
+    return min;
+  if (value >= max)
+    return max;
+  return value;
+}
+
+// TODO: référencer, unit-tester
+// Source : https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
+bool isInsideRectangle(sf::Vector2f M, float R, sf::FloatRect rect)
+{
+  // Find the closest point to the circle within the rectangle
+  float closestX = clamp(M.x, rect.left, rect.left + rect.width);
+  float closestY = clamp(M.x, rect.top, rect.top + rect.height);
+
+  // Calculate the distance between the circle's center and this closest point
+  float distanceX = M.x - closestX;
+  float distanceY = M.y - closestY;
+
+  // If the distance is less than the circle's radius, an intersection occurs
+  float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+  return distanceSquared < (R * R);
+}
+
+/* Débloque un cercle s'il se retrouve dans un cercle et / ou un rectangle */
+// TODO: unit tester
+sf::Vector2f uncrushCircleFromRecAndCircle(sf::Vector2f M, float R, sf::Vector2f Vp,
+    sf::Vector2f Mp, float Rp)
+{
+  /* Première étape : sortir le cercle de l'autre */
+  sf::Vector2f finalDir = Vp;
+
+  if (abs2(M-Mp) < pow2(R+Rp))
+  {
+    sf::Vector2f dir = M - Mp;
+    dir /= norm2(dir);
+    dir *= norm2(Vp);
+    finalDir = dir;
+  }
+
+  return finalDir;
+}
+
 std::ostream &operator<< (std::ostream &out, const sf::Vector2f &v)
 {
   return out << "(" << v.x << ", " << v.y << ")";

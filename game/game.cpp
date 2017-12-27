@@ -329,6 +329,12 @@ void FGame::collide (float dt)
   }
 
 
+  /* Protection contre le crush */
+  m_ball.setSpeed(uncrushCircleFromRecAndCircle(m_ball.getPosition(), CG::BALL_RADIUS,
+        m_ball.getSpeed(), m_bSlime.getPosition(), CG::SLIME_WIDTH/2));
+  m_ball.setSpeed(uncrushCircleFromRecAndCircle(m_ball.getPosition(), CG::BALL_RADIUS,
+        m_ball.getSpeed(), m_rSlime.getPosition(), CG::SLIME_WIDTH/2));
+
   /* filet et balle */
   sf::Vector2f bounce = collideWithFixRectangle(
       m_net.getBox(),
