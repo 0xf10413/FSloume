@@ -23,7 +23,7 @@ private:
   ResourceStream m_font_stream;
   sf::Font m_font;
   Input m_input;
-  bool m_reinit; // Faut-il tout replacer ?
+  bool m_reinit, m_full_reinit; // Faut-il tout replacer ?
 
 
   Background m_background;

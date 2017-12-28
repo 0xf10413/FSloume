@@ -22,11 +22,13 @@ public:
 class MovingEntity : public UniqueDrawable
 {
 private:
-  std::array<float, 5> m_saved_state;
+  std::array<float, 7> m_saved_state;
 protected:
   /* Positions et vitesses du centre d'inertie */
   float m_x, m_y;
   float m_vx, m_vy;
+  /* Angle de rotation et vitesse de rotation */
+  float m_theta, m_omega;
 
   bool m_onGround; // Est au sol ?
 

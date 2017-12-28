@@ -26,6 +26,7 @@ public:
   Counter &operator++();
   Counter &operator--();
   virtual void draw (sf::RenderWindow &w) const override;
+  virtual void reinit() override;
 };
 
 #endif /* !COUNTER_H */

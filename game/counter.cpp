@@ -55,6 +55,12 @@ void Counter::setPosition(float x, float y)
   updateSprite();
 }
 
+void Counter::reinit()
+{
+  m_count = 0;
+  updateSprite();
+}
+
 
 void Counter::updateSprite()
 {

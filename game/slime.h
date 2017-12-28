@@ -43,6 +43,7 @@ public:
     /* Positionnement du centre d'inertie */
     void setX (float nx);
     void setY (float ny);
+    void setTheta (float theta);
     sf::Vector2f getPosition();
     sf::Vector2f getSpeed();
 

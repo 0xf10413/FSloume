@@ -20,7 +20,7 @@ void IA::interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt)
       std::abs(b.getPosition().y - s.m_y) < CG::JUMP_MAX_HEIGHT + CG::SLIME_HEIGHT)
     s.jump();
 
-  if (dangerPt.x >= 0 && (std::abs(dangerPt.x - s.m_x) > 4)
+  if (dangerPt.x >= 0 /*&& (std::abs(dangerPt.x - s.m_x) > 4)*/
       && ((s.m_alignLeft && dangerPt.x <= CG::WIDTH/2) ||
         (!s.m_alignLeft && dangerPt.x >= CG::WIDTH/2)))
   {

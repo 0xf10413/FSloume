@@ -7,10 +7,10 @@
 #include <cassert>
 
 FGame::FGame () :
-  sf::RenderWindow(sf::VideoMode (CG::WIDTH, CG::HEIGHT ), "SFML"),
+  sf::RenderWindow(sf::VideoMode (CG::WIDTH, CG::HEIGHT ), "FSloume"),
   m_event(), m_clock(), m_font_stream(ResourceManager::fetchMe("rc_8bitoperator_ttf")),
   m_font(), m_input(),
-  m_reinit(false),
+  m_reinit(false), m_full_reinit(false),
   m_background(),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
   m_menu(nullptr),
@@ -84,6 +84,12 @@ void FGame::rebuildGame()
 
   m_lScore.setPosition(0,0);
   m_rScore.setPosition(CG::WIDTH,0);
+  if (m_full_reinit)
+  {
+    m_lScore.reinit();
+    m_rScore.reinit();
+    m_full_reinit = false;
+  }
 
   m_branch_mode = BranchMode::PLAYING;
 
@@ -113,7 +119,7 @@ int FGame::mainLoop ()
           if (m_game_mode != GameMode::TITLE)
           {
             m_game_mode = GameMode::TITLE;
-            m_reinit = true;
+            m_reinit = m_full_reinit = true;
           }
           else
             close();
@@ -126,17 +132,17 @@ int FGame::mainLoop ()
         if (click == "Mode deux joueurs")
         {
           m_game_mode = GameMode::TWO_PLAYERS;
-          m_reinit = true;
+          m_reinit = m_full_reinit = true;
         }
         if (click == "Mode un joueur")
         {
           m_game_mode = GameMode::ONE_PLAYER;
-          m_reinit = true;
+          m_reinit = m_full_reinit = true;
         }
         if (click == "Test")
         {
           m_game_mode = GameMode::TEST;
-          m_reinit = true;
+          m_reinit = m_full_reinit = true;
         }
       }
     }

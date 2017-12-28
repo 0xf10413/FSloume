@@ -242,20 +242,17 @@ void Slime::prepareMove(const Input &input)
   if (m_movingv_status == MovingVStatus::GROUND_POUND
       && m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
   {
-    // TODO : ajouter theta et omega
     float mid_height = .33*CG::HEIGHT + .66*m_apec;
     if (m_y < m_apec)
-      m_sprite.setRotation(180*(m_y-m_apec)/(CG::HEIGHT-m_apec)
-          *(m_alignLeft ? 1 : -1));
+      setTheta(180*(m_y-m_apec)/(CG::HEIGHT-m_apec) *(m_alignLeft ? 1 : -1));
     else if (m_y < mid_height)
     {
-      m_sprite.setRotation(360*(m_y-mid_height)/(mid_height-m_apec)
-          *(m_alignLeft ? 1 : -1));
+      setTheta(360*(m_y-mid_height)/(mid_height-m_apec) *(m_alignLeft ? 1 : -1));
       dirh = Direction::NONE;
     }
     else
     {
-      m_sprite.setRotation(0);
+      setTheta(0);
       antijump();
       dirh = Direction::NONE;
     }
@@ -332,6 +329,12 @@ void Slime::setX (float x)
   updateSprite();
 }
 
+void Slime::setTheta (float theta)
+{
+  m_theta = theta;
+  updateSprite();
+}
+
 void Slime::setY (float y)
 {
   m_y = y;
@@ -353,6 +356,7 @@ void Slime::updateSprite()
       m_x,
       m_y-CG::SLIME_HEIGHT/2
       );
+  m_sprite.setRotation(m_theta);
 }
 
 void Slime::reinit()
