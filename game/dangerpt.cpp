@@ -9,7 +9,7 @@
 #include "config.h"
 
 
-DangerPoint::DangerPoint(const sf::Color &c) : MovingEntity(), m_color(c)
+DangerPoint::DangerPoint() : MovingEntity()
 {
   m_image.create(CG::DANGERPT_WIDTH, CG::DANGERPT_WIDTH, m_color);
   for (int i = CG::DANGERPT_WIDTH/10; i < 7*CG::DANGERPT_WIDTH/10; ++i)

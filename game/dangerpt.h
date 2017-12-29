@@ -12,10 +12,8 @@
 
 class DangerPoint : public MovingEntity
 {
-private:
-  sf::Color m_color;
 public:
-  DangerPoint(const sf::Color &c);
+  DangerPoint();
   virtual void updateSprite();
   void setPosition(const sf::Vector2f &v);
   sf::Vector2f getPosition();

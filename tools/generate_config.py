@@ -168,7 +168,9 @@ class ConfigSource(object):
         en : width = 2*HEIGHT + OMEGA
         """
         expr = expr.upper()
-        return re.sub(r'([A-Z_]+) *\(',lambda x: x.group(0).lower(), expr)
+        # Garde les noms de fonction en minuscules
+        expr = re.sub(r'([A-Z_]+) *\(',lambda x: x.group(0).lower(), expr)
+        return expr
 
     def add_variable_ctor_override(self, var, overrides):
         self.file.write("  #if defined(F_CONFIG_{})\n".format(overrides[0].upper()))
