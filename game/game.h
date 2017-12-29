@@ -20,8 +20,7 @@ class FGame : public sf::RenderWindow
 private:
   sf::Event m_event;
   sf::Clock m_clock;
-  ResourceStream m_font_stream;
-  sf::Font m_font;
+  std::shared_ptr<sf::Font> m_font;
   Input m_input;
   bool m_reinit, m_full_reinit; // Faut-il tout replacer ?
   bool m_active;

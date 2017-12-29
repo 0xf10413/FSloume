@@ -7,26 +7,13 @@
 
 #include "dangerpt.h"
 #include "config.h"
+#include "rc_manager.h"
 
 
 DangerPoint::DangerPoint() : MovingEntity()
 {
-  m_image.create(CG::DANGERPT_WIDTH, CG::DANGERPT_WIDTH, m_color);
-  for (int i = CG::DANGERPT_WIDTH/10; i < 7*CG::DANGERPT_WIDTH/10; ++i)
-    for (int j = CG::DANGERPT_WIDTH/2-1; j < CG::DANGERPT_WIDTH/2+2; ++j)
-      m_image.setPixel(j, i, sf::Color::Black);
-  for (int i = CG::DANGERPT_WIDTH/2-2; i < CG::DANGERPT_WIDTH/2+3; ++i)
-    for (int j = 9*CG::DANGERPT_WIDTH/10-2; j < 9*CG::DANGERPT_WIDTH/10+2; ++j)
-      m_image.setPixel(i, j, sf::Color::Black);
-  for (int i = 0; i < CG::DANGERPT_WIDTH; ++i)
-    for (int j = 0; j < CG::DANGERPT_WIDTH; ++j)
-    {
-      if (-2*i + CG::DANGERPT_WIDTH > j ||
-          2*i - CG::DANGERPT_WIDTH > j)
-        m_image.setPixel(i,j,sf::Color(0,0,0,0));
-    }
-  m_texture.loadFromImage(m_image);
-  m_sprite.setTexture(m_texture);
+  m_texture = ResourceManager::getTexture("danger_pt");
+  m_sprite.setTexture(*m_texture.lock());
 }
 
 void DangerPoint::updateSprite()

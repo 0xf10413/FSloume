@@ -1,4 +1,5 @@
 #include "slime.h"
+#include "rc_manager.h"
 
 Slime::Slime (bool alignLeft) :
   MovingEntity(),
@@ -12,42 +13,8 @@ Slime::Slime (bool alignLeft) :
   m_victories(0),
   m_clamp()
 {
-  // Dessin de la forme hémi-circulaire caractéristique
-  // Calcul : tout pixel distant du point au milieu (horizontalement)
-  // en bas (verticalement) de plus de width/2 est transparent.
-  m_image.create (CG::SLIME_WIDTH, CG::SLIME_HEIGHT, m_alignLeft ? sf::Color::Blue : sf::Color::Red);
-  for (int i = 0; i < CG::SLIME_WIDTH; i++)
-    for (int j=0; j<CG::SLIME_HEIGHT; j++)
-      if ((i - CG::SLIME_WIDTH/2) * (i - CG::SLIME_WIDTH/2) +
-          (j - CG::SLIME_HEIGHT) * (j-CG::SLIME_HEIGHT) >=
-          (CG::SLIME_WIDTH*CG::SLIME_WIDTH/4))
-        m_image.setPixel (i, j, sf::Color (0, 0, 0, 0));
-      else if ((i - CG::SLIME_WIDTH/2) * (i - CG::SLIME_WIDTH/2) +
-          (j - CG::SLIME_HEIGHT) * (j-CG::SLIME_HEIGHT) >=
-          ((CG::SLIME_WIDTH-5)*(CG::SLIME_WIDTH-5)/4))
-        m_image.setPixel (i, j, sf::Color::Black);
-
-  if (m_alignLeft)
-  {
-    // Dessin du globe oculaire (coordonnées locales du centre : (3*w/4, h/2))
-    for (int i = 0; i < CG::SLIME_WIDTH; i++)
-      for (int j=0; j < CG::SLIME_HEIGHT; j++)
-        if ((i - 3*CG::SLIME_WIDTH/4) * (i - 3*CG::SLIME_WIDTH/4) +
-            (j - CG::SLIME_HEIGHT/2) * (j-CG::SLIME_HEIGHT/2) <=
-            CG::EYE_RADIUS_SQUARED)
-          m_image.setPixel (i, j, sf::Color::White);
-  }
-  else
-    // Dessin du globe oculaire (coordonnées locales du centre : (w/4, h/2))
-    for (int i = 0; i < CG::SLIME_WIDTH; i++)
-      for (int j=0; j < CG::SLIME_HEIGHT; j++)
-        if ((i - CG::SLIME_WIDTH/4) * (i - CG::SLIME_WIDTH/4) +
-            (j - CG::SLIME_HEIGHT/2) * (j-CG::SLIME_HEIGHT/2) <=
-            CG::EYE_RADIUS_SQUARED)
-          m_image.setPixel (i, j, sf::Color::White);
-
-  m_texture.loadFromImage(m_image);
-  m_sprite.setTexture (m_texture);
+  m_texture = ResourceManager::getTexture(m_alignLeft ? "bSlime" : "rSlime");
+  m_sprite.setTexture (*m_texture.lock());
   m_sprite.setOrigin(CG::SLIME_WIDTH/2, CG::SLIME_HEIGHT/2);
 
   if (m_alignLeft)

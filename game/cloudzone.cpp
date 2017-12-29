@@ -10,13 +10,12 @@
 #include <random>
 
 
-Cloud::Cloud() : m_imgstream(ResourceManager::fetchMe("rc_cloud_png"))
+Cloud::Cloud()
 {
-  m_image.create(CG::CLOUD_WIDTH, CG::CLOUD_HEIGHT, sf::Color::White);
-  m_image.loadFromStream(m_imgstream);
-  m_texture.loadFromImage(m_image);
-  m_sprite.setTexture(m_texture);
-  m_sprite.setScale((float)CG::CLOUD_WIDTH/m_texture.getSize().x, (float)CG::CLOUD_HEIGHT/m_texture.getSize().y);
+  m_texture = ResourceManager::getTexture("cloud");
+  m_sprite.setTexture(*m_texture.lock());
+  m_sprite.setScale((float)CG::CLOUD_WIDTH/(*m_texture.lock()).getSize().x,
+      (float)CG::CLOUD_HEIGHT/(*m_texture.lock()).getSize().y);
 }
 
 void Cloud::updateSprite()

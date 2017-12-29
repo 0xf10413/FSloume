@@ -6,7 +6,7 @@
 #include "unique_drawable.h"
 #include "utils.h"
 
-class Button : public MovingEntity
+class Button : public HeavyMovingEntity
 {
 private:
   const sf::Font &m_font;

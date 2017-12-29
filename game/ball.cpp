@@ -1,15 +1,14 @@
 #include "ball.h"
 #include "utils.h"
+#include "rc_manager.h"
 
 Ball::Ball() :
   MovingEntity(),
   m_clamp(),
   m_path(CG::BALL_ANTICIPATION, sf::Color::Red)
 {
-  m_image.create(CG::BALL_RADIUS*2, CG::BALL_RADIUS*2, sf::Color::Red);
-  makeADisk(m_image, 2);
-  m_texture.loadFromImage(m_image);
-  m_sprite.setTexture(m_texture);
+  m_texture = ResourceManager::getTexture("ball");
+  m_sprite.setTexture(*m_texture.lock());
 }
 
 void Ball::setX (float x)

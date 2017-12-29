@@ -1,10 +1,10 @@
 #include "net.h"
+#include "rc_manager.h"
 
 Net::Net () : MovingEntity()
 {
-  m_image.create (CG::NET_WIDTH, CG::NET_HEIGHT, sf::Color::Yellow);
-  m_texture.loadFromImage (m_image);
-  m_sprite.setTexture(m_texture);
+  m_texture = ResourceManager::getTexture("net");
+  m_sprite.setTexture(*m_texture.lock());
 }
 
 void Net::setX (float x)

@@ -8,7 +8,7 @@
 
 FGame::FGame () :
   sf::RenderWindow(sf::VideoMode (CG::WIDTH, CG::HEIGHT ), "FSloume"),
-  m_event(), m_clock(), m_font_stream(ResourceManager::fetchMe("rc_8bitoperator_ttf")),
+  m_event(), m_clock(),
   m_font(), m_input(),
   m_reinit(false), m_full_reinit(false),
   m_active(true),
@@ -17,17 +17,17 @@ FGame::FGame () :
   m_menu(nullptr),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
   m_game_over_countdown(),
-  m_lScore(0, true, m_font),
-  m_rScore(0, false, m_font),
+  m_lScore(0, true, *m_font),
+  m_rScore(0, false, *m_font),
   m_gameOverText(),
   m_targets{},
-  m_dangerpt(sf::Color(255,165,0)) // orange
+  m_dangerpt()
 {
   setFramerateLimit (60);
-  m_font.loadFromStream (m_font_stream);
+  m_font = ResourceManager::getFont("8bitoperator");
 
   m_game_mode = GameMode::TITLE; // Changer à TITLE pour afficher le menu
-  m_gameOverText.setFont(m_font);
+  m_gameOverText.setFont(*m_font);
   m_gameOverText.setCharacterSize(CG::FONT_BASE_SIZE_PX);
   m_gameOverText.setString("YOU failed!");
   m_gameOverText.setPosition(
@@ -38,7 +38,7 @@ FGame::FGame () :
 
   sf::Color menuColor = sf::Color::Magenta;
   menuColor.a = 127;
-  m_menu = new Menu(m_font, menuColor);
+  m_menu = new Menu(*m_font, menuColor);
   sf::Vector2f margins{(float)CG::WIDTH/20, (float)CG::HEIGHT/20};
   sf::Vector2f paddings{(float)CG::WIDTH/40, (float)CG::HEIGHT/40};
 

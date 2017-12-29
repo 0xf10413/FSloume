@@ -1,8 +1,12 @@
 #ifndef RC_MANAGER_H
 #define RC_MANAGER_H
 
-#include <vector>
+#include <map>
+#include <memory>
 #include <string>
+#include <vector>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/System/InputStream.hpp>
 
 class ResourceStream : public sf::InputStream
@@ -28,8 +32,14 @@ public:
 
 class ResourceManager
 {
+private:
+  static std::map<std::string, std::shared_ptr<sf::Texture>> m_cache;
+  static std::map<std::string, std::shared_ptr<sf::Font>> m_font_cache;
+  static std::map<std::string, std::shared_ptr<ResourceStream>> m_stream_cache;
+  static ResourceStream fetchStream (const std::string &name);
 public:
-  static ResourceStream fetchMe (const std::string &name);
+  static std::weak_ptr<sf::Texture> getTexture(const std::string &name);
+  static std::shared_ptr<sf::Font> getFont(const std::string &name);
 };
 
 #endif /* !RC_MANAGER_H */

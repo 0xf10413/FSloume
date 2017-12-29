@@ -15,7 +15,6 @@ class Cloud : public MovingEntity
 {
 private:
   virtual void updateSprite() override;
-  ResourceStream m_imgstream;
   friend class CloudZone;
   void setSpeed(float vx, float vy);
 public:

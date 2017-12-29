@@ -1,15 +1,11 @@
 #include "target.h"
 #include "config.h"
+#include "rc_manager.h"
 
 Target::Target() : m_visible(false)
 {
-  m_image.create(CG::TARGET_WIDTH, CG::TARGET_HEIGHT, sf::Color(255, 255, 127, 0));
-  for (unsigned int i = 0; i < CG::TARGET_WIDTH; ++i)
-    m_image.setPixel(i, CG::TARGET_HEIGHT/2, sf::Color(255, 255, 127, 255));
-  for (unsigned int j = 0; j < CG::TARGET_HEIGHT; ++j)
-    m_image.setPixel(CG::TARGET_WIDTH/2, j, sf::Color(255, 255, 127, 255));
-  m_texture.loadFromImage(m_image);
-  m_sprite.setTexture(m_texture);
+  m_texture = ResourceManager::getTexture("target");
+  m_sprite.setTexture(*m_texture.lock());
 }
 
 void Target::updateSprite()

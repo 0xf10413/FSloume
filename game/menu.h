@@ -10,7 +10,7 @@
  * ajouter du border-radius
  */
 
-class Menu : public MovingEntity
+class Menu : public HeavyMovingEntity
 {
 private:
   const sf::Font &m_font;

@@ -1,16 +1,12 @@
 #include "eye.h"
 #include "config.h"
 #include "utils.h"
+#include "rc_manager.h"
 
 Eye::Eye(bool alignLeft)
 {
-  m_image.create (
-      CG::PUPIL_RADIUS*2,
-      CG::PUPIL_RADIUS*2,
-      alignLeft ? sf::Color::Cyan : sf::Color::Magenta );
-  makeADisk(m_image, 1);
-  m_texture.loadFromImage(m_image);
-  m_sprite.setTexture (m_texture);
+  m_texture = ResourceManager::getTexture(alignLeft ? "bEye" : "rEye");
+  m_sprite.setTexture (*m_texture.lock());
 }
 
 void Eye::setPosition (float x, float y)
