@@ -11,6 +11,7 @@ FGame::FGame () :
   m_event(), m_clock(), m_font_stream(ResourceManager::fetchMe("rc_8bitoperator_ttf")),
   m_font(), m_input(),
   m_reinit(false), m_full_reinit(false),
+  m_active(true),
   m_background(),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
   m_menu(nullptr),
@@ -125,6 +126,16 @@ int FGame::mainLoop ()
             close();
         }
       }
+      if (m_event.type == sf::Event::LostFocus)
+      {
+        setActive(m_active = false);
+        setFramerateLimit(1);
+      }
+      if (m_event.type == sf::Event::GainedFocus)
+      {
+        setActive(m_active = true);
+        setFramerateLimit(60);
+      }
       if ((m_event.type == sf::Event::MouseButtonPressed ||
             m_event.type == sf::Event::TouchEnded) && m_game_mode == GameMode::TITLE)
       {
@@ -145,6 +156,12 @@ int FGame::mainLoop ()
           m_reinit = m_full_reinit = true;
         }
       }
+    }
+
+    if (!m_active)
+    {
+      display();
+      continue;
     }
 
     if (m_reinit)

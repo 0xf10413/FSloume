@@ -24,6 +24,7 @@ private:
   sf::Font m_font;
   Input m_input;
   bool m_reinit, m_full_reinit; // Faut-il tout replacer ?
+  bool m_active;
 
 
   Background m_background;
