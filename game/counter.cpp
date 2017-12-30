@@ -2,13 +2,12 @@
 #include "config.h"
 #include <sstream>
 
-Counter::Counter(size_t init, bool alignLeft, const sf::Font &font) :
+Counter::Counter(size_t init, bool alignLeft) :
   m_count(init),
   m_alignLeft(alignLeft),
-  m_font(font),
+  m_font(nullptr),
   m_text()
 {
-  m_text.setFont(m_font);
   m_text.setCharacterSize(CG::FONT_BASE_SIZE_PX);
   if (m_alignLeft)
     m_text.setFillColor(sf::Color::Cyan);
@@ -82,6 +81,13 @@ void Counter::updateSprite()
         m_y - shape.top
         );
   }
+}
+
+void Counter::setFont(const sf::Font *font)
+{
+  m_font = font;
+  m_text.setFont(*font);
+  updateSprite();
 }
 
 void Counter::draw (sf::RenderWindow &w) const

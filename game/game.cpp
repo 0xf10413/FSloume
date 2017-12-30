@@ -17,8 +17,8 @@ FGame::FGame () :
   m_main_menu(nullptr), m_pause_menu(nullptr),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
   m_game_over_countdown(),
-  m_lScore(0, true, *m_font),
-  m_rScore(0, false, *m_font),
+  m_lScore(0, true),
+  m_rScore(0, false),
   m_gameOverText(),
   m_targets{},
   m_dangerpt()
@@ -45,6 +45,9 @@ FGame::FGame () :
 
   m_rSlime.setMainCharacter(false);
   m_bSlime.setMainCharacter(true);
+
+  m_lScore.setFont(m_font.get());
+  m_rScore.setFont(m_font.get());
 
   sf::Color button_color = sf::Color::Green;
   button_color.a = 127;

@@ -8,14 +8,16 @@ class Counter : public MovingEntity
 private:
   size_t m_count;
   bool m_alignLeft;
-  const sf::Font &m_font;
+  const sf::Font *m_font;
   sf::Text m_text;
 
   virtual void updateSprite() override;
 public:
-  Counter(size_t init, bool alignLeft, const sf::Font &font);
+  Counter(size_t init, bool alignLeft);
   Counter (const Counter &) = delete;
   Counter &operator =(const Counter &) = delete;
+
+  void setFont(const sf::Font *font);
 
 
   void setValue(size_t value);
