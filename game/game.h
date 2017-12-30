@@ -23,7 +23,7 @@ private:
   std::shared_ptr<sf::Font> m_font;
   Input m_input;
   bool m_reinit, m_full_reinit; // Faut-il tout replacer ?
-  bool m_active;
+  bool m_paused;
 
 
   Background m_background;
@@ -31,7 +31,7 @@ private:
   Ball m_ball;
   Net m_net;
 
-  Menu *m_menu;
+  Menu *m_main_menu, *m_pause_menu;
 
   enum GameMode {TITLE, TWO_PLAYERS, ONE_PLAYER, TEST};
   GameMode m_game_mode;
@@ -54,7 +54,7 @@ public:
   FGame ();
   FGame& operator=(const FGame &) = delete;
   FGame(const FGame &) = delete;
-  virtual ~FGame() = default;
+  virtual ~FGame();
 
   int mainLoop ();
 };

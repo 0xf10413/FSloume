@@ -11,10 +11,10 @@ FGame::FGame () :
   m_event(), m_clock(),
   m_font(), m_input(),
   m_reinit(false), m_full_reinit(false),
-  m_active(true),
+  m_paused(false),
   m_background(),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
-  m_menu(nullptr),
+  m_main_menu(nullptr), m_pause_menu(nullptr),
   m_game_mode(GameMode::TITLE), m_branch_mode(BranchMode::PLAYING),
   m_game_over_countdown(),
   m_lScore(0, true, *m_font),
@@ -38,7 +38,8 @@ FGame::FGame () :
 
   sf::Color menuColor = sf::Color::Magenta;
   menuColor.a = 127;
-  m_menu = new Menu(*m_font, menuColor);
+  m_main_menu = new Menu(*m_font, menuColor);
+  m_pause_menu = new Menu(*m_font, menuColor);
   sf::Vector2f margins{(float)CG::WIDTH/20, (float)CG::HEIGHT/20};
   sf::Vector2f paddings{(float)CG::WIDTH/40, (float)CG::HEIGHT/40};
 
@@ -48,13 +49,17 @@ FGame::FGame () :
   sf::Color button_color = sf::Color::Green;
   button_color.a = 127;
 #ifndef F_CONFIG_ANDROID
-  m_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
+  m_main_menu->addButton ("Mode deux joueurs", button_color, margins, paddings);
 #endif
-  m_menu->addButton ("Mode un joueur", button_color, margins, paddings);
-  m_menu->addButton ("Test", button_color, margins, paddings);
+  m_main_menu->addButton ("Mode un joueur", button_color, margins, paddings);
+  m_main_menu->addButton ("Test", button_color, margins, paddings);
   //m_menu->addButton ("[Mode deux joueurs online]", sf::Color::Green, margins);
   //m_menu->addButton ("[Histoire]", sf::Color::Green, margins);
-  m_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
+  m_main_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
+
+  m_pause_menu->addButton ("Reprendre", button_color, margins, paddings);
+  m_pause_menu->addButton ("Menu principal", button_color, margins, paddings);
+  m_pause_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
 
   rebuildGame();
 }
@@ -117,29 +122,32 @@ int FGame::mainLoop ()
       {
         if ( m_event.key.code == sf::Keyboard::Escape )
         {
-          if (m_game_mode != GameMode::TITLE)
-          {
-            m_game_mode = GameMode::TITLE;
-            m_reinit = m_full_reinit = true;
-          }
+          if (m_paused)
+            m_paused = false;
+          else if (m_game_mode != GameMode::TITLE)
+            m_paused = true;
           else
+          {
+            setActive(false);
             close();
+          }
         }
       }
       if (m_event.type == sf::Event::LostFocus)
       {
-        setActive(m_active = false);
+        m_paused = true;
+        setActive(false);
         setFramerateLimit(1);
       }
       if (m_event.type == sf::Event::GainedFocus)
       {
-        setActive(m_active = true);
+        setActive(true);
         setFramerateLimit(60);
       }
       if ((m_event.type == sf::Event::MouseButtonPressed ||
             m_event.type == sf::Event::TouchEnded) && m_game_mode == GameMode::TITLE)
       {
-        std::string click = m_menu->wasIClicked(m_event);
+        std::string click = m_main_menu->wasIClicked(m_event);
         if (click == "Mode deux joueurs")
         {
           m_game_mode = GameMode::TWO_PLAYERS;
@@ -156,12 +164,21 @@ int FGame::mainLoop ()
           m_reinit = m_full_reinit = true;
         }
       }
-    }
-
-    if (!m_active)
-    {
-      display();
-      continue;
+      if ((m_event.type == sf::Event::MouseButtonPressed ||
+            m_event.type == sf::Event::TouchEnded) && m_paused)
+      {
+        std::string click = m_pause_menu->wasIClicked(m_event);
+        if (click == "Reprendre")
+        {
+          m_paused = false;
+        }
+        if (click == "Menu principal")
+        {
+          m_paused = false;
+          m_game_mode = GameMode::TITLE;
+          m_reinit = m_full_reinit = true;
+        }
+      }
     }
 
     if (m_reinit)
@@ -171,7 +188,7 @@ int FGame::mainLoop ()
     }
 
     /* Branche principale de jeu */
-    if (m_branch_mode == BranchMode::PLAYING)
+    if (m_branch_mode == BranchMode::PLAYING && !m_paused)
     {
       if (m_game_mode == GameMode::TWO_PLAYERS || m_game_mode == GameMode::ONE_PLAYER
         || m_game_mode == GameMode::TEST)
@@ -287,12 +304,15 @@ int FGame::mainLoop ()
       draw(m_gameOverText);
 
     if (m_game_mode == GameMode::TITLE)
-      m_menu->draw(*this);
+      m_main_menu->draw(*this);
     else
     {
       m_lScore.draw(*this);
       m_rScore.draw(*this);
     }
+
+    if (m_paused)
+      m_pause_menu->draw(*this);
 
     for (auto &target : m_targets)
       target.draw(*this);
@@ -375,3 +395,8 @@ void FGame::collide (float dt)
   }
 }
 
+FGame::~FGame()
+{
+  delete m_main_menu;
+  delete m_pause_menu;
+}
