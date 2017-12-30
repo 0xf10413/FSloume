@@ -18,7 +18,7 @@ private:
   friend class CloudZone;
   void setSpeed(float vx, float vy);
 public:
-  Cloud();
+  Cloud(const std::string &tex_name);
   void setPosition (float x, float y);
   virtual void draw (sf::RenderWindow &) const override;
   void animate (float dt);

@@ -112,5 +112,15 @@ inline float dotProduct (const sf::Vector2f &l, const sf::Vector2f &r)
   return l.x*r.x + l.y*r.y;
 }
 
+/* Utilitaires sur les std::string */
+
+// a est-elle un préfixe de b ?
+// Source : https://stackoverflow.com/questions/7913835/check-if-one-string-is-a-prefix-of-another
+inline bool isPrefix (const std::string &a, const std::string &b)
+{
+  auto res = std::mismatch(a.begin(), a.end(), b.begin());
+  return res.first == a.end();
+}
+
 
 #endif /* !UTILS_H */

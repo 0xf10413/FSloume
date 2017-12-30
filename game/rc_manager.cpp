@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "config.h"
 #include <stdexcept>
-#include <iostream>
+#include <sstream>
 
 ResourceStream::ResourceStream(const char *resource[],
     size_t resource_size) :
@@ -102,10 +102,10 @@ std::weak_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name)
     buffer.create(CG::BALL_RADIUS*2, CG::BALL_RADIUS*2, sf::Color::Red);
     makeADisk(buffer, 2);
   }
-  else if (name == "cloud")
+  else if (isPrefix("rc_cloud", name))
   {
     buffer.create(CG::CLOUD_WIDTH, CG::CLOUD_HEIGHT, sf::Color::White);
-    ResourceStream stream = fetchStream("rc_cloud_png");
+    ResourceStream stream = fetchStream(name);
     buffer.loadFromStream(stream);
   }
   else if (name == "danger_pt")
@@ -147,7 +147,11 @@ std::weak_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name)
       buffer.setPixel(CG::TARGET_WIDTH/2, j, sf::Color(255, 255, 127, 255));
   }
   else
-    throw std::runtime_error("Texture not found !");
+  {
+    std::ostringstream err_fmt;
+    err_fmt << "Texture '" << name << "' not found !";
+    throw std::runtime_error(err_fmt.str());
+  }
 
   m_cache[name] = std::make_shared<sf::Texture>();
   m_cache[name]->loadFromImage(buffer);
@@ -172,5 +176,7 @@ std::map<std::string, std::shared_ptr<ResourceStream>> ResourceManager::m_stream
 ResourceStream ResourceManager::fetchStream (const std::string &name)
 {
 #include "../game/rc_manager.inc"
-  throw std::runtime_error("Resource not found !");
+  std::ostringstream err_fmt;
+  err_fmt << "Resource '" << name << "' not found !";
+  throw std::runtime_error(err_fmt.str());
 }

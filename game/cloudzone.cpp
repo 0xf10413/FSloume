@@ -8,11 +8,12 @@
 #include "cloudzone.h"
 #include "config.h"
 #include <random>
+#include <sstream>
 
 
-Cloud::Cloud()
+Cloud::Cloud(const std::string &tex_name)
 {
-  m_texture = ResourceManager::getTexture("cloud");
+  m_texture = ResourceManager::getTexture(tex_name);
   m_sprite.setTexture(*m_texture.lock());
   m_sprite.setScale((float)CG::CLOUD_WIDTH/(*m_texture.lock()).getSize().x,
       (float)CG::CLOUD_HEIGHT/(*m_texture.lock()).getSize().y);
@@ -49,10 +50,22 @@ void Cloud::setPosition (float x, float y)
 }
 
 CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
-  m_clouds(how_many)
+  m_clouds()
 {
+  m_clouds.reserve(how_many);
+
   std::random_device rd;
   std::mt19937 twister (rd());
+  std::uniform_int_distribution<int> dist_rc(1,2);
+
+  for (size_t i = 0; i < how_many; ++i)
+  {
+    std::ostringstream oss;
+    oss << "rc_cloud" << dist_rc(twister) << "_png";
+    m_clouds.push_back({oss.str()});
+  }
+
+
   std::uniform_real_distribution<float> dist_x(m_zone.left-CG::CLOUD_WIDTH/2,
       m_zone.width+CG::CLOUD_WIDTH/2);
   std::uniform_real_distribution<float> dist_y(m_zone.top, m_zone.top + m_zone.height);

@@ -11,7 +11,6 @@ BUGS
 
 TODO
 ----
-* Add pause
 * Real collision again slime
 * Unit test collideWithFixRectangle
 * Add energy bar for special actions
