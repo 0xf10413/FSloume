@@ -1,5 +1,6 @@
 #include "slime.h"
 #include "rc_manager.h"
+#include "utils.h"
 
 Slime::Slime (bool alignLeft) :
   MovingEntity(),
@@ -263,10 +264,12 @@ void Slime::move(float dt, const Ball &b)
   }
 
   /* Déplacement de la pupille vers la balle */
+  sf::Vector2f dPupilCenter;
   if (m_alignLeft)
-    m_eye.setPosition (m_x + CG::SLIME_WIDTH/4, m_y - CG::SLIME_HEIGHT/2);
+    dPupilCenter = rotate(sf::Vector2f(CG::SLIME_WIDTH/4, 0), m_theta*M_PI/180);
   else
-    m_eye.setPosition (m_x - CG::SLIME_WIDTH/4, m_y - CG::SLIME_HEIGHT/2);
+    dPupilCenter = rotate(sf::Vector2f(-CG::SLIME_WIDTH/4, 0), m_theta*M_PI/180);
+  m_eye.setPosition (m_x + dPupilCenter.x, m_y - CG::SLIME_HEIGHT/2 + dPupilCenter.y);
   m_eye.lookAt (b.getPosition());
 
   /* Mise à jour finale du sprite */

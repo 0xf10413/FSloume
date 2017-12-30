@@ -112,6 +112,12 @@ inline float dotProduct (const sf::Vector2f &l, const sf::Vector2f &r)
   return l.x*r.x + l.y*r.y;
 }
 
+// Fait tourner le vecteur v d'un angle r par rapport à Ox
+inline sf::Vector2f rotate (const sf::Vector2f &v, float r)
+{
+  return sf::Vector2f(v.x*cos(r) - v.y*sin(r), sin(r)*v.x+cos(r)*v.y);
+}
+
 /* Utilitaires sur les std::string */
 
 // a est-elle un préfixe de b ?
