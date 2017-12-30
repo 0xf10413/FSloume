@@ -23,7 +23,7 @@ private:
   std::shared_ptr<sf::Font> m_font;
   Input m_input;
   bool m_reinit, m_full_reinit; // Faut-il tout replacer ?
-  bool m_paused;
+  bool m_paused, m_defer_unlock_pause;
 
 
   Background m_background;

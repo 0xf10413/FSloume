@@ -11,7 +11,7 @@ FGame::FGame () :
   m_event(), m_clock(),
   m_font(), m_input(),
   m_reinit(false), m_full_reinit(false),
-  m_paused(false),
+  m_paused(false), m_defer_unlock_pause(false),
   m_background(),
   m_bSlime(true), m_rSlime(false), m_ball(), m_net(),
   m_main_menu(nullptr), m_pause_menu(nullptr),
@@ -144,6 +144,8 @@ int FGame::mainLoop ()
       }
       if (m_event.type == sf::Event::GainedFocus)
       {
+        if (m_game_mode == GameMode::TITLE)
+          m_defer_unlock_pause = true;
         setActive(true);
         setFramerateLimit(60);
       }
@@ -314,7 +316,9 @@ int FGame::mainLoop ()
       m_rScore.draw(*this);
     }
 
-    if (m_paused)
+    if (m_defer_unlock_pause)
+      m_defer_unlock_pause = m_paused = false;
+    if (m_paused && (m_game_mode != GameMode::TITLE))
       m_pause_menu->draw(*this);
 
     for (auto &target : m_targets)
