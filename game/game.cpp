@@ -61,6 +61,7 @@ FGame::FGame () :
   m_main_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
 
   m_pause_menu->addButton ("Reprendre", button_color, margins, paddings);
+  m_pause_menu->addButton ("Recommencer", button_color, margins, paddings);
   m_pause_menu->addButton ("Menu principal", button_color, margins, paddings);
   m_pause_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
 
@@ -176,6 +177,13 @@ int FGame::mainLoop ()
         if (click == "Reprendre")
         {
           m_paused = false;
+        }
+        if (click == "Recommencer")
+        {
+          m_paused = false;
+          m_reinit = true;
+          m_lScore.reinit();
+          m_rScore.reinit();
         }
         if (click == "Menu principal")
         {

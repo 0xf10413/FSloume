@@ -1,7 +1,6 @@
 #include "button.h"
 #include "config.h"
 #include <cassert>
-#include <iostream>
 
 
 Button::Button(const sf::Font &font, const std::string &text, sf::Color color,
@@ -14,6 +13,7 @@ Button::Button(const sf::Font &font, const std::string &text, sf::Color color,
   m_padding(pad)
 {
   m_text.setCharacterSize(CG::FONT_BASE_SIZE_PX/2);
+  m_text.setFillColor(CG::MENU_TEXT_COLOR);
   sf::FloatRect bounds = m_text.getGlobalBounds();
   m_textSize.x = bounds.left + bounds.width + bounds.left;
   m_textSize.y = bounds.top + bounds.height + bounds.top;
