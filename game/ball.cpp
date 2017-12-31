@@ -5,7 +5,8 @@
 Ball::Ball() :
   MovingEntity(),
   m_clamp(),
-  m_path(CG::BALL_ANTICIPATION, sf::Color::Red)
+  m_path(CG::BALL_ANTICIPATION, sf::Color::Red),
+  m_pgenerator("snowflake")
 {
   m_texture = ResourceManager::getTexture("ball");
   m_sprite.setTexture(*m_texture.lock());
@@ -14,12 +15,14 @@ Ball::Ball() :
 void Ball::setX (float x)
 {
   m_x = x;
+  m_pgenerator.setPosition(m_x, m_y);
   updateSprite();
 }
 
 void Ball::setY (float y)
 {
   m_y = y;
+  m_pgenerator.setPosition(m_x, m_y);
   updateSprite();
 }
 
@@ -28,7 +31,7 @@ void Ball::clampTo (const sf::FloatRect &clamp)
   m_clamp = clamp;
 }
 
-void Ball::move (float dt)
+void Ball::move (float dt, bool fake)
 {
   /* Déplacement avec la vitesse */
   m_x += dt*m_vx;
@@ -63,6 +66,11 @@ void Ball::move (float dt)
     m_onGround = true;
   }
 
+  if (!fake)
+  {
+    m_pgenerator.setPosition(m_x, m_y);
+    m_pgenerator.animate(dt);
+  }
   updateSprite();
 }
 
@@ -93,6 +101,7 @@ void Ball::setSpeed(const sf::Vector2f &v)
 void Ball::draw(sf::RenderWindow &w) const
 {
   m_path.draw(w);
+  m_pgenerator.draw(w);
   w.draw(m_sprite);
 }
 

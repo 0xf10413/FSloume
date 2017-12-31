@@ -5,6 +5,7 @@
 #include "unique_drawable.h"
 #include "path.h"
 #include "config.h"
+#include "particlegenerator.h"
 
 class Ball : public MovingEntity
 {
@@ -12,12 +13,13 @@ private:
   virtual void updateSprite() override;
   sf::FloatRect m_clamp;
   Path m_path;
+  ParticleGenerator m_pgenerator;
 public:
 	Ball ();
   void setX (float x);
   void setY (float y);
   void clampTo (const sf::FloatRect &clamp);
-  void move (float dt);
+  void move (float dt, bool fake=false);
 
   sf::Vector2f getPosition() const;
   sf::Vector2f getSpeed() const;

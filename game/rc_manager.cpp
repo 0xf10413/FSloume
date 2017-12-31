@@ -146,6 +146,11 @@ std::weak_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name)
     for (unsigned int j = 0; j < CG::TARGET_HEIGHT; ++j)
       buffer.setPixel(CG::TARGET_WIDTH/2, j, sf::Color(255, 255, 127, 255));
   }
+  else if (name == "snowflake")
+  {
+    ResourceStream rstream = fetchStream("rc_snowflake_png");
+    buffer.loadFromStream(rstream);
+  }
   else
   {
     std::ostringstream err_fmt;

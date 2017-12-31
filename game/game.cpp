@@ -36,10 +36,8 @@ FGame::FGame () :
       );
   m_gameOverText.setFillColor(sf::Color::White);
 
-  sf::Color menuColor = sf::Color::Magenta;
-  menuColor.a = 127;
-  m_main_menu = new Menu(*m_font, menuColor);
-  m_pause_menu = new Menu(*m_font, menuColor);
+  m_main_menu = new Menu(*m_font, CG::MENU_BG_COLOR);
+  m_pause_menu = new Menu(*m_font, CG::MENU_BG_COLOR);
   sf::Vector2f margins{(float)CG::WIDTH/20, (float)CG::HEIGHT/20};
   sf::Vector2f paddings{(float)CG::WIDTH/40, (float)CG::HEIGHT/40};
 
@@ -228,7 +226,7 @@ int FGame::mainLoop ()
         if (!m_ball.getOnGround() || m_game_mode == GameMode::TEST)
         {
           collide(eps);
-          m_ball.move(eps);
+          m_ball.move(eps, true);
           //IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition());
           //IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
           m_bSlime.move(eps, m_ball);

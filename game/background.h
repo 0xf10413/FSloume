@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include "unique_drawable.h"
 #include "cloudzone.h"
+#include "particlegenerator.h"
 
 class Background : public MovingEntity
 {
