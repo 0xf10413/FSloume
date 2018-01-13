@@ -26,14 +26,28 @@ void Cloud::updateSprite()
 
 void Cloud::addSnow()
 {
-  m_snow.reset(new ParticleGenerator(30, "snowflake"));
+  if (!m_snow)
+    m_snow.reset(new ParticleGenerator(30, "snowflake"));
   m_snow->start();
 }
 
 void Cloud::addRain()
 {
-  m_rain.reset(new ParticleGenerator(30, "raindrop"));
+  if (!m_rain)
+    m_rain.reset(new ParticleGenerator(30, "raindrop"));
   m_rain->start();
+}
+
+void Cloud::rmRain()
+{
+  if (m_rain)
+    m_rain->stop();
+}
+
+void Cloud::rmSnow()
+{
+  if (m_snow)
+    m_snow->stop();
 }
 
 void Cloud::animate(float dt)
@@ -94,8 +108,8 @@ CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
   }
 
 
-  std::uniform_real_distribution<float> dist_x(m_zone.left-CG::CLOUD_WIDTH/2,
-      m_zone.width+CG::CLOUD_WIDTH/2);
+  std::uniform_real_distribution<float> dist_x(m_zone.left-CG::CLOUD_WIDTH,
+      m_zone.width+CG::CLOUD_WIDTH);
   std::uniform_real_distribution<float> dist_y(m_zone.top, m_zone.top + m_zone.height);
   std::uniform_real_distribution<float> dist_vx(CG::CLOUD_MIN_SPEED_X, CG::CLOUD_MAX_SPEED_X);
   std::uniform_real_distribution<float> dist_vy(CG::CLOUD_MIN_SPEED_Y, CG::CLOUD_MAX_SPEED_Y);
@@ -105,22 +119,38 @@ CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
     c.setPosition(dist_x(twister), dist_y(twister));
     c.setSpeed(dist_vx(twister), dist_vy(twister));
     if (add_snow(twister))
-    {
       c.addSnow();
-      continue;
-    }
-    if (add_rain(twister))
+    else if (add_rain(twister))
       c.addRain();
   }
 }
 
 void CloudZone::animate(float dt)
 {
-  // TODO: check for bounds
+  static std::bernoulli_distribution add_snow(CG::CLOUD_PROBABILITY_SNOW);
+  static std::bernoulli_distribution add_rain(CG::CLOUD_PROBABILITY_RAIN);
+  std::mt19937 twister ((std::random_device()()));
   for (Cloud &c : m_clouds)
   {
     if (c.m_x - CG::CLOUD_WIDTH > m_zone.left + m_zone.width)
+    {
       c.m_x = m_zone.left - CG::CLOUD_WIDTH;
+      if (add_snow(twister))
+      {
+        c.rmRain();
+        c.addSnow();
+      }
+      else if (add_rain(twister))
+      {
+        c.rmSnow();
+        c.addRain();
+      }
+      else
+      {
+        c.rmSnow();
+        c.rmRain();
+      }
+    }
     if (c.m_y - CG::CLOUD_HEIGHT > m_zone.top + m_zone.height ||
         c.m_y + CG::CLOUD_HEIGHT < m_zone.top)
       c.m_vy *= -1;

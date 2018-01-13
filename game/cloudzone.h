@@ -26,6 +26,8 @@ public:
   void animate (float dt);
   void addSnow();
   void addRain();
+  void rmSnow();
+  void rmRain();
 };
 
 class CloudZone : public MovingEntity
