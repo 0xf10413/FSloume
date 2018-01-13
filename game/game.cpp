@@ -22,7 +22,7 @@ FGame::FGame () :
   m_gameOverText(),
   m_targets{},
   m_dangerpt(),
-  m_pgenerator(30, 10)
+  m_pgenerator(30)
 {
   setFramerateLimit (60);
   m_font = ResourceManager::getFont("8bitoperator");
@@ -63,9 +63,6 @@ FGame::FGame () :
   m_pause_menu->addButton ("Recommencer", button_color, margins, paddings);
   m_pause_menu->addButton ("Menu principal", button_color, margins, paddings);
   m_pause_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
-
-  m_pgenerator.setPosition(CG::WIDTH/4, CG::HEIGHT/2);
-  m_pgenerator.start();
 
   rebuildGame();
 }
@@ -143,7 +140,7 @@ int FGame::mainLoop ()
         else if (m_event.key.code == sf::Keyboard::E)
           m_pgenerator.start();
         else if (m_event.key.code == sf::Keyboard::P)
-          m_pgenerator.start(true);
+          m_pgenerator.pulse({0,-1});
         else if (m_event.key.code == sf::Keyboard::O)
           m_pgenerator.stop(true);
       }
@@ -237,7 +234,7 @@ int FGame::mainLoop ()
         m_ball.updatePath(i);
         if (!m_ball.getOnGround() || m_game_mode == GameMode::TEST)
         {
-          collide(eps);
+          collide(eps, true);
           m_ball.move(eps);
           //IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition());
           //IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
@@ -353,7 +350,7 @@ int FGame::mainLoop ()
   return EXIT_SUCCESS;
 }
 
-void FGame::collide (float dt)
+void FGame::collide (float dt, bool fake)
 {
   /* À l'appel de cette fonction, tous les vecteurs vitesse sont déjà calculés */
   /* On observe juste les collisions qui se produiraient si les objets se déplacaient */
@@ -380,6 +377,12 @@ void FGame::collide (float dt)
       *deltaX/abs2(deltaX);
     v2p *= CG::BALL_ELASTICITY*CG::SLIME_ELASTICITY;
     m_ball.setSpeed(v2p);
+
+    if (!fake)
+    {
+      m_pgenerator.setPosition(x2.x, x2.y);
+      m_pgenerator.pulse(norm2(v2)/200*deltaX);
+    }
   }
 
   /* rSlime et balle */
@@ -398,6 +401,12 @@ void FGame::collide (float dt)
       *deltaX/abs2(deltaX);
     v2p *= CG::BALL_ELASTICITY*CG::SLIME_ELASTICITY;
     m_ball.setSpeed(v2p);
+
+    if (!fake)
+    {
+      m_pgenerator.setPosition(x2.x, x2.y);
+      m_pgenerator.pulse(norm2(v2)/200*deltaX);
+    }
   }
 
 

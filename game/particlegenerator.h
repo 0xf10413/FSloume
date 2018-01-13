@@ -16,6 +16,7 @@ struct Particle
   sf::Vector2f m_speed;
   sf::Time m_lifetime;
   void reset(std::mt19937 &mt);
+  void reset(std::mt19937 &mt, sf::Vector2f dir);
   Particle() : m_speed(), m_lifetime(sf::Time::Zero) {};
 };
 
@@ -23,8 +24,8 @@ class ParticleGenerator : public sf::Drawable, public sf::Transformable
 {
 private:
   std::vector<Particle> m_particles;
-  int m_N; // On trace des N-gones
   sf::VertexArray m_vertices;
+  std::shared_ptr<sf::Texture> m_texture;
 
   sf::Vector2f m_emitpt;
   std::mt19937 m_mt;
@@ -33,11 +34,12 @@ private:
 
   virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 public:
-  ParticleGenerator(size_t nb_part, int n);
+  ParticleGenerator(size_t nb_part);
   void setPosition(float x, float y);
   void animate(float dt);
 
-  void start(bool pulse = false); // générer une salve de particules ?
+  void start();
+  void pulse(sf::Vector2f dir); // générer une salve de particules dans une direction
   void stop(bool full_stop=false); // stoper brutalement ou progressivement ?
 };
 

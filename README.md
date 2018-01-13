@@ -17,6 +17,8 @@ TODO
 * Add energy bar for special actions
 * Add a max score and finish a round, and reset counters
 * Add items
+* Add fireflies
+* Add different particle generator (gravity, free, …)
 * Add skill levels
 * Add a tutorial
 * Add a story

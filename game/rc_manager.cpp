@@ -45,7 +45,7 @@ sf::Int64 ResourceStream::getSize()
   return m_total_size;
 }
 
-std::weak_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name)
+std::shared_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name)
 {
   auto iter = m_cache.find(name);
   if (iter != m_cache.end())

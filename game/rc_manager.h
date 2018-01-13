@@ -38,7 +38,7 @@ private:
   static std::map<std::string, std::shared_ptr<ResourceStream>> m_stream_cache;
   static ResourceStream fetchStream (const std::string &name);
 public:
-  static std::weak_ptr<sf::Texture> getTexture(const std::string &name);
+  static std::shared_ptr<sf::Texture> getTexture(const std::string &name);
   static std::shared_ptr<sf::Font> getFont(const std::string &name);
 };
 

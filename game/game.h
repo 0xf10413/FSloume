@@ -48,7 +48,7 @@ private:
   DangerPoint m_dangerpt;
   ParticleGenerator m_pgenerator;
 
-  void collide (float); // Calcul des collisions et des vitesses
+  void collide (float dt, bool fake=false); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs
   void rebuildGame();
 public:

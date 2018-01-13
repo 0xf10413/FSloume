@@ -12,14 +12,15 @@ class Slime : public MovingEntity
 {
 private:
     friend class IA;
-    Eye m_eye;
-    bool m_alignLeft;
-    bool m_lost;
-    bool m_main_character; // Qui a les contrôles en 1j sur android ?
     enum class MovingHStatus {STOPPED, MOVING, MOVING_WAIT, MOVING_FAST};
     enum class MovingVStatus {STOPPED, JUMPING, JUMPING_WAIT, DOUBLE_JUMPING,
       FAST_LAND, GROUND_POUND};
     enum Direction {LEFT, RIGHT, UP, DOWN, NONE};
+
+    Eye m_eye;
+    bool m_alignLeft;
+    bool m_lost;
+    bool m_main_character; // Qui a les contrôles en 1j sur android ?
     MovingHStatus m_movingh_status[2]; // Statut du déplacement à gauche et à droite
     MovingVStatus m_movingv_status, m_prev_movingv_status; // Statut du déplacement vertical
     float m_apec; // Plus haute altitude lors du dernier saut
