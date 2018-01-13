@@ -146,21 +146,12 @@ std::shared_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name
     for (unsigned int j = 0; j < CG::TARGET_HEIGHT; ++j)
       buffer.setPixel(CG::TARGET_WIDTH/2, j, sf::Color(255, 255, 127, 255));
   }
-  else if (name == "snowflake")
-  {
-    ResourceStream rstream = fetchStream("rc_snowflake_png");
-    buffer.loadFromStream(rstream);
-  }
-  else if (name == "raindrop")
-  {
-    ResourceStream rstream = fetchStream("rc_raindrop_png");
-    buffer.loadFromStream(rstream);
-  }
   else
   {
-    std::ostringstream err_fmt;
-    err_fmt << "Texture '" << name << "' not found !";
-    throw std::runtime_error(err_fmt.str());
+    std::ostringstream oss;
+    oss << "rc_" << name << "_png";
+    ResourceStream rstream = fetchStream(oss.str());
+    buffer.loadFromStream(rstream);
   }
 
   m_cache[name] = std::make_shared<sf::Texture>();

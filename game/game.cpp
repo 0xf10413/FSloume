@@ -22,7 +22,7 @@ FGame::FGame () :
   m_gameOverText(),
   m_targets{},
   m_dangerpt(),
-  m_pgenerator(30, "snowflake")
+  m_pgenerator(30, "star")
 {
   setFramerateLimit (60);
   m_font = ResourceManager::getFont("8bitoperator");

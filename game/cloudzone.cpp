@@ -105,7 +105,10 @@ CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
     c.setPosition(dist_x(twister), dist_y(twister));
     c.setSpeed(dist_vx(twister), dist_vy(twister));
     if (add_snow(twister))
+    {
       c.addSnow();
+      continue;
+    }
     if (add_rain(twister))
       c.addRain();
   }
