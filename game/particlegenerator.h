@@ -11,37 +11,34 @@
 #include "unique_drawable.h"
 #include <random>
 
-class Particle : public MovingEntity
+struct Particle
 {
-private:
-  float m_age;
-  virtual void updateSprite() override;
-  friend class ParticleGenerator;
-
-public:
-  Particle(const std::string &tex_name);
-
-  inline bool dead() { return m_age < 0.f; }
-  void reset (sf::Vector2f pos, sf::Vector2f speed, float age);
-
-  void setPosition (float x, float y);
-  virtual void draw (sf::RenderWindow &) const override;
-  void animate (float dt);
+  sf::Vector2f m_speed;
+  sf::Time m_lifetime;
+  void reset(std::mt19937 &mt);
+  Particle() : m_speed(), m_lifetime(sf::Time::Zero) {};
 };
 
-class ParticleGenerator : public MovingEntity
+class ParticleGenerator : public sf::Drawable, public sf::Transformable
 {
 private:
   std::vector<Particle> m_particles;
-  std::string m_texname;
-  size_t m_nb_alive, m_nb_alive_max;
+  int m_N; // On trace des N-gones
+  sf::VertexArray m_vertices;
+
+  sf::Vector2f m_emitpt;
   std::mt19937 m_mt;
+
+  enum class Status {STARTED, PULSING, STOPPING, STOPPED} m_status;
+
+  virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 public:
-  ParticleGenerator(const std::string &textname);
+  ParticleGenerator(size_t nb_part, int n);
   void setPosition(float x, float y);
-  virtual void updateSprite() override;
   void animate(float dt);
-  virtual void draw(sf::RenderWindow &w) const override;
+
+  void start(bool pulse = false); // générer une salve de particules ?
+  void stop(bool full_stop=false); // stoper brutalement ou progressivement ?
 };
 
 #endif /* !PARTICLEGENERATOR_H */

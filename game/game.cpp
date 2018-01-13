@@ -21,7 +21,8 @@ FGame::FGame () :
   m_rScore(0, false),
   m_gameOverText(),
   m_targets{},
-  m_dangerpt()
+  m_dangerpt(),
+  m_pgenerator(30, 10)
 {
   setFramerateLimit (60);
   m_font = ResourceManager::getFont("8bitoperator");
@@ -62,6 +63,9 @@ FGame::FGame () :
   m_pause_menu->addButton ("Recommencer", button_color, margins, paddings);
   m_pause_menu->addButton ("Menu principal", button_color, margins, paddings);
   m_pause_menu->setPosition (CG::WIDTH/2, CG::HEIGHT/2);
+
+  m_pgenerator.setPosition(CG::WIDTH/4, CG::HEIGHT/2);
+  m_pgenerator.start();
 
   rebuildGame();
 }
@@ -134,12 +138,20 @@ int FGame::mainLoop ()
             close();
           }
         }
+        else if (m_event.key.code == sf::Keyboard::A)
+          m_pgenerator.stop();
+        else if (m_event.key.code == sf::Keyboard::E)
+          m_pgenerator.start();
+        else if (m_event.key.code == sf::Keyboard::P)
+          m_pgenerator.start(true);
+        else if (m_event.key.code == sf::Keyboard::O)
+          m_pgenerator.stop(true);
       }
       if (m_event.type == sf::Event::LostFocus)
       {
         m_paused = true;
         setActive(false);
-        setFramerateLimit(1);
+        setFramerateLimit(4);
       }
       if (m_event.type == sf::Event::GainedFocus)
       {
@@ -226,7 +238,7 @@ int FGame::mainLoop ()
         if (!m_ball.getOnGround() || m_game_mode == GameMode::TEST)
         {
           collide(eps);
-          m_ball.move(eps, true);
+          m_ball.move(eps);
           //IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition());
           //IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
           m_bSlime.move(eps, m_ball);
@@ -262,6 +274,9 @@ int FGame::mainLoop ()
 
       /* Animation du background */
       m_background.animate(eps);
+
+      /* Animation du générateur de test */
+      m_pgenerator.animate(eps);
 
       /* Placement des mires */
       const std::vector<sf::Vector2f> touches = m_input.whereAreTouch();
@@ -310,6 +325,7 @@ int FGame::mainLoop ()
     m_rSlime.draw(*this);
     m_net.draw(*this);
     m_ball.draw(*this);
+    draw(m_pgenerator);
 
     if (m_branch_mode != BranchMode::PLAYING)
       draw(m_gameOverText);

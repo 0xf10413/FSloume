@@ -46,6 +46,7 @@ private:
   std::array<Target,10> m_targets;
 
   DangerPoint m_dangerpt;
+  ParticleGenerator m_pgenerator;
 
   void collide (float); // Calcul des collisions et des vitesses
   //void moveAndUpdate ();  // Déplacements effectifs

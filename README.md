@@ -13,6 +13,7 @@ TODO
 ----
 * Real collision again slime
 * Unit test collideWithFixRectangle
+* Convert  float dt to sf::Time
 * Add energy bar for special actions
 * Add a max score and finish a round, and reset counters
 * Add items

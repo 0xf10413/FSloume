@@ -13,13 +13,12 @@ private:
   virtual void updateSprite() override;
   sf::FloatRect m_clamp;
   Path m_path;
-  ParticleGenerator m_pgenerator;
 public:
 	Ball ();
   void setX (float x);
   void setY (float y);
   void clampTo (const sf::FloatRect &clamp);
-  void move (float dt, bool fake=false);
+  void move (float dt);
 
   sf::Vector2f getPosition() const;
   sf::Vector2f getSpeed() const;

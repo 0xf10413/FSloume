@@ -9,97 +9,96 @@
 #include "rc_manager.h"
 #include "config.h"
 #include <iostream>
-
-Particle::Particle(const std::string &tex_name) : MovingEntity(),
-  m_age(-1.f)
-{
-  m_texture = ResourceManager::getTexture(tex_name);
-  auto size = m_texture.lock()->getSize();
-  m_sprite.setTexture(*m_texture.lock());
-  m_sprite.setScale((float)CG::BALL_RADIUS/size.x, (float)CG::BALL_RADIUS/size.y);
-  m_sprite.setOrigin(CG::BALL_RADIUS/2,CG::BALL_RADIUS/2);
-}
-
-void Particle::setPosition(float x, float y)
-{
-  m_x = x;
-  m_y = y;
-  updateSprite();
-}
-
-void Particle::draw (sf::RenderWindow &w) const
-{
-  if (m_age >= 0.)
-    w.draw(m_sprite);
-}
-
-void Particle::updateSprite()
-{
-  m_sprite.setPosition(
-      m_x, m_y
-      );
-}
-
-void Particle::reset (sf::Vector2f pos, sf::Vector2f speed, float age)
-{
-  reinit();
-  setPosition(pos.x,pos.y);
-  m_vx = speed.x;
-  m_vy = speed.y;
-  m_age = age;
-}
-
-void Particle::animate(float dt)
-{
-  m_vy += CG::GRAVITY*dt;
-  m_x += m_vx*dt;
-  m_y += m_vy*dt;
-  m_age -= dt;
-  updateSprite();
-}
+#include <complex>
 
 
 /*******************/
 
-ParticleGenerator::ParticleGenerator(const std::string &texname) :
-  m_particles(200, texname), m_texname(texname), m_nb_alive(0), m_nb_alive_max(50),
-  m_mt(std::random_device()())
+ParticleGenerator::ParticleGenerator(size_t nb_part, int N) :
+  m_particles(nb_part),
+  m_N (N),
+  m_vertices(sf::Lines, 2*nb_part*m_N),
+  m_emitpt(),
+  m_mt(std::random_device()()),
+  m_status(Status::STOPPED)
 {
-  std::uniform_real_distribution<float> distr_age(0, 2);
-  for (Particle &p : m_particles)
-    p.m_age = distr_age(m_mt);
+  for (size_t i = 0; i < nb_part; ++i)
+    for (int j = 0; j < 2*m_N; ++j)
+      m_vertices[2*m_N*i+j].color = sf::Color(j*255/(2*m_N), 255, 255);
 }
 
-void ParticleGenerator::updateSprite()
+void Particle::reset(std::mt19937 &mt)
 {
+  static std::uniform_real_distribution<float> distr_vx (-20, 20);
+  static std::uniform_real_distribution<float> distr_vy (-20, 20);
+  static std::uniform_real_distribution<float> distr_lifetime (-.1, 4);
+
+  m_speed = {distr_vx(mt), distr_vy(mt)};
+  m_lifetime = sf::seconds(distr_lifetime(mt));
+}
+
+/* Dessine un N-gone de taille radius dans le vertex array v, à l'indice index */
+static inline void drawNGon(sf::VertexArray &v, size_t index,
+    sf::Vector2f at, int N, float radius)
+{
+  const std::complex<float> j (0,1);
+  std::complex<float> prev_pt = radius, next_pt;
+  for (int k = 0; k < N; ++k)
+  {
+    next_pt = radius*std::exp(2*(k+1)*(float)M_PI/N*j);
+    v[index+2*k].position = at + sf::Vector2f(prev_pt.real(), prev_pt.imag());
+    v[index+2*k+1].position = at + sf::Vector2f{next_pt.real(), next_pt.imag()};
+    prev_pt = next_pt;
+  }
 }
 
 void ParticleGenerator::animate(float dt)
 {
-  std::uniform_real_distribution<float> distr_x (-40, 40), distr_y (-100, -20);
-  m_nb_alive = 0;
-  for (Particle &p : m_particles)
+  for (size_t i = 0; i < m_particles.size(); ++i)
   {
-    if (!p.dead())
-      ++m_nb_alive;
-    else if (m_nb_alive < m_nb_alive_max)
+    if (m_particles[i].m_lifetime <= sf::Time::Zero || m_status == Status::STOPPED)
     {
-      p.reset({m_x, m_y}, {distr_x(m_mt), distr_y(m_mt)}, 2);
-      ++m_nb_alive;
+      if (m_status == Status::STARTED || m_status == Status::PULSING)
+      {
+        m_particles[i].reset(m_mt);
+        drawNGon(m_vertices, 2*m_N*i, m_emitpt, m_N, CG::PARTICLE_LENGTH);
+        for (int j = 0; j < 2*m_N; ++j)
+          m_vertices[2*m_N*i+j].color.a = 255;
+      }
+      else
+        for (int j = 0; j < 2*m_N; ++j)
+          m_vertices[2*m_N*i+j].color.a = 0;
     }
-    p.animate(dt);
+    for (int j = 0; j < 2*m_N; ++j)
+      m_vertices[2*m_N*i+j].position += m_particles[i].m_speed*dt;
+    m_particles[i].m_lifetime -= sf::seconds(dt);
+    //m_particles[i].m_speed.y += CG::GRAVITY*dt;
   }
-}
 
-void ParticleGenerator::draw(sf::RenderWindow &w) const
-{
-  for (const Particle &p : m_particles)
-    p.draw(w);
+  if (m_status == Status::PULSING)
+    m_status = Status::STOPPING;
 }
 
 void ParticleGenerator::setPosition(float x, float y)
 {
-  m_x = x;
-  m_y = y;
-  updateSprite();
+  m_emitpt = {x,y};
+}
+
+void ParticleGenerator::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+  if (m_status == Status::STOPPED)
+    return;
+  states.transform *= getTransform();
+  states.texture = nullptr;
+  target.draw(m_vertices, states);
+}
+
+void ParticleGenerator::start(bool pulse)
+{
+  m_status = pulse ? Status::PULSING : Status::STARTED;
+}
+
+void ParticleGenerator::stop(bool full_stop)
+{
+  m_status = full_stop ? Status::STOPPED : Status::STOPPING;
 }
