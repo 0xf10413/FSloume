@@ -140,7 +140,7 @@ int FGame::mainLoop ()
         else if (m_event.key.code == sf::Keyboard::E)
           m_pgenerator.start();
         else if (m_event.key.code == sf::Keyboard::P)
-          m_pgenerator.pulse({0,-1});
+          m_pgenerator.pulse({0,20}, sf::Color::White);
         else if (m_event.key.code == sf::Keyboard::O)
           m_pgenerator.stop(true);
       }
@@ -381,7 +381,7 @@ void FGame::collide (float dt, bool fake)
     if (!fake)
     {
       m_pgenerator.setPosition(x2.x, x2.y);
-      m_pgenerator.pulse(norm2(v2)/200*deltaX);
+      m_pgenerator.pulse(norm2(v2)/200*deltaX, sf::Color::Cyan);
     }
   }
 
@@ -405,7 +405,7 @@ void FGame::collide (float dt, bool fake)
     if (!fake)
     {
       m_pgenerator.setPosition(x2.x, x2.y);
-      m_pgenerator.pulse(norm2(v2)/200*deltaX);
+      m_pgenerator.pulse(norm2(v2)/200*deltaX, sf::Color::Magenta);
     }
   }
 

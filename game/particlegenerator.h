@@ -39,7 +39,7 @@ public:
   void animate(float dt);
 
   void start();
-  void pulse(sf::Vector2f dir); // générer une salve de particules dans une direction
+  void pulse(sf::Vector2f dir, sf::Color); // générer une salve de particules dans une direction
   void stop(bool full_stop=false); // stoper brutalement ou progressivement ?
 };
 

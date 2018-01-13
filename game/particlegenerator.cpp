@@ -138,7 +138,7 @@ void ParticleGenerator::start()
   m_status = Status::STARTED;
 }
 
-void ParticleGenerator::pulse(sf::Vector2f dir)
+void ParticleGenerator::pulse(sf::Vector2f dir, sf::Color color)
 {
   m_status = Status::PULSING;
   for (size_t i = 0; i < m_particles.size(); ++i)
@@ -148,7 +148,10 @@ void ParticleGenerator::pulse(sf::Vector2f dir)
       m_particles[i].reset(m_mt, dir);
       drawSquareTriangle(&m_vertices[6*i], m_emitpt, CG::PARTICLE_LENGTH);
       for (int j = 0; j < 6; ++j)
+      {
+        m_vertices[6*i+j].color = color;
         m_vertices[6*i+j].color.a = 255;
+      }
     }
   }
   m_status = Status::STOPPING;
