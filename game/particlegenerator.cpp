@@ -14,7 +14,7 @@
 
 /*******************/
 
-ParticleGenerator::ParticleGenerator(size_t nb_part) :
+ParticleGenerator::ParticleGenerator(size_t nb_part, const std::string &tex_name) :
   m_particles(nb_part),
   m_vertices(sf::Triangles, 6*nb_part),
   m_texture(),
@@ -22,7 +22,7 @@ ParticleGenerator::ParticleGenerator(size_t nb_part) :
   m_mt(std::random_device()()),
   m_status(Status::STOPPED)
 {
-  m_texture = ResourceManager::getTexture("snowflake");
+  m_texture = ResourceManager::getTexture(tex_name);
   sf::Vector2u size = m_texture->getSize();
   for (size_t i = 0; i < nb_part; ++i)
   {
@@ -54,8 +54,8 @@ static inline void drawSquareTriangle(sf::Vertex *v, sf::Vector2f at, int length
 
 void Particle::reset(std::mt19937 &mt)
 {
-  static std::uniform_real_distribution<float> distr_vx (-20, 20);
-  static std::uniform_real_distribution<float> distr_vy (-20, 20);
+  static std::uniform_real_distribution<float> distr_vx (-40, 40);
+  static std::uniform_real_distribution<float> distr_vy (-40, 40);
   static std::uniform_real_distribution<float> distr_lifetime (-.1, 2);
 
   m_speed = {distr_vx(mt), distr_vy(mt)};
@@ -112,7 +112,7 @@ void ParticleGenerator::animate(float dt)
     for (int j = 0; j < 6; ++j)
       m_vertices[6*i+j].position += m_particles[i].m_speed*dt;
     m_particles[i].m_lifetime -= sf::seconds(dt);
-    //m_particles[i].m_speed.y += CG::GRAVITY*dt;
+    m_particles[i].m_speed.y += CG::GRAVITY*dt;
   }
 
   if (m_status == Status::PULSING)

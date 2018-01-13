@@ -10,6 +10,7 @@
 
 #include "unique_drawable.h"
 #include "rc_manager.h"
+#include "particlegenerator.h"
 
 class Cloud : public MovingEntity
 {
@@ -17,11 +18,14 @@ private:
   virtual void updateSprite() override;
   friend class CloudZone;
   void setSpeed(float vx, float vy);
+  std::unique_ptr<ParticleGenerator> m_snow, m_rain;
 public:
   Cloud(const std::string &tex_name);
   void setPosition (float x, float y);
   virtual void draw (sf::RenderWindow &) const override;
   void animate (float dt);
+  void addSnow();
+  void addRain();
 };
 
 class CloudZone : public MovingEntity

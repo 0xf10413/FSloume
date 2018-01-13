@@ -34,7 +34,7 @@ private:
 
   virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 public:
-  ParticleGenerator(size_t nb_part);
+  ParticleGenerator(size_t nb_part, const std::string &tex_name);
   void setPosition(float x, float y);
   void animate(float dt);
 

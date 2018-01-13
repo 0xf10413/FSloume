@@ -151,6 +151,11 @@ std::shared_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name
     ResourceStream rstream = fetchStream("rc_snowflake_png");
     buffer.loadFromStream(rstream);
   }
+  else if (name == "raindrop")
+  {
+    ResourceStream rstream = fetchStream("rc_raindrop_png");
+    buffer.loadFromStream(rstream);
+  }
   else
   {
     std::ostringstream err_fmt;
