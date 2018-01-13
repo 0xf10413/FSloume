@@ -148,14 +148,12 @@ int FGame::mainLoop ()
       {
         m_paused = true;
         setActive(false);
-        setFramerateLimit(4);
       }
       if (m_event.type == sf::Event::GainedFocus)
       {
         if (m_game_mode == GameMode::TITLE)
           m_defer_unlock_pause = true;
         setActive(true);
-        setFramerateLimit(60);
       }
       if ((m_event.type == sf::Event::MouseButtonPressed ||
             m_event.type == sf::Event::TouchEnded) && m_game_mode == GameMode::TITLE)
@@ -269,19 +267,6 @@ int FGame::mainLoop ()
       m_bSlime.move(eps, m_ball);
       m_rSlime.move(eps, m_ball);
 
-      /* Animation du background */
-      m_background.animate(eps);
-
-      /* Animation du générateur de test */
-      m_pgenerator.animate(eps);
-
-      /* Placement des mires */
-      const std::vector<sf::Vector2f> touches = m_input.whereAreTouch();
-      assert(touches.size() <= m_targets.size());
-      for (size_t i = 0; i < touches.size(); ++i)
-        m_targets[i].setPosition(touches[i].x, touches[i].y);
-      for (size_t i = touches.size(); i < m_targets.size(); ++i)
-        m_targets[i].hide();
 
 
       if (m_ball.getOnGround() && m_game_mode != GameMode::TEST) // Game over ! Mais pour qui ?
@@ -312,6 +297,21 @@ int FGame::mainLoop ()
       if (m_game_over_countdown < sf::seconds(0))
         m_reinit = true;
     }
+
+    /* Animation des éléments hors pause */
+    if (!m_paused)
+    {
+      m_background.animate(eps);
+      m_pgenerator.animate(eps);
+    }
+
+    /* Placement des mires */
+    const std::vector<sf::Vector2f> touches = m_input.whereAreTouch();
+    assert(touches.size() <= m_targets.size());
+    for (size_t i = 0; i < touches.size(); ++i)
+      m_targets[i].setPosition(touches[i].x, touches[i].y);
+    for (size_t i = touches.size(); i < m_targets.size(); ++i)
+      m_targets[i].hide();
 
 
 
