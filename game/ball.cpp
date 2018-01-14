@@ -8,7 +8,7 @@ Ball::Ball() :
   m_path(CG::BALL_ANTICIPATION, sf::Color::Red)
 {
   m_texture = ResourceManager::getTexture("ball");
-  m_sprite.setTexture(*m_texture.lock());
+  m_sprite.setTexture(*m_texture);
 }
 
 void Ball::setX (float x)
@@ -26,6 +26,11 @@ void Ball::setY (float y)
 void Ball::clampTo (const sf::FloatRect &clamp)
 {
   m_clamp = clamp;
+}
+
+void Ball::forceBounce()
+{
+  m_vy = -3*CG::SLIME_JUMP_SPEED;
 }
 
 void Ball::move (float dt)

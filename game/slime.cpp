@@ -12,10 +12,11 @@ Slime::Slime (bool alignLeft) :
   m_apec(0),
   m_moving_timer{},
   m_victories(0),
+  m_shockwave_ready(false),
   m_clamp()
 {
   m_texture = ResourceManager::getTexture(m_alignLeft ? "bSlime" : "rSlime");
-  m_sprite.setTexture (*m_texture.lock());
+  m_sprite.setTexture (*m_texture);
   m_sprite.setOrigin(CG::SLIME_WIDTH/2, CG::SLIME_HEIGHT/2);
 
   if (m_alignLeft)
@@ -44,7 +45,10 @@ void Slime::antijump()
 void Slime::groundPound()
 {
   if (m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
+  {
+    m_movingv_status = MovingVStatus::GROUND_POUND;
     m_vy = -CG::SLIME_JUMP_SPEED/2;
+  }
 }
 
 void Slime::prepareMove(const Input &input)
@@ -124,6 +128,8 @@ void Slime::prepareMove(const Input &input)
           break;
         case MovingHStatus::MOVING_FAST:
           break;
+        case MovingHStatus::FORCE_RETREAT:
+          break;
       }
     else
       switch (m_movingh_status[i])
@@ -140,6 +146,8 @@ void Slime::prepareMove(const Input &input)
           break;
         case MovingHStatus::MOVING_FAST:
           m_movingh_status[i] = MovingHStatus::STOPPED;
+          break;
+        case MovingHStatus::FORCE_RETREAT:
           break;
       }
   }
@@ -164,8 +172,9 @@ void Slime::prepareMove(const Input &input)
         break;
       case MovingVStatus::DOUBLE_JUMPING:
         break;
+      case MovingVStatus::FORCE_JUMPING:
+        break;
       case MovingVStatus::FAST_LAND:
-        m_movingv_status = MovingVStatus::GROUND_POUND;
         m_apec = m_y;
         groundPound();
         break;
@@ -184,6 +193,8 @@ void Slime::prepareMove(const Input &input)
           m_apec = m_y;
           antijump();
           break;
+        case MovingVStatus::FORCE_JUMPING:
+          break;
         case MovingVStatus::FAST_LAND:
           break;
         case MovingVStatus::GROUND_POUND:
@@ -200,6 +211,8 @@ void Slime::prepareMove(const Input &input)
         case MovingVStatus::JUMPING_WAIT:
           break;
         case MovingVStatus::DOUBLE_JUMPING:
+          break;
+        case MovingVStatus::FORCE_JUMPING:
           break;
         case MovingVStatus::FAST_LAND:
           break;
@@ -238,7 +251,7 @@ void Slime::prepareMove(const Input &input)
 
 }
 
-void Slime::move(float dt, const Ball &b)
+void Slime::move(float dt, const Ball &b, bool fake)
 {
   /* Déplacement avec la vitesse */
   m_x += dt*m_vx;
@@ -260,6 +273,10 @@ void Slime::move(float dt, const Ball &b)
     m_y = m_clamp.top + m_clamp.height;
     m_vy = 0;
     m_onGround = true;
+    if (!fake && m_movingv_status == MovingVStatus::GROUND_POUND)
+      m_shockwave_ready = true;
+    if (!fake && lockedRetreat())
+        m_movingh_status[0] = m_movingh_status[1] = MovingHStatus::STOPPED;
     m_movingv_status = MovingVStatus::STOPPED;
   }
 
@@ -274,6 +291,12 @@ void Slime::move(float dt, const Ball &b)
 
   /* Mise à jour finale du sprite */
   updateSprite();
+}
+
+bool Slime::lockedRetreat()
+{
+  return m_movingh_status[0] == MovingHStatus::FORCE_RETREAT ||
+    m_movingh_status[1] == MovingHStatus::FORCE_RETREAT;
 }
 
 void Slime::pushState()
@@ -362,4 +385,24 @@ bool Slime::touched(float x, float y)
 void Slime::stopX ()
 {
   m_vx = 0;
+}
+
+void Slime::forceShock()
+{
+  m_vy = -CG::SLIME_JUMP_SPEED;
+  m_vx = CG::SLIME_HORIZONTAL_SPEED;
+  m_movingv_status = MovingVStatus::FORCE_JUMPING;
+  m_movingh_status[0] = MovingHStatus::FORCE_RETREAT;
+  m_movingh_status[1] = MovingHStatus::FORCE_RETREAT;
+  m_onGround = false;
+}
+
+bool Slime::fetchShockwave()
+{
+  if (m_shockwave_ready)
+  {
+    m_shockwave_ready = false;
+    return true;
+  }
+  return false;
 }

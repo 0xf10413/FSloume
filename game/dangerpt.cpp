@@ -13,7 +13,7 @@
 DangerPoint::DangerPoint() : MovingEntity()
 {
   m_texture = ResourceManager::getTexture("danger_pt");
-  m_sprite.setTexture(*m_texture.lock());
+  m_sprite.setTexture(*m_texture);
 }
 
 void DangerPoint::updateSprite()

@@ -14,6 +14,7 @@
 #include "target.h"
 #include "dangerpt.h"
 #include "background.h"
+#include "shockwave.h"
 
 class FGame : public sf::RenderWindow
 {
@@ -46,6 +47,7 @@ private:
   std::array<Target,10> m_targets;
 
   DangerPoint m_dangerpt;
+  ShockWave m_shockwave;
   ParticleGenerator m_pgenerator;
 
   void collide (float dt, bool fake=false); // Calcul des collisions et des vitesses

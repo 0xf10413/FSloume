@@ -12,7 +12,7 @@ class UniqueDrawable
 {
 protected:
   sf::Sprite m_sprite;
-  std::weak_ptr<sf::Texture> m_texture;
+  std::shared_ptr<sf::Texture> m_texture;
 public:
   UniqueDrawable();
   virtual ~UniqueDrawable() = default;

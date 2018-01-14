@@ -14,7 +14,7 @@ private:
   sf::FloatRect m_clamp;
   Path m_path;
 public:
-	Ball ();
+  Ball ();
   void setX (float x);
   void setY (float y);
   void clampTo (const sf::FloatRect &clamp);
@@ -23,6 +23,7 @@ public:
   sf::Vector2f getPosition() const;
   sf::Vector2f getSpeed() const;
   void setSpeed(const sf::Vector2f &);
+  void forceBounce();
   virtual void draw(sf::RenderWindow &w) const override;
 
   void updatePath(int i);

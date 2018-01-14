@@ -5,7 +5,7 @@
 Target::Target() : m_visible(false)
 {
   m_texture = ResourceManager::getTexture("target");
-  m_sprite.setTexture(*m_texture.lock());
+  m_sprite.setTexture(*m_texture);
 }
 
 void Target::updateSprite()

@@ -12,9 +12,9 @@ class Slime : public MovingEntity
 {
 private:
     friend class IA;
-    enum class MovingHStatus {STOPPED, MOVING, MOVING_WAIT, MOVING_FAST};
+    enum class MovingHStatus {STOPPED, MOVING, MOVING_WAIT, MOVING_FAST, FORCE_RETREAT};
     enum class MovingVStatus {STOPPED, JUMPING, JUMPING_WAIT, DOUBLE_JUMPING,
-      FAST_LAND, GROUND_POUND};
+     FORCE_JUMPING, FAST_LAND, GROUND_POUND};
     enum Direction {LEFT, RIGHT, UP, DOWN, NONE};
 
     Eye m_eye;
@@ -26,6 +26,7 @@ private:
     float m_apec; // Plus haute altitude lors du dernier saut
     sf::Clock m_moving_timer[3];
     int m_victories;
+    bool m_shockwave_ready; // une onde de choc en attente
     sf::FloatRect m_clamp;
 
     virtual void updateSprite() override;
@@ -33,9 +34,13 @@ private:
     void antijump();
     void groundPound();
 public:
+    void forceShock();
     Slime (bool isLeft);
     void prepareMove(const Input &input); // Enregistre les vitesses demandées
-    void move(float dt, const Ball &b);
+    void move(float dt, const Ball &b, bool fake=false);
+
+    bool fetchShockwave(); // récupérer l'onde de choc si elle est prête
+    bool lockedRetreat(); // est-on sous le coup d'une onde de choc ?
 
     bool touched(float x, float y); // A-t-on posé le doigt dessus ?
     void setMainCharacter(bool main_character);

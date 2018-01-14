@@ -4,7 +4,7 @@
 Net::Net () : MovingEntity()
 {
   m_texture = ResourceManager::getTexture("net");
-  m_sprite.setTexture(*m_texture.lock());
+  m_sprite.setTexture(*m_texture);
 }
 
 void Net::setX (float x)

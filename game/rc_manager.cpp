@@ -134,6 +134,21 @@ std::shared_ptr<sf::Texture> ResourceManager::getTexture(const std::string &name
         alignLeft ? sf::Color::Cyan : sf::Color::Magenta );
     makeADisk(buffer, 1);
   }
+  else if (name == "rShockwave")
+  {
+    buffer.create (
+        CG::SHOCKWAVE_WIDTH,
+        CG::SHOCKWAVE_HEIGHT,
+        sf::Color::Cyan);
+    for (int i = 0; i < CG::SHOCKWAVE_WIDTH; ++i)
+      for (int j = 0; j < CG::SHOCKWAVE_HEIGHT; ++j)
+      {
+        float normx = (float)i/CG::SHOCKWAVE_WIDTH;
+        float normy = (float)(CG::SHOCKWAVE_HEIGHT - j)/CG::SHOCKWAVE_HEIGHT;
+        if (normx*normx < normy)
+          buffer.setPixel(i, j, sf::Color(0,0,0,0));
+      }
+  }
   else if (name == "net")
   {
     buffer.create (CG::NET_WIDTH, CG::NET_HEIGHT, sf::Color::Yellow);

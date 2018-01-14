@@ -6,7 +6,7 @@
 Eye::Eye(bool alignLeft)
 {
   m_texture = ResourceManager::getTexture(alignLeft ? "bEye" : "rEye");
-  m_sprite.setTexture (*m_texture.lock());
+  m_sprite.setTexture (*m_texture);
 }
 
 void Eye::setPosition (float x, float y)

@@ -13,7 +13,7 @@ Background::Background() :
   m_clouds(sf::FloatRect(0,CG::HEIGHT/5, CG::WIDTH, CG::HEIGHT/5), CG::NB_MAX_CLOUDS)
 {
   m_texture = ResourceManager::getTexture("background");
-  m_sprite.setTexture(*m_texture.lock());
+  m_sprite.setTexture(*m_texture);
 }
 
 void Background::animate(float dt)

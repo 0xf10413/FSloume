@@ -14,9 +14,9 @@
 Cloud::Cloud(const std::string &tex_name) : m_snow(nullptr), m_rain(nullptr)
 {
   m_texture = ResourceManager::getTexture(tex_name);
-  m_sprite.setTexture(*m_texture.lock());
-  m_sprite.setScale((float)CG::CLOUD_WIDTH/(*m_texture.lock()).getSize().x,
-      (float)CG::CLOUD_HEIGHT/(*m_texture.lock()).getSize().y);
+  m_sprite.setTexture(*m_texture);
+  m_sprite.setScale((float)CG::CLOUD_WIDTH/(*m_texture).getSize().x,
+      (float)CG::CLOUD_HEIGHT/(*m_texture).getSize().y);
 }
 
 void Cloud::updateSprite()

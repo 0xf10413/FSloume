@@ -15,10 +15,14 @@ IA::IA (Difficulty d) : m_difficulty(d)
 
 void IA::interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt)
 {
-  s.m_vx = 0;
   if (std::abs(b.getPosition().x - s.m_x) < CG::SLIME_HEIGHT &&
       std::abs(b.getPosition().y - s.m_y) < CG::JUMP_MAX_HEIGHT + CG::SLIME_HEIGHT)
     s.jump();
+
+  if (s.lockedRetreat())
+    return;
+
+  s.m_vx = 0;
 
   if (dangerPt.x >= 0 /*&& (std::abs(dangerPt.x - s.m_x) > 4)*/
       && ((s.m_alignLeft && dangerPt.x <= CG::WIDTH/2) ||
