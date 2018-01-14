@@ -30,9 +30,11 @@ private:
     sf::FloatRect m_clamp;
 
     virtual void updateSprite() override;
-    void jump();
-    void antijump();
-    void groundPound();
+    bool jump();
+    bool doubleJump();
+    bool antijump();
+    bool groundPound();
+    bool canGroundPound(bool tolerant);
 public:
     void forceShock();
     Slime (bool isLeft);

@@ -250,12 +250,15 @@ int FGame::mainLoop ()
       /* Action IA */
       if (m_game_mode == GameMode::TITLE)
       {
-        IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition());
-        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
+        IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition(),
+            m_shockwaves[1]);
+        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition(),
+            m_shockwaves[0]);
       }
       if (m_game_mode == GameMode::ONE_PLAYER)
       {
-        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition());
+        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition(),
+            m_shockwaves[0]);
       }
 
 
@@ -369,14 +372,14 @@ void FGame::collide (float dt, bool fake)
   if (std::abs(m_shockwaves[0].getPosition().x - m_rSlime.getPosition().x)
       < CG::SHOCKWAVE_WIDTH/2 + CG::SLIME_WIDTH/2 &&
       std::abs(m_rSlime.getPosition().y - m_shockwaves[0].getPosition().y)
-        < CG::SHOCKWAVE_HEIGHT)
+        < CG::SHOCKWAVE_HEIGHT && !fake)
     m_rSlime.forceShock();
 
   /* bSloume et shockwave r */
   if (std::abs(m_shockwaves[1].getPosition().x - m_bSlime.getPosition().x)
       < CG::SHOCKWAVE_WIDTH/2 + CG::SLIME_WIDTH/2 &&
       std::abs(m_bSlime.getPosition().y - m_shockwaves[1].getPosition().y)
-        < CG::SHOCKWAVE_HEIGHT)
+        < CG::SHOCKWAVE_HEIGHT && !fake)
     m_bSlime.forceShock();
 
   /* balle et shockwaves */
@@ -384,7 +387,7 @@ void FGame::collide (float dt, bool fake)
     if (std::abs(m_shockwaves[i].getPosition().x - m_ball.getPosition().x)
         < CG::SHOCKWAVE_WIDTH/2 + CG::BALL_RADIUS &&
         std::abs(m_shockwaves[i].getPosition().y - m_ball.getPosition().y)
-        < CG::SHOCKWAVE_HEIGHT)
+        < CG::SHOCKWAVE_HEIGHT && !fake)
       m_ball.forceBounce();
 
   /* bSlime et balle */

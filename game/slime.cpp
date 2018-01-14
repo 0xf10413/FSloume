@@ -25,30 +25,67 @@ Slime::Slime (bool alignLeft) :
     m_eye.setPosition (m_x - CG::SLIME_WIDTH/4, m_y);
 }
 
-void Slime::jump()
+bool Slime::jump()
 {
-  if (!m_onGround && m_movingv_status != MovingVStatus::JUMPING_WAIT)
-    return;
+  if (m_movingv_status != MovingVStatus::STOPPED)
+    return false;
   m_onGround = false;
   m_vy -= CG::SLIME_JUMP_SPEED;
+  m_movingv_status = MovingVStatus::JUMPING_WAIT;
+  m_moving_timer[2].restart();
+  return true;
+}
+
+bool Slime::canGroundPound(bool tolerant)
+{
+  if (!tolerant)
+    return m_apec < CG::SLIME_HEIGHT_GROUND_POUND;
+  return m_apec < CG::SLIME_HEIGHT_GROUND_POUND*.9;
 }
 
 /* Starts to cancel a jump */
-void Slime::antijump()
+bool Slime::antijump()
 {
-  if (m_onGround)
-    return;
+  switch(m_movingv_status)
+  {
+    case MovingVStatus::STOPPED:
+    case MovingVStatus::FORCE_JUMPING:
+      return false;
+    case MovingVStatus::JUMPING:
+    case MovingVStatus::JUMPING_WAIT:
+    case MovingVStatus::DOUBLE_JUMPING:
+      m_movingv_status = MovingVStatus::FAST_LAND;
+      break;
+    case MovingVStatus::GROUND_POUND:
+    case MovingVStatus::FAST_LAND:
+      break;
+  }
+
   m_vy = std::max(m_vy, 0.f);
   m_vy += 2*CG::SLIME_JUMP_SPEED;
+  return true;
 }
 
-void Slime::groundPound()
+bool Slime::groundPound()
 {
-  if (m_apec < CG::SLIME_HEIGHT_GROUND_POUND)
+  switch(m_movingv_status)
+  {
+    case MovingVStatus::STOPPED:
+    case MovingVStatus::FORCE_JUMPING:
+    case MovingVStatus::GROUND_POUND:
+    case MovingVStatus::JUMPING:
+    case MovingVStatus::JUMPING_WAIT:
+    case MovingVStatus::DOUBLE_JUMPING:
+      return false;
+    case MovingVStatus::FAST_LAND:
+      break;
+  }
+  if (canGroundPound(false))
   {
     m_movingv_status = MovingVStatus::GROUND_POUND;
     m_vy = -CG::SLIME_JUMP_SPEED/2;
   }
+  return true;
 }
 
 void Slime::prepareMove(const Input &input)
@@ -158,17 +195,11 @@ void Slime::prepareMove(const Input &input)
     {
       case MovingVStatus::STOPPED:
         jump();
-        m_movingv_status = MovingVStatus::JUMPING;
-        m_moving_timer[2].restart();
         break;
       case MovingVStatus::JUMPING:
         break;
       case MovingVStatus::JUMPING_WAIT:
-        if (m_moving_timer[2].getElapsedTime().asSeconds() > CG::SLIME_DOUBLE_JUMP_TIME)
-        {
-          jump();
-          m_movingv_status = MovingVStatus::DOUBLE_JUMPING;
-        }
+        doubleJump();
         break;
       case MovingVStatus::DOUBLE_JUMPING:
         break;
@@ -299,6 +330,18 @@ bool Slime::lockedRetreat()
 {
   return m_movingh_status[0] == MovingHStatus::FORCE_RETREAT ||
     m_movingh_status[1] == MovingHStatus::FORCE_RETREAT;
+}
+
+bool Slime::doubleJump()
+{
+  if (m_moving_timer[2].getElapsedTime().asSeconds() > CG::SLIME_DOUBLE_JUMP_TIME &&
+      m_movingv_status == MovingVStatus::JUMPING_WAIT)
+  {
+    m_vy -= CG::SLIME_JUMP_SPEED;
+    m_movingv_status = MovingVStatus::DOUBLE_JUMPING;
+    return true;
+  }
+  return false;
 }
 
 void Slime::pushState()

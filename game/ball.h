@@ -27,6 +27,7 @@ public:
   virtual void draw(sf::RenderWindow &w) const override;
 
   void updatePath(int i);
+  inline bool traverseGame() const { return m_path.traverseGame(); }
 };
 
 #endif

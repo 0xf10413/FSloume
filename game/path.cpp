@@ -37,3 +37,19 @@ void Path::setPosition(int i, float x, float y)
   m_pieces[2*i+2].color.b = 255;
   m_pieces[2*i+2].color.g = (x < CG::WIDTH/2)*255;
 }
+
+bool Path::traverseGame() const
+{
+  bool at_left = m_pieces[0].position.x <= CG::WIDTH/2;
+  if (at_left)
+  {
+    for (size_t i = 0; i < m_pieces.getVertexCount(); ++i)
+      if (m_pieces[i].position.x > CG::WIDTH/2)
+        return true;
+  }
+  else
+    for (size_t i = 0; i < m_pieces.getVertexCount(); ++i)
+      if (m_pieces[i].position.x < CG::WIDTH/2)
+        return true;
+  return false;
+}

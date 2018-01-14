@@ -9,6 +9,7 @@
 #define IA_H
 
 #include "slime.h"
+#include "shockwave.h"
 
 /* Une IA à lier à un slime */
 class IA
@@ -19,7 +20,7 @@ private:
   Difficulty m_difficulty;
 public:
   IA(Difficulty d);
-  void interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt);
+  void interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt, const ShockWave &sw);
 };
 
 

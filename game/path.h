@@ -14,6 +14,7 @@ public:
   virtual ~Path() = default;
   virtual void draw(sf::RenderWindow &) const;
   void setPosition(int i, float x, float y);
+  bool traverseGame() const;
 };
 
 #endif /* !LINE_H */
