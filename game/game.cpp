@@ -184,6 +184,7 @@ int FGame::mainLoop ()
         {
           m_paused = false;
           m_reinit = true;
+          m_branch_mode = RED_LOST;
           m_lScore.reinit();
           m_rScore.reinit();
         }
@@ -294,7 +295,7 @@ int FGame::mainLoop ()
     if (m_branch_mode == BranchMode::RED_LOST || m_branch_mode == BranchMode::BLUE_LOST)
     {
       m_game_over_countdown -= sf::seconds(eps);
-      if (m_game_over_countdown < sf::seconds(0))
+      if (m_game_over_countdown <= sf::Time::Zero)
         m_reinit = true;
     }
 
@@ -396,7 +397,7 @@ void FGame::collide (float dt, bool fake)
     if (!fake)
     {
       m_pgenerator.setPosition(x2.x, x2.y);
-      m_pgenerator.pulse(norm2(v2)/200*deltaX, sf::Color::Cyan);
+      m_pgenerator.pulse(norm2(v2)/200*deltaX, sf::Color::White);
     }
   }
 
@@ -420,7 +421,7 @@ void FGame::collide (float dt, bool fake)
     if (!fake)
     {
       m_pgenerator.setPosition(x2.x, x2.y);
-      m_pgenerator.pulse(norm2(v2)/200*deltaX, sf::Color::Magenta);
+      m_pgenerator.pulse(norm2(v2)/200*deltaX, sf::Color::White);
     }
   }
 

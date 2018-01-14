@@ -102,7 +102,7 @@ void ParticleGenerator::animate(float dt)
         m_particles[i].reset(m_mt);
         drawSquareTriangle(&m_vertices[6*i], m_emitpt, CG::PARTICLE_LENGTH);
         for (int j = 0; j < 6; ++j)
-          m_vertices[6*i+j].color.a = 255;
+          m_vertices[6*i+j].color.a = 127;
       }
       else
         for (int j = 0; j < 6; ++j)
@@ -150,7 +150,7 @@ void ParticleGenerator::pulse(sf::Vector2f dir, sf::Color color)
       for (int j = 0; j < 6; ++j)
       {
         m_vertices[6*i+j].color = color;
-        m_vertices[6*i+j].color.a = 255;
+        m_vertices[6*i+j].color.a = 100;
       }
     }
   }

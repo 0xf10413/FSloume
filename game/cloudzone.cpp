@@ -97,8 +97,6 @@ CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
   std::random_device rd;
   std::mt19937 twister (rd());
   std::uniform_int_distribution<int> dist_rc(1,2);
-  std::bernoulli_distribution add_snow(CG::CLOUD_PROBABILITY_SNOW);
-  std::bernoulli_distribution add_rain(CG::CLOUD_PROBABILITY_RAIN);
 
   for (size_t i = 0; i < how_many; ++i)
   {
@@ -118,10 +116,6 @@ CloudZone::CloudZone(sf::FloatRect zone, size_t how_many) : m_zone(zone),
   {
     c.setPosition(dist_x(twister), dist_y(twister));
     c.setSpeed(dist_vx(twister), dist_vy(twister));
-    if (add_snow(twister))
-      c.addSnow();
-    else if (add_rain(twister))
-      c.addRain();
   }
 }
 
