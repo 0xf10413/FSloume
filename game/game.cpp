@@ -22,7 +22,7 @@ FGame::FGame () :
   m_gameOverText(),
   m_targets{},
   m_dangerpt(),
-  m_shockwave(true),
+  m_shockwaves{true,false},
   m_pgenerator(30, "star")
 {
   setFramerateLimit (60);
@@ -137,9 +137,9 @@ int FGame::mainLoop ()
           }
         }
         else if (m_event.key.code == sf::Keyboard::A)
-        {
-          m_shockwave.setPosition(CG::WIDTH/4, CG::HEIGHT);
-        }
+          m_shockwaves[0].setPosition(CG::WIDTH/4, CG::HEIGHT);
+        else if (m_event.key.code == sf::Keyboard::E)
+          m_shockwaves[1].setPosition(3*CG::WIDTH/4, CG::HEIGHT);
       }
       if (m_event.type == sf::Event::LostFocus)
       {
@@ -265,8 +265,11 @@ int FGame::mainLoop ()
       m_bSlime.move(eps, m_ball);
       m_rSlime.move(eps, m_ball);
       if (m_bSlime.fetchShockwave())
-        m_shockwave.setPosition(m_bSlime.getPosition().x, m_bSlime.getPosition().y);
-      m_shockwave.move(eps);
+        m_shockwaves[0].setPosition(m_bSlime.getPosition().x, m_bSlime.getPosition().y);
+      m_shockwaves[0].move(eps);
+      if (m_rSlime.fetchShockwave())
+        m_shockwaves[1].setPosition(m_rSlime.getPosition().x, m_rSlime.getPosition().y);
+      m_shockwaves[1].move(eps);
 
 
 
@@ -323,7 +326,8 @@ int FGame::mainLoop ()
     m_rSlime.draw(*this);
     m_net.draw(*this);
     m_ball.draw(*this);
-    m_shockwave.draw(*this);
+    m_shockwaves[0].draw(*this);
+    m_shockwaves[1].draw(*this);
     draw(m_pgenerator);
 
     if (m_branch_mode != BranchMode::PLAYING)
@@ -361,19 +365,27 @@ void FGame::collide (float dt, bool fake)
 
   // TODO : gérer les collisions type clamp ici aussi
 
-  /* rSloume et shockwave */
-  if (std::abs(m_shockwave.getPosition().x - m_rSlime.getPosition().x)
+  /* rSloume et shockwave b */
+  if (std::abs(m_shockwaves[0].getPosition().x - m_rSlime.getPosition().x)
       < CG::SHOCKWAVE_WIDTH/2 + CG::SLIME_WIDTH/2 &&
-      std::abs(m_rSlime.getPosition().y - m_shockwave.getPosition().y)
+      std::abs(m_rSlime.getPosition().y - m_shockwaves[0].getPosition().y)
         < CG::SHOCKWAVE_HEIGHT)
     m_rSlime.forceShock();
 
-  /* balle et shockwave */
-  if (std::abs(m_shockwave.getPosition().x - m_ball.getPosition().x)
-      < CG::SHOCKWAVE_WIDTH/2 + CG::BALL_RADIUS &&
-      std::abs(m_shockwave.getPosition().y - m_ball.getPosition().y)
+  /* bSloume et shockwave r */
+  if (std::abs(m_shockwaves[1].getPosition().x - m_bSlime.getPosition().x)
+      < CG::SHOCKWAVE_WIDTH/2 + CG::SLIME_WIDTH/2 &&
+      std::abs(m_bSlime.getPosition().y - m_shockwaves[1].getPosition().y)
         < CG::SHOCKWAVE_HEIGHT)
-    m_ball.forceBounce();
+    m_bSlime.forceShock();
+
+  /* balle et shockwaves */
+  for (int i = 0; i < 2; ++i)
+    if (std::abs(m_shockwaves[i].getPosition().x - m_ball.getPosition().x)
+        < CG::SHOCKWAVE_WIDTH/2 + CG::BALL_RADIUS &&
+        std::abs(m_shockwaves[i].getPosition().y - m_ball.getPosition().y)
+        < CG::SHOCKWAVE_HEIGHT)
+      m_ball.forceBounce();
 
   /* bSlime et balle */
   float t = collideTwoCircles(

@@ -32,6 +32,13 @@ void IA::interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt)
       s.m_vx = CG::SLIME_HORIZONTAL_SPEED;
     else
       s.m_vx = -CG::SLIME_HORIZONTAL_SPEED;
+    if (std::abs(s.m_x -dangerPt.x) > CG::SLIME_WIDTH)
+    {
+      if (s.m_onGround)
+        s.m_vx *= 2;
+      else
+        s.antijump();
+    }
   }
   else
   {

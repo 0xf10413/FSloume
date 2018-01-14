@@ -47,7 +47,7 @@ private:
   std::array<Target,10> m_targets;
 
   DangerPoint m_dangerpt;
-  ShockWave m_shockwave;
+  ShockWave m_shockwaves[2];
   ParticleGenerator m_pgenerator;
 
   void collide (float dt, bool fake=false); // Calcul des collisions et des vitesses

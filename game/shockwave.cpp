@@ -13,9 +13,9 @@
 
 ShockWave::ShockWave (bool goingRight) : m_going_right(goingRight)
 {
-  m_texture = ResourceManager::getTexture("rShockwave");
+  m_texture = ResourceManager::getTexture(m_going_right ? "bShockwave" : "rShockwave");
   m_sprite.setTexture(*m_texture);
-  m_vx = CG::SHOCKWAVE_SPEED;
+  m_vx = m_going_right ? CG::SHOCKWAVE_SPEED : -CG::SHOCKWAVE_SPEED;
 }
 
 void ShockWave::updateSprite()

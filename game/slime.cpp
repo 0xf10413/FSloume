@@ -240,6 +240,8 @@ void Slime::prepareMove(const Input &input)
   }
 
   /* Finalisation du mouvement horizontal */
+  if (lockedRetreat())
+    return;
   float dir_f = 0;
   if (dirh < Direction::UP)
   {
@@ -389,8 +391,8 @@ void Slime::stopX ()
 
 void Slime::forceShock()
 {
-  m_vy = -CG::SLIME_JUMP_SPEED;
-  m_vx = CG::SLIME_HORIZONTAL_SPEED;
+  m_vy = -.5*CG::SLIME_JUMP_SPEED;
+  m_vx = m_alignLeft ? -CG::SLIME_HORIZONTAL_SPEED : CG::SLIME_HORIZONTAL_SPEED;
   m_movingv_status = MovingVStatus::FORCE_JUMPING;
   m_movingh_status[0] = MovingHStatus::FORCE_RETREAT;
   m_movingh_status[1] = MovingHStatus::FORCE_RETREAT;
