@@ -75,11 +75,13 @@ void FGame::rebuildGame()
   m_bSlime.setX (CG::WIDTH/4);
   m_bSlime.setY (CG::HEIGHT);
   m_bSlime.clampTo(sf::FloatRect(0, 0, CG::WIDTH/2 - CG::NET_WIDTH/2, CG::HEIGHT));
+  m_shockwaves[0].setPosition (CG::WIDTH, CG::HEIGHT);
 
   m_rSlime.reinit();
   m_rSlime.setX (3*CG::WIDTH/4);
   m_rSlime.setY (CG::HEIGHT);
   m_rSlime.clampTo(sf::FloatRect(CG::WIDTH/2 + CG::NET_WIDTH/2, 0, CG::WIDTH/2 - CG::NET_WIDTH/2, CG::HEIGHT));
+  m_shockwaves[1].setPosition (0, CG::HEIGHT);
 
   m_ball.reinit();
   if (m_branch_mode == BranchMode::BLUE_LOST)
