@@ -15,7 +15,6 @@ ShockWave::ShockWave (bool goingRight) : m_going_right(goingRight)
 {
   m_texture = ResourceManager::getTexture(m_going_right ? "bShockwave" : "rShockwave");
   m_sprite.setTexture(*m_texture);
-  m_vx = m_going_right ? CG::SHOCKWAVE_SPEED : -CG::SHOCKWAVE_SPEED;
 }
 
 void ShockWave::updateSprite()
@@ -30,6 +29,7 @@ void ShockWave::setPosition (float x, float y)
 {
   m_x = x;
   m_y = y;
+  m_vx = (m_going_right ? 1 : -1) * CG::SHOCKWAVE_SPEED;
   updateSprite();
 }
 
@@ -45,6 +45,7 @@ void ShockWave::draw(sf::RenderWindow &w) const
 
 void ShockWave::move (float dt)
 {
+  m_vx += (m_going_right ? 1 : -1) * CG::SHOCKWAVE_ACCELERATION*dt;
   m_x += m_vx*dt;
   m_y += m_vy*dt;
   updateSprite();

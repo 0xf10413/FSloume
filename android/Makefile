@@ -1,7 +1,7 @@
 ALL_SOURCES=$(wildcard ../game/*.cpp) ../build/rc/*.c ../main.cpp
 
 all: cpplist
-	-gradle assembleArmDebug
+	-TERM=dumb gradle assembleArmDebug
 	@echo "Output in $$PWD/build/outputs/apk/arm/debug/"
 
 cpplist: $(ALL_SOURCES)

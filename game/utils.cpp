@@ -5,7 +5,7 @@
 
 /* Intersection entre deux cercles mouvants. Nomenclature :
  * Premier cercle : centre M, rayon R, vitesse V
- * Second cercle : centre M' (noté Mp), rayon R' (noté Rp), vitesse V (Vp)
+ * Second cercle : centre M' (noté Mp), rayon R' (noté Rp), vitesse V' (Vp)
  * pour un temps allant de 0 à dt
  * Renvoie le temps de collision s'il existe, -1 sinon
  **/

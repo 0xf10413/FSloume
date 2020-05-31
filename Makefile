@@ -13,13 +13,12 @@ CXX=g++
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
 			 -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
-			 -Wunreachable-code -fPIC -fprofile-arcs -ftest-coverage
+			 -Wunreachable-code -fPIC
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
-				 -Wunreachable-code -fPIC -fprofile-arcs -ftest-coverage
+				 -Wunreachable-code -fPIC
 
 # Linker flags
-LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics -lgcov \
-				-fprofile-arcs -ftest-coverage
+LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
 
 
 # Resource builder

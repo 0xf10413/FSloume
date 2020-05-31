@@ -270,6 +270,14 @@ void Slime::prepareMove(const Input &input)
     }
   }
 
+  /* Animation en cas de retreat par shockwave */
+  if (m_movingh_status[0] == MovingHStatus::FORCE_RETREAT
+      || m_movingh_status[1] == MovingHStatus::FORCE_RETREAT)
+  {
+      setTheta(45*m_y/CG::JUMP_MAX_HEIGHT *(m_alignLeft ? 1 : -1));
+  }
+
+
   /* Finalisation du mouvement horizontal */
   if (lockedRetreat())
     return;
