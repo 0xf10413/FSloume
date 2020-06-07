@@ -1,0 +1,368 @@
+%! TEX program = lualatex
+\documentclass[a4paper]{article}
+
+% Language
+\usepackage{polyglossia}
+\setmainlanguage{french}
+
+% Maths
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{esvect} % for \vv
+\usepackage{tikz}
+
+% Links
+\usepackage{color}
+\usepackage[pdfstartview=XYZ]{hyperref}
+\hypersetup{
+    breaklinks,
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%
+%% Main document %%
+%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{hypothesis}{Hypothèse}
+
+
+\begin{document}
+\tableofcontents
+\newpage
+
+\section{Introduction}
+Ce document contient la documentation des calculs physiques liés au projet.
+
+\section{Calculs de collision}
+Dans toutes les sections suivantes, on s'intéresse aux collisions entre deux systèmes sur un intervalle de temps $[0, dt]$.
+
+\subsection{Hypothèses}
+En fonctions des cas, les hypothèses suivantes peuvent être utilisées pour simplifier:
+\begin{hypothesis}
+  \label{hyp:neglect_external_forces}
+  La collision se produit sur un petit intervalle de temps $[t_0,t_0+dt]$ tel que les seules forces significatives
+  sur cet intervalle sont les forces de collision, si celles-ci existent.
+\end{hypothesis}
+
+\begin{hypothesis}
+  \label{hyp:rebound_heavy_body}
+  Les collisions entre les deux corps sont de nature élastique avec un facteur de restitution $0 < k \leq 1$.
+  De plus, l'un des deux corps a une masse bien plus élevée que l'autre.
+\end{hypothesis}
+
+\begin{hypothesis}
+  \label{hyp:no_rotation}
+  Les corps considérés ne peuvent pas subir de rotation.
+\end{hypothesis}
+
+
+
+\subsection{Rebond élastique}
+On se place sous les hypothèses \ref{hyp:neglect_external_forces} et \ref{hyp:no_rotation}.
+
+D'après \href{https://en.wikipedia.org/wiki/Elastic_collision}{Wikipedia},
+le rebond élastique entre deux corps de masses respectives $m_1$ et $m_2$,
+de vitesses respectives $\vv v_1$ et $\vv v_2$,
+sur une surface de contact de normale $\vv n$ (orientée vers l'intérieur du premier corps) est:
+\begin{equation}
+  \begin{aligned}
+    \vv v_1' = \vv{v_1} - \frac{2m_2}{m_1 + m_2} \left((\vv{v_1} - \vv{v_2}) \cdot \vv n \right) \vv n \\
+    \vv v_2' = \vv{v_2} + \frac{2m_1}{m_1 + m_2} \left((\vv{v_2} - \vv{v_1}) \cdot \vv n \right) \vv n
+  \end{aligned}
+\end{equation}
+
+Si on utilise de plus l'hypothèse \ref{hyp:rebound_heavy_body}, par exemple en supposant
+$m_1$ petit devant $m_2$, on obtient simplement:
+\begin{equation}
+  \begin{aligned}
+    \vv{v_1}' = \vv{v_1} - 2 \left((\vv{v_1} - \vv{v_2}) \cdot \vv n \right) \vv n \\
+    \vv{v_2}' = \vv{v_2}
+  \end{aligned}
+\end{equation}
+
+Si de plus le corps 2 est immobile, on obtient:
+\begin{equation}
+  \vv{v_1}' = \vv{v_1} - 2 \left(\vv{v_1} \cdot \vv n \right) \vv n \\
+\end{equation}
+
+
+
+\subsection{Disque mouvant et rectangle fixe}
+On utilise les hypothèses \ref{hyp:neglect_external_forces},
+\ref{hyp:rebound_heavy_body} et \ref{hyp:no_rotation}. Le rectangle est supposé de masse élevée.
+\subsubsection{Convention de nommage}
+\begin{center}
+  \begin{tikzpicture}[scale=2.5]
+    %% Building the box
+    \coordinate (A) at (-1, 2);
+    \coordinate (B) at (1, 2);
+    \coordinate (C) at (1, 0);
+    \coordinate (D) at (-1, 0);
+
+    \draw (A) -- (B) -- (C) -- (D) -- (A);
+
+    \draw (A) node[above left] {$A$} node {$\bullet$};
+    \draw (B) node[above right] {$B$} node {$\bullet$};
+    \draw (C) node[below right] {$C$} node {$\bullet$};
+    \draw (D) node[below left] {$D$} node {$\bullet$};
+
+    % Building the disc
+    \coordinate (M) at (-2, 1);
+    \coordinate (E) at (-2.5, 1);
+    \coordinate (F) at (-2, 1.5);
+    \coordinate (G) at (-1.5, 1);
+    \coordinate (H) at (-2, 0.5);
+
+    \draw (M) circle (0.5);
+    \draw [dashed] (M) -- (F) node[midway,right] {$R$};
+    \draw [->] (M) -- (-1.5, 0.5) node[midway, above right] {$\vv v$};
+
+    \draw (M) node[below left] {$M$} node {$\bullet$};
+    \draw (E) node[left] {$E$} node {$\bullet$};
+    \draw (F) node[above] {$F$} node {$\bullet$};
+    \draw (G) node[right] {$G$} node {$\bullet$};
+    \draw (H) node[below] {$H$} node {$\bullet$};
+  \end{tikzpicture}
+\end{center}
+
+\subsubsection{Rebond sur une arête}
+En appelant $E'$ (resp. $F'$, $G'$, $H'$) la position de $E$ (resp. $F$, $G$, $H$) après $dt$,
+on remarque que le disque sera en collision avec une arête ssi l'une de ces assertions est vérifiée:
+\begin{enumerate}
+  \item $[EE'] \cap [BC] \neq \emptyset$
+  \item $[FF'] \cap [CD] \neq \emptyset$
+  \item $[GG'] \cap [DA] \neq \emptyset$
+  \item $[HH'] \cap [AB] \neq \emptyset$
+\end{enumerate}
+
+Soit $t_1$ (resp. $t_2$, $t_3$, $t_4$) la plus petite valeur telle que:
+\[
+  \left\{
+  \begin{array}{l}
+    E +t_1\vv v \in [BC] \\
+    0 \leq t_1 \leq dt
+  \end{array}
+  \right.
+\]
+ou $t_1 = -1$ si une telle valeur n'existe pas (resp. équations similaires pour les autres arêtes).
+
+L'arête de collision est celle dont le temps de collision est le plus faible.
+On note $M_A$ le point d'intersection avec l'arête, et $\vv n_A$ la normale à cette arête.
+
+\subsubsection{Collision sur un sommet}
+
+On remarque que le disque peut également entrer en collision avec l'un des quatre sommets du rectangle.
+Le rebond sera différent dans ce cas.
+
+Soit $M_t$ la position du centre du cercle à l'instant $t$. On a $M_t = M + t \vv v$.
+
+La collision d'un disque mouvant avec un point $P(x_P,y_P)$ a lieu s'il existe $t$ tel que:
+\[
+  PM_t^2 \leq R^2
+\]
+Soit en développant:
+\begin{gather*}
+    \vv{PM_t} \cdot \vv{PM_t} \leq R^2 \\
+    (M + t\vv v - P)^2 \leq R^2 \\
+    (\vv{PM} + t\vv v)^2 \leq R^2 \\
+    PM^2 + t^2 v^2 + 2t\vv{PM}\cdot \vv v \leq R^2 \\
+    t^2 v^2 + 2t\vv{PM}\cdot \vv v + PM^2 - R^2 \leq 0
+\end{gather*}
+On retrouve un trinôme du second degré dont le coefficient dominant est positif.
+
+Si le coefficient dominant est nul (\textit{i.e.} disque immobile),
+$t$ disparaît de l'équation:
+\[
+  PM^2 \leq R^2
+\]
+
+Supposons $v^2 > 0$.
+L'existence de solution à cette inéquation est donc équivalent à l'existence de racines.
+En notant $\Delta$ le discrimant du trinôme:
+\[
+  \Delta = 4\left( \vv{PM} \cdot \vv v \right)^2 - 4 (PM^2 - R^2)v^2
+\]
+
+En supposant $\Delta \geq 0$, les valeurs de $t$ donc comprises entre:
+\[
+  t_{\text{min},\text{max}} = - \vv{PM}\cdot \vv v \pm \frac{\sqrt{\Delta}}{2v^2}
+\]
+
+Les valeurs acceptables de $t$ sont celles de l'intervalle $[0,dt]$.
+Le temps d'intersection est donc la plus petite de ces valeurs disponibles, soit:
+\begin{itemize}
+  \item Aucune si le trinôme n'a pas de solution, ou si $t_\text{min} > dt$ ou $t_\text{max} < 0$
+  \item $\max(0, t_\text{min})$ sinon.
+\end{itemize}
+
+\subsubsection{Bilan}
+Parmi toutes les intersections possibles calculées précédemment,
+l'intersection réelle est celle dont le temps d'intersection est le plus faible.
+
+Si deux intersections sont possibles (\textit{e.g.} $H + dt\vv v = A$),
+on décide arbitrairement que le rebond sur le segment est prioritaire.
+
+La vitesse est alors transformée par la relation:
+\[
+  \vv v' = \vv v - 2 \vv v \cdot \vv n \vv v = (1-2\vv v \cdot \vv n) \vv v
+\]
+où $\vv n$ est la normale à la surface de contact d'intersection, soit:
+\begin{itemize}
+  \item La normale à l'arête, orientée vers l'extérieur du rectangle,
+        si la collision a lieu sur une arête
+  \item La somme des normales des deux arêtes renormalisée,
+        si la collision a lieu sur un sommet (l'intersection de deux arêtes)
+\end{itemize}
+Dans le cas d'un rectangle aligné sur les axes $(Ox)$ et $(Oy)$,
+puisque les normales ont des coordonnées triviales ($\pm 1$ ou $0$),
+le calcul de la vitesse \textit{a posteriori} est plus simple encore:
+il suffit d'opposer l'abscisse ou l'ordonnée, voire les deux.
+
+
+\subsection{Disque mouvant et demi-disque mouvant}
+On utilise les hypothèses \ref{hyp:neglect_external_forces},
+\ref{hyp:rebound_heavy_body} et \ref{hyp:no_rotation}. Le demi-disque est supposé de masse élevée.
+
+\subsubsection{Convention de nommage}
+\begin{center}
+  \begin{tikzpicture}[scale=2.5]
+    %% Building the half-disc
+    \coordinate (C) at (0,0);
+    \coordinate (G) at (0, 0.21); % 4*R/3pi, see below for computation
+
+    \draw (0.5, 0) arc (0:180:0.5);
+    \draw [dashed] (C) -- (0.35, 0.35) node[midway,right] {$R'$};
+    \draw (-0.5, 0) -- (0.5, 0);
+
+    \draw (C) node[below left] {$C$} node {$\bullet$};
+    \draw (G) node[left] {$G$} node {$\bullet$};
+    \draw [->] (G) -- (-1, 1) node[midway, above right] {$\vv v'$};
+
+    % Building the disc
+    \coordinate (M) at (-2, 1);
+
+    \draw (M) circle (0.5);
+    \draw [dashed] (M) -- (-2, 1.5) node[midway,right] {$R$};
+    \draw [->] (M) -- (-1.5, 0.5) node[midway, above right] {$\vv v$};
+
+    \draw (M) node[below left] {$M$} node {$\bullet$};
+  \end{tikzpicture}
+\end{center}
+
+\subsubsection{Centre de gravité du demi-disque}
+
+Commençons par localiser $G$. Supposons que $C$ soit l'origine du repère. Soit $H$ l'ensemble des points du demi-disque.
+Alors:
+\[
+  \int_{M\in H} \vv{GM} \, dM = \vv 0.
+\]
+Soient $(x_G, y_G)$ les coordonnées de $G$. Cela revient à écrire:
+\[
+  \iint_{(x,y)\in H}
+   \left(
+     \begin{array}{c}
+      x - x_G \\
+      y - y_G
+     \end{array}
+   \right) \, dxdy = \vv 0.
+\]
+Soit en passant en coordonnées polaires:
+\begin{gather*}
+  \int_{r=0}^{r=R}
+  r
+  \int_{\theta=0}^{\theta=\pi}
+   \left(
+     \begin{array}{c}
+      r\cos\theta - x_G \\
+      r\sin\theta - y_G
+     \end{array}
+   \right) \, d\theta dr = \vv 0 \\
+%
+  \int_{r=0}^{r=R}
+  r
+   \left[
+     \begin{array}{c}
+      r\sin\theta - x_G\theta \\
+      -r\cos\theta - y_G\theta
+     \end{array}
+   \right]_{\theta=0}^{\theta=\pi} \, dr = \vv 0 \\
+%
+  \int_{r=0}^{r=R}
+  r
+  \left(
+    \begin{array}{c}
+      - x_G\pi \\
+      2r - y_G\pi
+    \end{array}
+ \right) \, dr = \vv 0 \\
+%
+  \left[
+    \begin{array}{c}
+      - x_G\pi\frac{r^2}{2} \\
+      \frac{2r^3}{3} - y_G\pi\frac{r^2}{2}
+    \end{array}
+  \right]_{r=0}^{r=R} = \vv 0 \\
+%
+  \left(
+    \begin{array}{c}
+      - x_G\pi\frac{R^2}{2} \\
+      \frac{2R^3}{3} - y_G\pi\frac{R^2}{2}
+    \end{array}
+  \right) = \vv 0 \\
+\end{gather*}
+Soit finalement:
+\[
+  \left\{
+    \begin{array}{r c l}
+      x_G &=& 0 \\
+      y_G &=& \frac{4R}{3\pi} \approx 0.42 R
+    \end{array}
+  \right.
+\]
+
+\subsubsection{Collision sur la partie supérieure}
+Intéressons-nous aux collisions possibles,
+en supposant que seule la partie supérieure du demi-disque puisse entrer en collision.
+
+On est ramené à une collision entre deux disques, respectivement de centre $M$ et de rayon $R$,
+et de centre $C$ et de rayon $R'$.
+
+Soit $M_t = M + t\vv v$ (resp. $M_t' = M' + t\vv v'$) la position de $M$
+(resp. de $M'$) à l'instant $t$. Soit $r = \min(R,R')$. La collision a lieu à l'instant $t$ ssi:
+\begin{gather*}
+  M_tM_t' \leq r \\
+  \left( \vv{M_t M_t'} \right)^2 \leq r^2 \\
+  \left( M' + t\vv v' - M - t \vv v \right)^2 \leq r^2 \\
+  \left( \vv{MM'} + t(\vv v' - \vv v) \right)^2 \leq r^2 \\
+  {MM'}^2 + 2t(\vv v' - \vv v)\cdot \vv{MM'} + t^2 (\vv v' - \vv v)^2 \leq r^2 \\
+  t^2 (\vv v' - \vv v)^2 + 2t(\vv v' - \vv v)\cdot \vv{MM'} + {MM'}^2 - r^2 \leq 0 \\
+\end{gather*}
+On retrouve un trinôme du second degré de coefficient positif.
+
+Supposons le coefficient dominant nul, soit $\vv v' = \vv v$. L'inéquation se simplifie en:
+\[
+  MM' \leq r
+\]
+Physiquement, cela correspond au fait que les deux disques ont exactement le même mouvement,
+et ne peuvent donc s'intersecter que s'ils sont déjà en cours d'intersection.
+
+On suppose le coefficient dominant strictement positif. On note $t_{\text{min}}$
+(resp. $t_{\text{max}}$) la plus petite (resp. la plus grande) des racines (éventuellement égales);
+si elles existent.
+Le temps d'intersection est la plus petite des ces valeurs possibles dans l'intervalle $[0,dt]$,
+soit:
+\begin{itemize}
+  \item Aucune si le trinôme n'a pas de solution, ou si $t_\text{min} > dt$ ou $t_\text{max} < 0$
+  \item $\max(0, t_\text{min})$ sinon.
+\end{itemize}
+
+\end{document}

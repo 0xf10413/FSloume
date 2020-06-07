@@ -1,9 +1,15 @@
+# Build folder
 build/*
+
+# Local files
 .ycm_extra_conf.py*
 .*.swp
-game/rc.h
 *.gcda
 *.gcno
+.vscode
+
+# Auto-generated
 game/rc_manager.inc
+game/rc.h
 game/config.cpp
 game/config.h
