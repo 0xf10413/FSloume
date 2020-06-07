@@ -9,9 +9,9 @@
 #define BACKGROUND_H
 
 #include <SFML/Graphics.hpp>
-#include "unique_drawable.h"
-#include "cloudzone.h"
-#include "particlegenerator.h"
+#include "tools/unique_drawable.h"
+#include "entities/cloudzone.h"
+#include "entities/particlegenerator.h"
 
 class Background : public MovingEntity
 {

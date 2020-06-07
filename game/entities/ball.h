@@ -2,10 +2,10 @@
 #define F_BALL_H
 
 #include <SFML/Graphics.hpp>
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 #include "path.h"
 #include "config.h"
-#include "particlegenerator.h"
+#include "entities/particlegenerator.h"
 
 class Ball : public MovingEntity
 {

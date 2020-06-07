@@ -1,8 +1,8 @@
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 #include <tuple>
 #include <array>
 #include <SFML/System/Vector3.hpp>
-#include "../../game/utils.h"
+#include "../../game/tools/utils.h"
 
 typedef sf::Vector2f Pt; // Point
 typedef sf::Vector2f Sp; // Speed

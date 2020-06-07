@@ -1,7 +1,7 @@
 #ifndef TARGET_H
 #define TARGET_H
 
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 
 /* Une mire pour aider au debug sur android */
 class Target : public MovingEntity

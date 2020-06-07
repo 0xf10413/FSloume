@@ -8,7 +8,7 @@
 #ifndef DANGERPT_H
 #define DANGERPT_H
 
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 
 class DangerPoint : public MovingEntity
 {

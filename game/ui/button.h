@@ -3,8 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
-#include "unique_drawable.h"
-#include "utils.h"
+#include "tools/unique_drawable.h"
+#include "tools/utils.h"
 
 class Button : public HeavyMovingEntity
 {

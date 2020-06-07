@@ -4,17 +4,17 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 
-#include "slime.h"
-#include "ball.h"
-#include "net.h"
-#include "input.h"
-#include "menu.h"
-#include "counter.h"
+#include "entities/slime.h"
+#include "entities/ball.h"
+#include "entities/net.h"
+#include "tools/input.h"
+#include "ui/menu.h"
+#include "ui/counter.h"
 #include "rc_manager.h"
-#include "target.h"
-#include "dangerpt.h"
-#include "background.h"
-#include "shockwave.h"
+#include "ui/target.h"
+#include "entities/dangerpt.h"
+#include "ui/background.h"
+#include "entities/shockwave.h"
 
 class FGame : public sf::RenderWindow
 {

@@ -1,5 +1,5 @@
-#include <catch.hpp>
-#include "../../game/utils.h"
+#include <catch2/catch.hpp>
+#include "../../game/tools/utils.h"
 #include <limits>
 
 typedef sf::Vector2f Pt;

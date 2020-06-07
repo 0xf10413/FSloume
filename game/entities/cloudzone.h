@@ -8,9 +8,9 @@
 #ifndef CLOUD_H
 #define CLOUD_H
 
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 #include "rc_manager.h"
-#include "particlegenerator.h"
+#include "entities/particlegenerator.h"
 
 class Cloud : public MovingEntity
 {

@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "config.h"
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 
 class Net : public MovingEntity
 {

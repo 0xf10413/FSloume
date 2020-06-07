@@ -1,5 +1,5 @@
 /*
- * particlegenerator.h
+ * entities/particlegenerator.h
  * Copyright (C) 2017 flo <flo@knightknight>
  *
  * Distributed under terms of the MIT license.
@@ -8,7 +8,7 @@
 #ifndef PARTICLEGENERATOR_H
 #define PARTICLEGENERATOR_H
 
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 #include <random>
 
 struct Particle

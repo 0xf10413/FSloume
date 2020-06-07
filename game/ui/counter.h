@@ -1,7 +1,7 @@
 #ifndef COUNTER_H
 #define COUNTER_H
 
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 
 class Counter : public MovingEntity
 {

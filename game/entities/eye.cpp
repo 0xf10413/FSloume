@@ -1,6 +1,6 @@
 #include "eye.h"
 #include "config.h"
-#include "utils.h"
+#include "tools/utils.h"
 #include "rc_manager.h"
 
 Eye::Eye(bool alignLeft)

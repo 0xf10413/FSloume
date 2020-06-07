@@ -1,4 +1,4 @@
-#include "input.h"
+#include "tools/input.h"
 #include <cassert>
 
 Input::Input() : keyDowns(), touchDowns(), touchPlaces()

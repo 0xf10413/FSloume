@@ -1,5 +1,5 @@
-#include <catch.hpp>
-#include "../../game/utils.h"
+#include <catch2/catch.hpp>
+#include "../../game/tools/utils.h"
 
 typedef sf::Vector2f Pt;
 typedef sf::Vector2f SegPair[4];

@@ -13,9 +13,11 @@ CXX=g++
 CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
        -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes \
 			 -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
-			 -Wunreachable-code -fPIC
+			 -Wunreachable-code -fPIC \
+			 -Igame
 CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
-				 -Wunreachable-code -fPIC
+				 -Wunreachable-code -fPIC \
+				 -Igame
 
 # Linker flags
 LDFLAGS=-lsfml-system -lsfml-window -lsfml-graphics
@@ -38,7 +40,7 @@ CG_SRC=game/config.cpp
 CG_INI=config.ini
 
 # Source files (adjust if needed)
-SRC_CXX_GAME=$(wildcard game/*.cpp)
+SRC_CXX_GAME=$(wildcard game/*.cpp game/*/*.cpp)
 SRC_C_GAME=$(wildcard game/*.c)
 SRC_CXX_TEST=$(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp)
 SRC_C_TEST=$(wildcard tests/*.c) $(wildcard tests/*/*.c)

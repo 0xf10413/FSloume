@@ -2,7 +2,7 @@
 #define LINE_H
 
 #include <SFML/Graphics.hpp>
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 
 class Path : public UniqueDrawable
 {

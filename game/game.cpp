@@ -1,7 +1,7 @@
 #include "game.h"
 #include "config.h"
-#include "utils.h"
-#include "ia.h"
+#include "tools/utils.h"
+#include "tools/ia.h"
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -208,8 +208,8 @@ int FGame::mainLoop ()
     /* Branche principale de jeu */
     if (m_branch_mode == BranchMode::PLAYING && !m_paused)
     {
-      if (m_game_mode == GameMode::TWO_PLAYERS || m_game_mode == GameMode::ONE_PLAYER
-        || m_game_mode == GameMode::TEST)
+      //if (m_game_mode == GameMode::TWO_PLAYERS || m_game_mode == GameMode::ONE_PLAYER
+      //  || m_game_mode == GameMode::TEST)
       {
         m_bSlime.prepareMove(m_input);
         m_rSlime.prepareMove(m_input);

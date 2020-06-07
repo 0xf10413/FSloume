@@ -1,5 +1,5 @@
 /*
- * ia.h
+ * tools/ia.h
  * Copyright (C) 2017 flo <flo@knightknight>
  *
  * Distributed under terms of the MIT license.
@@ -8,8 +8,8 @@
 #ifndef IA_H
 #define IA_H
 
-#include "slime.h"
-#include "shockwave.h"
+#include "entities/slime.h"
+#include "entities/shockwave.h"
 
 /* Une IA à lier à un slime */
 class IA

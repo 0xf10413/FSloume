@@ -1,6 +1,6 @@
-#include "slime.h"
+#include "entities/slime.h"
 #include "rc_manager.h"
-#include "utils.h"
+#include "tools/utils.h"
 
 Slime::Slime (bool alignLeft) :
   MovingEntity(),

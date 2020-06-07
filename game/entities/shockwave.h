@@ -1,5 +1,5 @@
 /*
- * shockwave.h
+ * entities/shockwave.h
  * Copyright (C) 2018 flo <flo@knightknight>
  *
  * Distributed under terms of the MIT license.
@@ -9,8 +9,8 @@
 #define SHOCKWAVE_H
 
 #include <SFML/Graphics.hpp>
-#include "unique_drawable.h"
-#include "particlegenerator.h"
+#include "tools/unique_drawable.h"
+#include "entities/particlegenerator.h"
 
 class ShockWave : public MovingEntity
 {

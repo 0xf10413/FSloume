@@ -5,7 +5,7 @@
  * Distributed under terms of the MIT license.
  */
 
-#include "shockwave.h"
+#include "entities/shockwave.h"
 #include "rc_manager.h"
 #include "config.h"
 #include <iostream>

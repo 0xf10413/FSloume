@@ -3,9 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include "config.h"
-#include "unique_drawable.h"
+#include "tools/unique_drawable.h"
 #include "eye.h"
-#include "input.h"
+#include "tools/input.h"
 #include "ball.h"
 
 class Slime : public MovingEntity

@@ -5,7 +5,7 @@
  * Distributed under terms of the MIT license.
  */
 
-#include "ia.h"
+#include "tools/ia.h"
 #include "config.h"
 
 

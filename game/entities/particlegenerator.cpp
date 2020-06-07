@@ -5,7 +5,7 @@
  * Distributed under terms of the MIT license.
  */
 
-#include "particlegenerator.h"
+#include "entities/particlegenerator.h"
 #include "rc_manager.h"
 #include "config.h"
 #include <iostream>
