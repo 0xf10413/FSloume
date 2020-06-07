@@ -252,14 +252,14 @@ int FGame::mainLoop ()
       /* Action IA */
       if (m_game_mode == GameMode::TITLE)
       {
-        IA(IA::Difficulty::TOO_EASY).interact(m_bSlime, m_ball, m_dangerpt.getPosition(),
+        IA(IA::Difficulty::NORMAL).interact(m_bSlime, m_ball, m_dangerpt.getPosition(),
             m_shockwaves[1]);
-        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition(),
+        IA(IA::Difficulty::HARD).interact(m_rSlime, m_ball, m_dangerpt.getPosition(),
             m_shockwaves[0]);
       }
       if (m_game_mode == GameMode::ONE_PLAYER)
       {
-        IA(IA::Difficulty::TOO_EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition(),
+        IA(IA::Difficulty::EASY).interact(m_rSlime, m_ball, m_dangerpt.getPosition(),
             m_shockwaves[0]);
       }
 

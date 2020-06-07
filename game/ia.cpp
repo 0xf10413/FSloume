@@ -16,17 +16,20 @@ IA::IA (Difficulty d) : m_difficulty(d)
 void IA::interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt,
     const ShockWave &sw)
 {
-  if (std::abs(b.getPosition().x - s.m_x) < CG::SLIME_HEIGHT &&
+  // Jump to send back the ball
+  if (m_difficulty >= EASY &&
+      std::abs(b.getPosition().x - s.m_x) < CG::SLIME_HEIGHT &&
       std::abs(b.getPosition().y - s.m_y) < CG::JUMP_MAX_HEIGHT + CG::SLIME_HEIGHT)
-    if (!s.jump())
+    if (!s.jump() && m_difficulty >= NORMAL)
       s.doubleJump();
 
   bool avoid_shockwave =
-    std::abs(sw.getPosition().x - s.m_x) < 2*CG::SLIME_WIDTH
+    m_difficulty >= EASY
+    && std::abs(sw.getPosition().x - s.m_x) < 2*CG::SLIME_WIDTH
     && (s.m_alignLeft ? sw.getPosition().x > s.m_x : sw.getPosition().x < s.m_x)
     && s.m_vy >= 0;
   if (avoid_shockwave)
-    if (!s.jump())
+    if (!s.jump() && m_difficulty >= NORMAL)
       s.doubleJump();
 
   if (s.lockedRetreat())
@@ -44,9 +47,9 @@ void IA::interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt,
       s.m_vx = -CG::SLIME_HORIZONTAL_SPEED;
     if (std::abs(s.m_x -dangerPt.x) > CG::SLIME_WIDTH)
     {
-      if (s.m_onGround)
+      if (s.m_onGround && m_difficulty >= NORMAL)
         s.m_vx *= 2;
-      else if (!avoid_shockwave)
+      else if (!avoid_shockwave && m_difficulty >= NORMAL)
         s.antijump();
     }
   }
@@ -70,7 +73,8 @@ void IA::interact (Slime &s, const Ball &b, const sf::Vector2f &dangerPt,
     }
 
     /* begin a ground pound */
-    if (!b.traverseGame() && (s.m_alignLeft ? b.getPosition().x > CG::WIDTH/2
+    if (m_difficulty >= HARD
+          && !b.traverseGame() && (s.m_alignLeft ? b.getPosition().x > CG::WIDTH/2
           : b.getPosition().x < CG::WIDTH/2))
     {
       switch(s.m_movingv_status)

@@ -15,7 +15,12 @@
 class IA
 {
 public:
-  enum class Difficulty {TOO_EASY};
+  enum Difficulty {
+    TOO_EASY, // only moves left and right
+    EASY, // can jump
+    NORMAL, // can double jump, dash, fast return, and will try to dodge shockwave
+    HARD, // attacks
+    };
 private:
   Difficulty m_difficulty;
 public:
