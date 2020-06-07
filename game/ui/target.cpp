@@ -28,7 +28,7 @@ void Target::setPosition(float x, float y)
   updateSprite();
 }
 
-void Target::draw(sf::RenderWindow &w) const
+void Target::draw(sf::RenderTexture &w) const
 {
   if (!m_visible)
     return;

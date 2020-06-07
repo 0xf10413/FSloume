@@ -113,6 +113,11 @@ int FGame::mainLoop ()
   /* Réinitialiser l'horloge pour éviter de compter le temps de démarrage */
   m_clock.restart();
 
+  // Render texture
+  // TODO: remove, along with this class
+  sf::RenderTexture renderTexture;
+  renderTexture.create(getSize().x, getSize().y);
+
   // Boucle principale
   while ( isOpen() )
   {
@@ -326,36 +331,40 @@ int FGame::mainLoop ()
 
     // Affichage
     clear();
-    m_background.draw(*this);
-    m_bSlime.draw(*this);
-    m_rSlime.draw(*this);
-    m_net.draw(*this);
-    m_ball.draw(*this);
-    m_shockwaves[0].draw(*this);
-    m_shockwaves[1].draw(*this);
+    renderTexture.clear();
+
+    m_background.draw(renderTexture);
+    m_bSlime.draw(renderTexture);
+    m_rSlime.draw(renderTexture);
+    m_net.draw(renderTexture);
+    m_ball.draw(renderTexture);
+    m_shockwaves[0].draw(renderTexture);
+    m_shockwaves[1].draw(renderTexture);
     draw(m_pgenerator);
 
     if (m_branch_mode != BranchMode::PLAYING)
       draw(m_gameOverText);
 
     if (m_game_mode == GameMode::TITLE)
-      m_main_menu->draw(*this);
+      m_main_menu->draw(renderTexture);
     else
     {
-      m_lScore.draw(*this);
-      m_rScore.draw(*this);
+      m_lScore.draw(renderTexture);
+      m_rScore.draw(renderTexture);
     }
 
     if (m_defer_unlock_pause)
       m_defer_unlock_pause = m_paused = false;
     if (m_paused && (m_game_mode != GameMode::TITLE))
-      m_pause_menu->draw(*this);
+      m_pause_menu->draw(renderTexture);
 
     for (auto &target : m_targets)
-      target.draw(*this);
+      target.draw(renderTexture);
     //if (m_game_mode != GameMode::TEST)
-        m_dangerpt.draw(*this);
+        m_dangerpt.draw(renderTexture);
 
+    draw(sf::Sprite(renderTexture.getTexture()));
+    renderTexture.display();
     display();
   }
   return EXIT_SUCCESS;

@@ -106,7 +106,7 @@ Menu::~Menu()
     delete b;
 }
 
-void Menu::draw(sf::RenderWindow &w) const
+void Menu::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
   for (const Button *b : m_buttons)

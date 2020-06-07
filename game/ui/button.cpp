@@ -46,7 +46,7 @@ void Button::setPosition(float x, float y)
   updateSprite();
 }
 
-void Button::draw(sf::RenderWindow &w) const
+void Button::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
   w.draw(m_text);

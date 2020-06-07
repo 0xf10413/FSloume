@@ -22,7 +22,7 @@ public:
   Button(const sf::Font &font, const std::string &text, sf::Color color,
       sf::Vector2f margin={}, sf::Vector2f padding={});
   virtual ~Button() = default;
-  virtual void draw(sf::RenderWindow &) const override;
+  virtual void draw(sf::RenderTexture &) const override;
 
   void setPosition(float x, float y);
   std::string getTextString() const;

@@ -25,7 +25,7 @@ public:
   void move (float dt);
 
   sf::Vector2f getPosition() const;
-  virtual void draw(sf::RenderWindow &w) const override;
+  virtual void draw(sf::RenderTexture &w) const override;
 };
 
 #endif /* !SHOCKWAVE_H */

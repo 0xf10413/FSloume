@@ -73,7 +73,7 @@ void Cloud::setSpeed(float vx, float vy)
   m_vy = vy;
 }
 
-void Cloud::draw (sf::RenderWindow &w) const
+void Cloud::draw(sf::RenderTexture &w) const
 {
   if (m_snow)
     w.draw(*m_snow);
@@ -157,7 +157,7 @@ void CloudZone::updateSprite()
 
 }
 
-void CloudZone::draw(sf::RenderWindow &w) const
+void CloudZone::draw(sf::RenderTexture &w) const
 {
   for (const Cloud &c : m_clouds)
     c.draw(w);

@@ -18,7 +18,7 @@ Path::Path(int length, sf::Color color) :
   }
 }
 
-void Path::draw(sf::RenderWindow &w) const
+void Path::draw(sf::RenderTexture &w) const
 {
   w.draw(m_pieces);
 }

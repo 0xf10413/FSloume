@@ -16,7 +16,7 @@ protected:
 public:
   UniqueDrawable();
   virtual ~UniqueDrawable() = default;
-  virtual void draw(sf::RenderWindow &) const;
+  virtual void draw(sf::RenderTexture &) const;
 };
 
 class HeavyDrawable
@@ -28,7 +28,7 @@ protected:
 public:
   HeavyDrawable();
   virtual ~HeavyDrawable() = default;
-  virtual void draw(sf::RenderWindow &) const;
+  virtual void draw(sf::RenderTexture &) const;
 };
 
 class MovingEntity : public UniqueDrawable

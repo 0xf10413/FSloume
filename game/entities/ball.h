@@ -24,7 +24,7 @@ public:
   sf::Vector2f getSpeed() const;
   void setSpeed(const sf::Vector2f &);
   void forceBounce();
-  virtual void draw(sf::RenderWindow &w) const override;
+  virtual void draw(sf::RenderTexture &w) const override;
 
   void updatePath(int i);
   inline bool traverseGame() const { return m_path.traverseGame(); }

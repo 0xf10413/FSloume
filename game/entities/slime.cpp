@@ -413,7 +413,7 @@ void Slime::reinit()
   MovingEntity::reinit();
 }
 
-void Slime::draw (sf::RenderWindow &w) const
+void Slime::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
   m_eye.draw(w);

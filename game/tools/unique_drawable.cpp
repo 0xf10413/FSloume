@@ -7,7 +7,7 @@ UniqueDrawable::UniqueDrawable() :
 {
 }
 
-void UniqueDrawable::draw(sf::RenderWindow &w) const
+void UniqueDrawable::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
 }
@@ -18,7 +18,7 @@ HeavyDrawable::HeavyDrawable() :
 {
 }
 
-void HeavyDrawable::draw(sf::RenderWindow &w) const
+void HeavyDrawable::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
 }

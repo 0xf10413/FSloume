@@ -21,7 +21,7 @@ public:
   Background();
   void animate(float dt);
   virtual void updateSprite() override;
-  virtual void draw(sf::RenderWindow &w) const override;
+  virtual void draw(sf::RenderTexture &w) const override;
 };
 
 #endif /* !BACKGROUND_H */

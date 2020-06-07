@@ -36,8 +36,12 @@ private:
     bool groundPound();
     bool canGroundPound(bool tolerant);
 public:
-    void forceShock();
+    /**
+     * \param isLeft Is the slime on the left side (looking toward the right side) ?
+     */
     Slime (bool isLeft);
+
+    void forceShock();
     void prepareMove(const Input &input); // Enregistre les vitesses demandées
     void move(float dt, const Ball &b, bool fake=false);
 
@@ -62,7 +66,7 @@ public:
     virtual void reinit() override;
     virtual void pushState() override;
     virtual void popState() override;
-    virtual void draw (sf::RenderWindow &) const override;
+    virtual void draw(sf::RenderTexture &) const override;
 };
 
 #endif

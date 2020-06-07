@@ -27,7 +27,7 @@ public:
   void setPosition(float x, float y);
   Counter &operator++();
   Counter &operator--();
-  virtual void draw (sf::RenderWindow &w) const override;
+  virtual void draw(sf::RenderTexture &w) const override;
   virtual void reinit() override;
 };
 

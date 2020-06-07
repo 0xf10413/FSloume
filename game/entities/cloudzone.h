@@ -22,7 +22,7 @@ private:
 public:
   Cloud(const std::string &tex_name);
   void setPosition (float x, float y);
-  virtual void draw (sf::RenderWindow &) const override;
+  virtual void draw(sf::RenderTexture &) const override;
   void animate (float dt);
   void addSnow();
   void addRain();
@@ -39,7 +39,7 @@ public:
   CloudZone (sf::FloatRect zone, size_t how_many);
   virtual void updateSprite() override;
   void animate(float dt);
-  virtual void draw(sf::RenderWindow &w) const override;
+  virtual void draw(sf::RenderTexture &w) const override;
 };
 
 #endif /* !CLOUD_H */

@@ -90,7 +90,7 @@ void Counter::setFont(const sf::Font *font)
   updateSprite();
 }
 
-void Counter::draw (sf::RenderWindow &w) const
+void Counter::draw(sf::RenderTexture &w) const
 {
   w.draw(m_text);
 }

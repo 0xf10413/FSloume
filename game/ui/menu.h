@@ -28,7 +28,7 @@ public:
       sf::Vector2f padding={});
   void setPosition(float x, float y);
 
-  virtual void draw(sf::RenderWindow &) const override;
+  virtual void draw(sf::RenderTexture &) const override;
   std::string wasIClicked(const sf::Event &event) const;
 };
 

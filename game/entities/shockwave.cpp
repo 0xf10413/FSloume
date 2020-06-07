@@ -38,7 +38,7 @@ sf::Vector2f ShockWave::getPosition () const
   return {m_x, m_y};
 }
 
-void ShockWave::draw(sf::RenderWindow &w) const
+void ShockWave::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
 }

@@ -29,7 +29,7 @@ void Background::updateSprite()
       );
 }
 
-void Background::draw(sf::RenderWindow &w) const
+void Background::draw(sf::RenderTexture &w) const
 {
   w.draw(m_sprite);
   m_clouds.draw(w);

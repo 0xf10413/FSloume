@@ -95,7 +95,7 @@ void Ball::setSpeed(const sf::Vector2f &v)
   m_vy = v.y;
 }
 
-void Ball::draw(sf::RenderWindow &w) const
+void Ball::draw(sf::RenderTexture &w) const
 {
   m_path.draw(w);
   w.draw(m_sprite);

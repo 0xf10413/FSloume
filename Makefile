@@ -15,7 +15,7 @@ CFLAGS=-std=c99 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith \
 			 -Wfloat-equal -Wundef -Wpointer-arith -Wcast-align \
 			 -Wunreachable-code -fPIC \
 			 -Igame
-CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow -Weffc++ \
+CXXFLAGS=-std=c++11 -g -Wall -Wextra -pedantic -Wshadow \
 				 -Wunreachable-code -fPIC \
 				 -Igame
 
